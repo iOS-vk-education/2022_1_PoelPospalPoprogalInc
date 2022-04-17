@@ -1,10 +1,16 @@
 import UIKit
+import PinLayout
 //import SwiftUI
 
 class PairsViewController: UIViewController {
     
     private let tableView = UITableView()
+    
     private let weakButton = UIButton()
+    
+    private var firstScreenButton = UIButton()
+    private var secondScreenButton = UIButton()
+    
     private var daysOfWeakButton = [UIButton]()
     
     private var muxosranskCount = 6
@@ -20,9 +26,11 @@ class PairsViewController: UIViewController {
         
         view.addSubview(tableView)
         view.addSubview(weakButton)
+        view.addSubview(firstScreenButton)
+        view.addSubview(secondScreenButton)
         
         weakButton.backgroundColor = UIColor(rgb: 0xC4C4C4)
-        weakButton.layer.cornerRadius = 16
+        weakButton.layer.cornerRadius = 10
         weakButton.layer.masksToBounds = true
         weakButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
 //        weakButton.setTitleColor = UIColor(rgb: 0x000000)
@@ -33,7 +41,9 @@ class PairsViewController: UIViewController {
         weakButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         weakButton.frame = .init(x: 15, y: 75, width: view.frame.width / 2, height: 35)
         
+        
         createDayButtons()
+        screenSelection()
         
         tableView.frame = view.bounds
         tableView.separatorStyle = .none
@@ -55,6 +65,52 @@ class PairsViewController: UIViewController {
         
         //в loadData completion не нужен, потому что не важно знать когда закончилась функция
         loadData()
+    }
+    
+//    let imageViewMagnifier = UIImageView(image: UIImage(named: "magnifier.png"))
+    private func screenSelection() {
+        firstScreenButton.backgroundColor = UIColor(rgb: 0x785A43)
+        firstScreenButton.layer.cornerRadius = 10
+        firstScreenButton.layer.masksToBounds = true
+        firstScreenButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
+        firstScreenButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
+    
+//        firstScreen.setTitle("11 неделя - числитель", for: .normal)
+        firstScreenButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
+        firstScreenButton.frame = .init(x: 20, y: view.frame.height - 95, width: view.frame.width / 2 - 30, height: 45)
+//        firstScreenButton.addSubview(imageViewMagnifier)
+//        firstScreenButton.bringSubviewToFront(imageViewMagnifier)
+        
+        secondScreenButton.backgroundColor = UIColor(rgb: 0xC2A894)
+        secondScreenButton.layer.cornerRadius = 10
+        secondScreenButton.layer.masksToBounds = true
+        secondScreenButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
+        secondScreenButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
+    
+//        firstScreen.setTitle("11 неделя - числитель", for: .normal)
+        secondScreenButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
+        secondScreenButton.frame = .init(x: view.frame.width / 2 + 15, y: view.frame.height - 95, width: view.frame.width / 2 - 30, height: 45)
+        
+        layoutScreenButtonsSubviews(buttonSubView: firstScreenButton, iconNameOfButton: "house")
+        layoutScreenButtonsSubviews(buttonSubView: secondScreenButton, iconNameOfButton: "magnifier")
+    }
+    
+    private func layoutScreenButtonsSubviews(buttonSubView: UIButton, iconNameOfButton: String) {
+        let imageViewButton = UIImageView(image: UIImage(named: iconNameOfButton))
+        
+        buttonSubView.addSubview(imageViewButton)
+        buttonSubView.bringSubviewToFront(imageViewButton)
+        
+        buttonSubView.layoutSubviews()
+//        secondScreenButton.layoutSubviews()
+        
+        imageViewButton.pin
+            .vCenter()
+//            .bottom(8)
+            .left(buttonSubView.frame.width / 2 - 17)
+            .height(35)
+            .width(35)
+//            .sizeToFit(.height)
     }
     
     private func createDayButtons() {
