@@ -1,10 +1,3 @@
-//
-//  CityTableViewCell.swift
-//  Table_pretty
-//
-//  Created by Сергей Николаев on 03.04.2022.
-//
-
 //import UIKit
 //import Kingfisher
 //
@@ -107,7 +100,6 @@ import PinLayout
 final class PairTableViewCell: UITableViewCell {
     private let timeLabel = UILabel()
     private let houseLabel = UILabel()
-    
 
     private let imageViewClock = UIImageView(image: UIImage(named: "clock.png"))
     private let imageViewDor = UIImageView(image: UIImage(named: "dor.png"))

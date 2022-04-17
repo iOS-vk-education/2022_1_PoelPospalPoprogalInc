@@ -1,10 +1,11 @@
 import UIKit
-import SwiftUI
+//import SwiftUI
 
 class PairsViewController: UIViewController {
     
     private let tableView = UITableView()
     private let weakButton = UIButton()
+    private var daysOfWeakButton = [UIButton]()
     
     private var muxosranskCount = 6
     
@@ -15,7 +16,7 @@ class PairsViewController: UIViewController {
         
         navigationController?.setNavigationBarHidden(true, animated: true)
         navigationController?.navigationBar.prefersLargeTitles = true
-//        navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .add, target: self, action: #selector(didTapAddButton))
+//        navigationItem.rightBarButtosnItem = .init(barButtonSystemItem: .add, target: self, action: #selector(didTapAddButton))
         
         view.addSubview(tableView)
         view.addSubview(weakButton)
@@ -28,11 +29,13 @@ class PairsViewController: UIViewController {
         weakButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
         
 //        weakButton.titleLabel?.textColor = .black
-        weakButton.setTitle("9 неделя - числитель", for: .normal)
+        weakButton.setTitle("11 неделя - числитель", for: .normal)
         weakButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         weakButton.frame = .init(x: 15, y: 75, width: view.frame.width / 2, height: 35)
         
-//        tableView.frame = view.bounds
+        createDayButtons()
+        
+        tableView.frame = view.bounds
         tableView.separatorStyle = .none
 
         tableView.delegate = self
@@ -52,6 +55,34 @@ class PairsViewController: UIViewController {
         
         //в loadData completion не нужен, потому что не важно знать когда закончилась функция
         loadData()
+    }
+    
+    private func createDayButtons() {
+        let dayOfWeak = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
+        var x = 15
+        let sizeOfButton = view.frame.width / 8
+        
+        for indexOfDay in 0...5 {
+            let dayOfWeakButton = UIButton(type: .system)
+            dayOfWeakButton.frame = CGRect(x: 15, y: 120, width: view.frame.width / 7, height: view.frame.width / 7)
+            dayOfWeakButton.titleLabel?.textAlignment = .center
+//            dayOfWeakButton.setTitle("Button \(i)", for: .normal)
+            
+            dayOfWeakButton.backgroundColor = UIColor(rgb: 0xC2A894)
+            dayOfWeakButton.layer.cornerRadius = 16
+            dayOfWeakButton.layer.masksToBounds = true
+            dayOfWeakButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+            dayOfWeakButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
+
+            dayOfWeakButton.setTitle(dayOfWeak[indexOfDay], for: .normal)
+            dayOfWeakButton.addTarget(self, action: #selector(open), for: .touchUpInside)
+            dayOfWeakButton.frame = .init(x: CGFloat(x), y: 130, width: sizeOfButton, height: sizeOfButton)
+            
+            view.addSubview(dayOfWeakButton)
+            daysOfWeakButton.append(dayOfWeakButton)
+            
+            x += Int(sizeOfButton) + 16
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -95,14 +126,15 @@ class PairsViewController: UIViewController {
         
     }
 
-//    private func open(city: City) {
-//        let viewController = CityViewController(city: city)
-////        let viewController = UIViewController()
-////        viewController.title = city.title
-////        viewController.view.backgroundColor = .systemBackground
-//        let navigationController = UINavigationController(rootViewController: viewController)
-//        present(navigationController, animated: true, completion: nil)
-//    }
+//    @objc
+    @objc private func open() {
+        let viewController = CityViewController()
+//        let viewController = UIViewController()
+//        viewController.title = city.title
+//        viewController.view.backgroundColor = .systemBackground
+        let navigationController = UINavigationController(rootViewController: viewController)
+        present(navigationController, animated: true, completion: nil)
+    }
 }
 
 extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
@@ -119,9 +151,10 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(indexPath.row)
 //        let city = cities[indexPath.row]
-//        open(city: city)
-        print("Tap on cell")
+        open()
+//        print("Tap on cell")
     }
 //
     //высота ячейки

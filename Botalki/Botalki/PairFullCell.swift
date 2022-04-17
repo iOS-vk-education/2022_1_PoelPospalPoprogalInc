@@ -4,16 +4,16 @@ import PinLayout
 
 final class CityViewController: UIViewController {
     private let tempLabel = UILabel()
-    private let city: City
-    
-    init(city: City) {
-        self.city = city
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+//    private let city: City
+//
+//    init(city: City) {
+//        self.city = city
+//        super.init(nibName: nil, bundle: nil)
+//    }
+//
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,8 +22,8 @@ final class CityViewController: UIViewController {
     }
     
     private func setup() {
-        title = city.title
-        tempLabel.text = city.temperature
+        title = "hey"
+        tempLabel.text = "hey"
         tempLabel.font = .systemFont(ofSize: 64, weight: .bold)
         view.backgroundColor = .systemBackground
         view.addSubview(tempLabel)
