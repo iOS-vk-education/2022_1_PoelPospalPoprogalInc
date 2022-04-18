@@ -85,11 +85,17 @@ class PairsViewController: UIViewController {
         secondScreenButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
         secondScreenButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
     
-        secondScreenButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
+        secondScreenButton.addTarget(self, action: #selector(goToFilterScreen), for: .touchUpInside)
         secondScreenButton.frame = .init(x: view.frame.width / 2 + 15, y: view.frame.height - 95, width: view.frame.width / 2 - 30, height: 45)
         
         layoutScreenButtonsSubviews(buttonSubView: firstScreenButton, iconNameOfButton: "house")
         layoutScreenButtonsSubviews(buttonSubView: secondScreenButton, iconNameOfButton: "magnifier")
+    }
+    
+    @objc
+    func goToFilterScreen() {
+        let secondViewController:FilterViewController = FilterViewController()
+        self.navigationController?.pushViewController(secondViewController, animated: false)
     }
     
     private func layoutScreenButtonsSubviews(buttonSubView: UIButton, iconNameOfButton: String) {
@@ -116,32 +122,8 @@ class PairsViewController: UIViewController {
         configuration.baseBackgroundColor = UIColor(rgb: 0x785A43)
         
         for indexOfDay in 0...5 {
-//            var container = AttributeContainer()
-//            container.underlineStyle = .single
-            
-//            var configuration = UIButton.Configuration.filled()
-//            configuration.baseBackgroundColor = UIColor(rgb: 0x785A43)
-//
-//            let handler: UIButton.ConfigurationUpdateHandler = { button in
-//                switch button.state {
-//                case .disabled:
-//                    button.configuration?.baseBackgroundColor = UIColor(rgb: 0xC2A894)
-//                default:
-//                    button.configuration?.baseBackgroundColor = UIColor(rgb: 0x785A43)
-//                }
-//            }
-//
-//            let button = UIButton(configuration: configuration, primaryAction: nil)
-//            button.configurationUpdateHandler = handler
-//
-//            let selectedButton = UIButton(configuration: configuration, primaryAction: nil)
-//            selectedButton.isTracking = false
-//            selectedButton.configurationUpdateHandler = handler
-//
-//            let dayOfWeakButton = selectedButton
             let dayOfWeakButton = UIButton(type: .system)
             dayOfWeakButton.frame = CGRect(x: 15, y: 120, width: view.frame.width / 7, height: view.frame.width / 7)
-        
             
             dayOfWeakButton.backgroundColor = UIColor(rgb: 0xC2A894)
             dayOfWeakButton.layer.cornerRadius = 16
