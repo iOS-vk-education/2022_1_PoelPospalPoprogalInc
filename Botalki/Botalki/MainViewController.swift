@@ -11,7 +11,7 @@ class PairsViewController: UIViewController {
     private var firstScreenButton = UIButton()
     private var secondScreenButton = UIButton()
     
-    var daysOfWeakButton: [UIButton:Int] = [:]
+    var daysOfWeakButton: [Int:UIButton] = [:]
     
     private var muxosranskCount = 6
     
@@ -139,7 +139,7 @@ class PairsViewController: UIViewController {
             dayOfWeakButton.frame = .init(x: CGFloat(x), y: 130, width: sizeOfButton, height: sizeOfButton)
             
             view.addSubview(dayOfWeakButton)
-            daysOfWeakButton[dayOfWeakButton] = indexOfDay
+            daysOfWeakButton[indexOfDay] = dayOfWeakButton
             
             x += Int(sizeOfButton) + 16
         }
@@ -148,13 +148,17 @@ class PairsViewController: UIViewController {
     @objc
     func changeButtonColor(_ buttonSubView: UIButton) {
         if buttonSubView.backgroundColor == UIColor(rgb: 0xC2A894) {
+            for indexOfDay in 0...5 {
+                daysOfWeakButton[indexOfDay]?.backgroundColor = UIColor(rgb: 0xC2A894)
+            }
+            
             buttonSubView.backgroundColor = UIColor(rgb: 0xEA7500)
         }
-        else {
-            buttonSubView.backgroundColor = UIColor(rgb: 0xC2A894)
-        }
+//        else {
+//            buttonSubView.backgroundColor = UIColor(rgb: 0xC2A894)
+//        }
         
-        print(daysOfWeakButton[buttonSubView]!)
+//        print(daysOfWeakButton[buttonSubView]!)
     }
     
     override func viewDidLayoutSubviews() {
