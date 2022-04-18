@@ -23,6 +23,7 @@ class PairsViewController: UIViewController {
         navigationController?.setNavigationBarHidden(true, animated: true)
         navigationController?.navigationBar.prefersLargeTitles = true
 //        navigationItem.rightBarButtosnItem = .init(barButtonSystemItem: .add, target: self, action: #selector(didTapAddButton))
+        typealias ConfigurationUpdateHandler = (UIButton) -> Void
         
         view.addSubview(tableView)
         view.addSubview(weakButton)
@@ -67,7 +68,7 @@ class PairsViewController: UIViewController {
         loadData()
     }
     
-//    let imageViewMagnifier = UIImageView(image: UIImage(named: "magnifier.png"))
+    
     private func screenSelection() {
         firstScreenButton.backgroundColor = UIColor(rgb: 0x785A43)
         firstScreenButton.layer.cornerRadius = 10
@@ -75,11 +76,8 @@ class PairsViewController: UIViewController {
         firstScreenButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
         firstScreenButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
     
-//        firstScreen.setTitle("11 неделя - числитель", for: .normal)
         firstScreenButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         firstScreenButton.frame = .init(x: 20, y: view.frame.height - 95, width: view.frame.width / 2 - 30, height: 45)
-//        firstScreenButton.addSubview(imageViewMagnifier)
-//        firstScreenButton.bringSubviewToFront(imageViewMagnifier)
         
         secondScreenButton.backgroundColor = UIColor(rgb: 0xC2A894)
         secondScreenButton.layer.cornerRadius = 10
@@ -87,7 +85,6 @@ class PairsViewController: UIViewController {
         secondScreenButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
         secondScreenButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
     
-//        firstScreen.setTitle("11 неделя - числитель", for: .normal)
         secondScreenButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         secondScreenButton.frame = .init(x: view.frame.width / 2 + 15, y: view.frame.height - 95, width: view.frame.width / 2 - 30, height: 45)
         
@@ -102,15 +99,12 @@ class PairsViewController: UIViewController {
         buttonSubView.bringSubviewToFront(imageViewButton)
         
         buttonSubView.layoutSubviews()
-//        secondScreenButton.layoutSubviews()
         
         imageViewButton.pin
             .vCenter()
-//            .bottom(8)
             .left(buttonSubView.frame.width / 2 - 17)
             .height(35)
             .width(35)
-//            .sizeToFit(.height)
     }
     
     private func createDayButtons() {
@@ -118,11 +112,36 @@ class PairsViewController: UIViewController {
         var x = 15
         let sizeOfButton = view.frame.width / 8
         
+        var configuration = UIButton.Configuration.filled()
+        configuration.baseBackgroundColor = UIColor(rgb: 0x785A43)
+        
         for indexOfDay in 0...5 {
+//            var container = AttributeContainer()
+//            container.underlineStyle = .single
+            
+//            var configuration = UIButton.Configuration.filled()
+//            configuration.baseBackgroundColor = UIColor(rgb: 0x785A43)
+//
+//            let handler: UIButton.ConfigurationUpdateHandler = { button in
+//                switch button.state {
+//                case .disabled:
+//                    button.configuration?.baseBackgroundColor = UIColor(rgb: 0xC2A894)
+//                default:
+//                    button.configuration?.baseBackgroundColor = UIColor(rgb: 0x785A43)
+//                }
+//            }
+//
+//            let button = UIButton(configuration: configuration, primaryAction: nil)
+//            button.configurationUpdateHandler = handler
+//
+//            let selectedButton = UIButton(configuration: configuration, primaryAction: nil)
+//            selectedButton.isTracking = false
+//            selectedButton.configurationUpdateHandler = handler
+//
+//            let dayOfWeakButton = selectedButton
             let dayOfWeakButton = UIButton(type: .system)
             dayOfWeakButton.frame = CGRect(x: 15, y: 120, width: view.frame.width / 7, height: view.frame.width / 7)
-            dayOfWeakButton.titleLabel?.textAlignment = .center
-//            dayOfWeakButton.setTitle("Button \(i)", for: .normal)
+        
             
             dayOfWeakButton.backgroundColor = UIColor(rgb: 0xC2A894)
             dayOfWeakButton.layer.cornerRadius = 16
@@ -131,13 +150,23 @@ class PairsViewController: UIViewController {
             dayOfWeakButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
 
             dayOfWeakButton.setTitle(dayOfWeak[indexOfDay], for: .normal)
-            dayOfWeakButton.addTarget(self, action: #selector(open), for: .touchUpInside)
+            dayOfWeakButton.addTarget(self, action: #selector(changeButtonColor(_ :)), for: .touchUpInside)
             dayOfWeakButton.frame = .init(x: CGFloat(x), y: 130, width: sizeOfButton, height: sizeOfButton)
             
             view.addSubview(dayOfWeakButton)
             daysOfWeakButton.append(dayOfWeakButton)
             
             x += Int(sizeOfButton) + 16
+        }
+    }
+    
+    @objc
+    func changeButtonColor(_ buttonSubView: UIButton) {
+        if buttonSubView.backgroundColor == UIColor(rgb: 0xC2A894) {
+            buttonSubView.backgroundColor = UIColor(rgb: 0x785A43)
+        }
+        else {
+            buttonSubView.backgroundColor = UIColor(rgb: 0xC2A894)
         }
     }
     
@@ -152,6 +181,8 @@ class PairsViewController: UIViewController {
 //            .horizontally(0)
 //            .vertically(200)
     }
+    
+    
     
     
     //тут completion нужен чтобы знать когда остановить анимацию
@@ -170,6 +201,7 @@ class PairsViewController: UIViewController {
             self?.tableView.refreshControl?.endRefreshing()
         }
     }
+
     
     @objc
     private func didTapAddButton() {
