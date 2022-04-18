@@ -22,6 +22,7 @@
 		4A9D0093280CA91700A7A778 /* magnifier.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D0092280CA91700A7A778 /* magnifier.png */; };
 		4A9D0095280CAECD00A7A778 /* house.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D0094280CAECD00A7A778 /* house.png */; };
 		4A9D0097280D6F7200A7A778 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9D0096280D6F7200A7A778 /* FilterViewController.swift */; };
+		4A9D0099280D813A00A7A778 /* calendar.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D0098280D813A00A7A778 /* calendar.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 		4A9D0092280CA91700A7A778 /* magnifier.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = magnifier.png; sourceTree = "<group>"; };
 		4A9D0094280CAECD00A7A778 /* house.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = house.png; sourceTree = "<group>"; };
 		4A9D0096280D6F7200A7A778 /* FilterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
+		4A9D0098280D813A00A7A778 /* calendar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calendar.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +95,7 @@
 		4A0612E72809D2C5001AE9CB /* images */ = {
 			isa = PBXGroup;
 			children = (
+				4A9D0098280D813A00A7A778 /* calendar.png */,
 				4A9D0094280CAECD00A7A778 /* house.png */,
 				4A9D0092280CA91700A7A778 /* magnifier.png */,
 				4A0612E12809D2BD001AE9CB /* clock.png */,
@@ -166,6 +169,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A0612D62809D0BF001AE9CB /* LaunchScreen.storyboard in Resources */,
+				4A9D0099280D813A00A7A778 /* calendar.png in Resources */,
 				4A9D0095280CAECD00A7A778 /* house.png in Resources */,
 				4A0612E62809D2BD001AE9CB /* clock.png in Resources */,
 				4A0612D32809D0BF001AE9CB /* Assets.xcassets in Resources */,

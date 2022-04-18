@@ -19,11 +19,13 @@ class PairsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = UIColor.systemBackground
         
         navigationController?.setNavigationBarHidden(true, animated: true)
         navigationController?.navigationBar.prefersLargeTitles = true
 //        navigationItem.rightBarButtosnItem = .init(barButtonSystemItem: .add, target: self, action: #selector(didTapAddButton))
-        typealias ConfigurationUpdateHandler = (UIButton) -> Void
+//        typealias ConfigurationUpdateHandler = (UIButton) -> Void
+        
         
         view.addSubview(tableView)
         view.addSubview(weakButton)
