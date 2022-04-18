@@ -96,23 +96,13 @@ class FilterViewController: UIViewController {
     }
     
     private func createDateButton() {
-        dateButton.backgroundColor = UIColor.systemBackground
+        dateButton.backgroundColor = UIColor.systemGroupedBackground
         dateButton.layer.borderWidth = 2
         dateButton.layer.borderColor = borderColor.cgColor
         
         dateButton.layer.cornerRadius = 16
         dateButton.layer.masksToBounds = true
         dateButton.titleLabel?.font = .systemFont(ofSize: 22, weight: .semibold)
-        
-//        if UIColor.systemBackground[0] == 0x6000016446c0 {
-//            dateButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
-//        }
-//        else {
-//
-//        }
-        print(UIColor.systemBackground)
-        dateButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
-
         
         dateButton.setTitle("20.04.2022", for: .normal)
 //        dateButton.addTarget(self, action: #selector(changeButtonColor(_ :)), for: .touchUpInside)
@@ -132,7 +122,7 @@ class FilterViewController: UIViewController {
     }
     
     private func createPairArea() {
-        pairSelectView.backgroundColor = UIColor.systemBackground
+        pairSelectView.backgroundColor = UIColor.systemGroupedBackground
         pairSelectView.layer.borderWidth = 2
         pairSelectView.layer.borderColor = borderColor.cgColor
         
@@ -144,7 +134,6 @@ class FilterViewController: UIViewController {
         let pairLabel = UILabel()
         
         pairLabel.font = .systemFont(ofSize: 24, weight: .bold)
-        pairLabel.textColor = .black
         pairLabel.numberOfLines = 1
         pairLabel.textAlignment = .right
         pairLabel.text = "Пара"
@@ -160,10 +149,8 @@ class FilterViewController: UIViewController {
         
         pairSelectView.layoutSubviews()
         
-//        pairSwitcher.frame(forAlignmentRect: CGRect(x: 270, y: 20, width: 120, height: 100))
         pairSelectView.addSubview(pairSwitcher)
         pairSelectView.addSubview(pairSwitcher)
-        // когда-то я сделаю это через пин, обещаю
         pairSwitcher.pin
             .top(20)
             .left(pairSelectView.frame.width + 270)
@@ -220,7 +207,7 @@ class FilterViewController: UIViewController {
     
     
     private func createBuildingArea() {
-        buildingSelectView.backgroundColor = UIColor.systemBackground
+        buildingSelectView.backgroundColor = UIColor.systemGroupedBackground
         buildingSelectView.layer.borderWidth = 2
         buildingSelectView.layer.borderColor = borderColor.cgColor
         
@@ -230,7 +217,7 @@ class FilterViewController: UIViewController {
         let buildingLabel = UILabel()
         
         buildingLabel.font = .systemFont(ofSize: 24, weight: .bold)
-        buildingLabel.textColor = .black
+//        buildingLabel.textColor = .black
         buildingLabel.numberOfLines = 1
         buildingLabel.textAlignment = .right
         buildingLabel.text = "Корпус"
@@ -252,7 +239,7 @@ class FilterViewController: UIViewController {
     }
     
     private func createAudienceArea() {
-        audienceSelectView.backgroundColor = UIColor.systemBackground
+        audienceSelectView.backgroundColor = UIColor.systemGroupedBackground
         audienceSelectView.layer.borderWidth = 2
         audienceSelectView.layer.borderColor = borderColor.cgColor
         
@@ -262,7 +249,7 @@ class FilterViewController: UIViewController {
         let audienceLabel = UILabel()
         
         audienceLabel.font = .systemFont(ofSize: 24, weight: .bold)
-        audienceLabel.textColor = .black
+//        audienceLabel.textColor = .black
         audienceLabel.numberOfLines = 1
         audienceLabel.textAlignment = .right
         audienceLabel.text = "Аудитория"
