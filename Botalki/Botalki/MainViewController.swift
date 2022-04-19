@@ -15,7 +15,6 @@ class PairsViewController: UIViewController {
     
     private var muxosranskCount = 6
     
-//    private var cities: [City] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
