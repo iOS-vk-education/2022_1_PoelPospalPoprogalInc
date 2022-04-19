@@ -10,6 +10,8 @@ class FilterViewController: UIViewController {
     private var secondScreenButton = UIButton()
     private let imageCalendarBlack = UIImageView(image: UIImage(named: "calendarBlack.png"))
     private let imageCalendarWhite = UIImageView(image: UIImage(named: "calendarWhite.png"))
+    private let houseImg = UIImageView(image: UIImage(named: "house"))
+    private let magnifierImg = UIImageView(image: UIImage(named: "magnifier"))
     
     private let dateButton = UIButton()
     private let selectRoomButton = UIButton()
@@ -30,6 +32,10 @@ class FilterViewController: UIViewController {
     private let audienceTextField = UITextField()
     
     
+    private let margins = CGFloat(22)
+    private let screenWidth = UIScreen.main.bounds.width
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.systemBackground
@@ -39,6 +45,8 @@ class FilterViewController: UIViewController {
 
         view.addSubview(firstScreenButton)
         view.addSubview(secondScreenButton)
+        view.addSubview(houseImg)
+        view.addSubview(magnifierImg)
         
         view.addSubview(dateButton)
         view.addSubview(selectRoomButton)
@@ -136,6 +144,31 @@ class FilterViewController: UIViewController {
             .left(45)
             .right(40)
             .height(120)
+        
+        let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
+        firstScreenButton.pin
+            .top(CGFloat(view.frame.height - 95))
+            .height(45)
+            .left(margins)
+            .width(ButtonsWidth)
+        
+        secondScreenButton.pin
+            .top(CGFloat(view.frame.height - 95))
+            .height(45)
+            .right(margins)
+            .width(ButtonsWidth)
+        
+        houseImg.pin
+            .top(CGFloat(view.frame.height - 90))
+            .left(ButtonsWidth/2 + margins - 35/2)
+            .height(35)
+            .width(35)
+        
+        magnifierImg.pin
+            .top(CGFloat(view.frame.height - 90))
+            .right(ButtonsWidth/2 + margins - 35/2)
+            .height(35)
+            .width(35)
     }
     
     @objc
@@ -376,17 +409,12 @@ class FilterViewController: UIViewController {
         firstScreenButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
     
         firstScreenButton.addTarget(self, action: #selector(goToFirstScreen), for: .touchUpInside)
-        firstScreenButton.frame = .init(x: 20, y: view.frame.height - 95, width: view.frame.width / 2 - 30, height: 45)
         
         secondScreenButton.backgroundColor = UIColor(rgb: 0x785A43)
         secondScreenButton.layer.cornerRadius = 10
         secondScreenButton.layer.masksToBounds = true
         secondScreenButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
         secondScreenButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
-        secondScreenButton.frame = .init(x: view.frame.width / 2 + 15, y: view.frame.height - 95, width: view.frame.width / 2 - 30, height: 45)
-        
-        layoutScreenButtonsSubviews(buttonSubView: firstScreenButton, iconNameOfButton: "house")
-        layoutScreenButtonsSubviews(buttonSubView: secondScreenButton, iconNameOfButton: "magnifier")
     }
     
     @objc
@@ -394,7 +422,7 @@ class FilterViewController: UIViewController {
         let firstViewController: PairsViewController = PairsViewController()
         self.navigationController?.pushViewController(firstViewController, animated: false)
     }
-    
+  
     private func layoutScreenButtonsSubviews(buttonSubView: UIButton, iconNameOfButton: String) {
         let imageViewButton = UIImageView(image: UIImage(named: iconNameOfButton))
         
