@@ -72,7 +72,6 @@ class PairsViewController: UIViewController {
         loadData()
     }
     
-    
     private func screenSelection() {
         firstScreenButton.backgroundColor = UIColor(rgb: 0x785A43)
         firstScreenButton.layer.cornerRadius = 10
@@ -133,11 +132,15 @@ class PairsViewController: UIViewController {
             dayOfWeakButton.layer.cornerRadius = 16
             dayOfWeakButton.layer.masksToBounds = true
             dayOfWeakButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
-//            dayOfWeakButton.setTitleColor(UIColor.systemBackground, for: .normal)
+            
             dayOfWeakButton.layer.borderWidth = 2
             dayOfWeakButton.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
-
-//            dayOfWeakButton.setTitle(dayOfWeak[indexOfDay], for: .normal)
+            
+            if indexOfDay == 0 {
+                dayOfWeakButton.backgroundColor = UIColor(rgb: 0xEA7500)
+                dayOfWeakButton.layer.borderColor = UIColor(rgb: 0xEA7500).cgColor
+            }
+            
             dayOfWeakButton.addTarget(self, action: #selector(changeButtonColor(_ :)), for: .touchUpInside)
             
             let dayLabel = UILabel()

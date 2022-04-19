@@ -16,8 +16,8 @@ final class PairTableViewCell: UITableViewCell {
 //    private var ULKTextFullPos: UIEdgeInsets = UIEdgeInsets(top: 47, left: 0, bottom: 0, right: 0)
 
     private let imageViewClock = UIImageView(image: UIImage(named: "clock.png"))
-    private let imageViewDor = UIImageView(image: UIImage(named: "dor.png"))
-    private var imageViewDor2 = UIImageView(image: UIImage(named: "dor.png"))
+    private let imageViewDor = UIImageView(image: UIImage(named: "door.png"))
+    private var imageViewDor2 = UIImageView(image: UIImage(named: "door.png"))
 //    private var imageViewDor2Full = UIImageView(image: UIImage(named: "dor.png"))
     
     private let GZcabinets = ["240", "333ю", "426", "232", "327.1", "430", "384", "323", "427ю", "502ю", "522", "514", "504", "425ю", "390", "432", "420", "419ю", "386", "429ю", "505", "304", "424", "526", "228"]

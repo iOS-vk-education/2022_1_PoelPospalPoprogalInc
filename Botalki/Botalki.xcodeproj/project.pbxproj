@@ -13,7 +13,6 @@
 		4A0612D32809D0BF001AE9CB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A0612D22809D0BF001AE9CB /* Assets.xcassets */; };
 		4A0612D62809D0BF001AE9CB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A0612D42809D0BF001AE9CB /* LaunchScreen.storyboard */; };
 		4A0612E22809D2BD001AE9CB /* PairFullCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0612DD2809D2BD001AE9CB /* PairFullCell.swift */; };
-		4A0612E42809D2BD001AE9CB /* dor.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0612DF2809D2BD001AE9CB /* dor.png */; };
 		4A0612E52809D2BD001AE9CB /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0612E02809D2BD001AE9CB /* MainViewController.swift */; };
 		4A0612E62809D2BD001AE9CB /* clock.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0612E12809D2BD001AE9CB /* clock.png */; };
 		4A0612EA2809D67A001AE9CB /* PinLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 4A0612E92809D67A001AE9CB /* PinLayout */; };
@@ -23,6 +22,12 @@
 		4A9D0097280D6F7200A7A778 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9D0096280D6F7200A7A778 /* FilterViewController.swift */; };
 		4A9D009C280EDBF300A7A778 /* calendarBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D009A280EDBF200A7A778 /* calendarBlack.png */; };
 		4A9D009D280EDBF300A7A778 /* calendarWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D009B280EDBF200A7A778 /* calendarWhite.png */; };
+		4A9D00A1280F10D300A7A778 /* SortedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9D00A0280F10D300A7A778 /* SortedViewController.swift */; };
+		4A9D00A3280F1C5B00A7A778 /* door.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D00A2280F1C5B00A7A778 /* door.png */; };
+		4A9D00A5280F1DA400A7A778 /* doorWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D00A4280F1DA300A7A778 /* doorWhite.png */; };
+		4A9D00A7280F255000A7A778 /* FilterTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9D00A6280F255000A7A778 /* FilterTableViewCell.swift */; };
+		4A9D00A9280F598C00A7A778 /* calendarClock.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D00A8280F598B00A7A778 /* calendarClock.png */; };
+		4A9D00AB280F5B4C00A7A778 /* univer.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D00AA280F5B4C00A7A778 /* univer.png */; };
 		B305A23C280EF0A700289466 /* PairTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B305A23B280EF0A700289466 /* PairTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -35,7 +40,6 @@
 		4A0612D52809D0BF001AE9CB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4A0612D72809D0BF001AE9CB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4A0612DD2809D2BD001AE9CB /* PairFullCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PairFullCell.swift; sourceTree = "<group>"; };
-		4A0612DF2809D2BD001AE9CB /* dor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dor.png; sourceTree = "<group>"; };
 		4A0612E02809D2BD001AE9CB /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		4A0612E12809D2BD001AE9CB /* clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clock.png; sourceTree = "<group>"; };
 		4A0612EB2809D7F8001AE9CB /* City.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
@@ -44,6 +48,12 @@
 		4A9D0096280D6F7200A7A778 /* FilterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		4A9D009A280EDBF200A7A778 /* calendarBlack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calendarBlack.png; sourceTree = "<group>"; };
 		4A9D009B280EDBF200A7A778 /* calendarWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calendarWhite.png; sourceTree = "<group>"; };
+		4A9D00A0280F10D300A7A778 /* SortedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SortedViewController.swift; sourceTree = "<group>"; };
+		4A9D00A2280F1C5B00A7A778 /* door.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = door.png; sourceTree = "<group>"; };
+		4A9D00A4280F1DA300A7A778 /* doorWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = doorWhite.png; sourceTree = "<group>"; };
+		4A9D00A6280F255000A7A778 /* FilterTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterTableViewCell.swift; sourceTree = "<group>"; };
+		4A9D00A8280F598B00A7A778 /* calendarClock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calendarClock.png; sourceTree = "<group>"; };
+		4A9D00AA280F5B4C00A7A778 /* univer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = univer.png; sourceTree = "<group>"; };
 		B305A23B280EF0A700289466 /* PairTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PairTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -78,6 +88,8 @@
 		4A0612C82809D0BB001AE9CB /* Botalki */ = {
 			isa = PBXGroup;
 			children = (
+				4A9D00A6280F255000A7A778 /* FilterTableViewCell.swift */,
+				4A9D00A0280F10D300A7A778 /* SortedViewController.swift */,
 				B305A23B280EF0A700289466 /* PairTableViewCell.swift */,
 				4A9D0096280D6F7200A7A778 /* FilterViewController.swift */,
 				4A0612EB2809D7F8001AE9CB /* City.swift */,
@@ -97,12 +109,15 @@
 		4A0612E72809D2C5001AE9CB /* images */ = {
 			isa = PBXGroup;
 			children = (
+				4A9D00AA280F5B4C00A7A778 /* univer.png */,
+				4A9D00A8280F598B00A7A778 /* calendarClock.png */,
+				4A9D00A4280F1DA300A7A778 /* doorWhite.png */,
+				4A9D00A2280F1C5B00A7A778 /* door.png */,
 				4A9D009A280EDBF200A7A778 /* calendarBlack.png */,
 				4A9D009B280EDBF200A7A778 /* calendarWhite.png */,
 				4A9D0094280CAECD00A7A778 /* house.png */,
 				4A9D0092280CA91700A7A778 /* magnifier.png */,
 				4A0612E12809D2BD001AE9CB /* clock.png */,
-				4A0612DF2809D2BD001AE9CB /* dor.png */,
 			);
 			path = images;
 			sourceTree = "<group>";
@@ -173,13 +188,16 @@
 			files = (
 				4A0612D62809D0BF001AE9CB /* LaunchScreen.storyboard in Resources */,
 				4A9D0095280CAECD00A7A778 /* house.png in Resources */,
+				4A9D00AB280F5B4C00A7A778 /* univer.png in Resources */,
+				4A9D00A3280F1C5B00A7A778 /* door.png in Resources */,
+				4A9D00A5280F1DA400A7A778 /* doorWhite.png in Resources */,
 				4A0612E62809D2BD001AE9CB /* clock.png in Resources */,
 				4A9D009C280EDBF300A7A778 /* calendarBlack.png in Resources */,
 				4A0612D32809D0BF001AE9CB /* Assets.xcassets in Resources */,
 				4A0612D12809D0BB001AE9CB /* Main.storyboard in Resources */,
+				4A9D00A9280F598C00A7A778 /* calendarClock.png in Resources */,
 				4A9D0093280CA91700A7A778 /* magnifier.png in Resources */,
 				4A9D009D280EDBF300A7A778 /* calendarWhite.png in Resources */,
-				4A0612E42809D2BD001AE9CB /* dor.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -190,11 +208,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A9D00A7280F255000A7A778 /* FilterTableViewCell.swift in Sources */,
 				4A9D0097280D6F7200A7A778 /* FilterViewController.swift in Sources */,
 				4A0612E22809D2BD001AE9CB /* PairFullCell.swift in Sources */,
 				4A0612E52809D2BD001AE9CB /* MainViewController.swift in Sources */,
 				4A0612CA2809D0BB001AE9CB /* AppDelegate.swift in Sources */,
 				4A0612CC2809D0BB001AE9CB /* SceneDelegate.swift in Sources */,
+				4A9D00A1280F10D300A7A778 /* SortedViewController.swift in Sources */,
 				B305A23C280EF0A700289466 /* PairTableViewCell.swift in Sources */,
 				4A0612EC2809D7F8001AE9CB /* City.swift in Sources */,
 			);

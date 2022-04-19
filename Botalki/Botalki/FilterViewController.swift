@@ -19,6 +19,9 @@ class FilterViewController: UIViewController {
     private let firstPairTextField = UITextField()
     private let secondPairTextField = UITextField()
     
+    private let firstPairPickerView = UIPickerView()
+    private let secondPairPickerView = UIPickerView()
+    
     private let buildingSelectView = UIView()
     private let buildingSegController = UISegmentedControl(items: ["ГЗ", "УЛК"])
     
@@ -41,10 +44,17 @@ class FilterViewController: UIViewController {
         view.addSubview(selectRoomButton)
         
         
-        
         view.addSubview(pairSelectView)
         view.addSubview(buildingSelectView)
         view.addSubview(audienceSelectView)
+        
+        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(FilterViewController.tap(_:)))
+        view.addGestureRecognizer(tapGestureReconizer)
+        
+//        let tapScreen = UITapGestureRecognizer(target: self, action: "dismissKeyboard:")
+//        func dismissKeyboard(sender: UITapGestureRecognizer) {
+//            view.endEditing(true)
+//        }
         
         createDateButton()
         createSelectRoomButton()
@@ -128,6 +138,11 @@ class FilterViewController: UIViewController {
             .height(120)
     }
     
+    @objc
+    func tap(_ sender: UITapGestureRecognizer) {
+        view.endEditing(true)
+    }
+    
     private func createDateButton() {
         dateButton.backgroundColor = UIColor.systemGroupedBackground
         dateButton.layer.borderWidth = 2
@@ -153,10 +168,6 @@ class FilterViewController: UIViewController {
             .left(12)
             .height(30)
             .width(130)
-        
-        
-//        dateButton.setTitle("20.04.2022", for: .normal)
-//        dateButton.addTarget(self, action: #selector(changeButtonColor(_ :)), for: .touchUpInside)
     }
     
     private func createSelectRoomButton() {
@@ -169,7 +180,7 @@ class FilterViewController: UIViewController {
 
         
         selectRoomButton.setTitle("Подобрать", for: .normal)
-//        dateButton.addTarget(self, action: #selector(changeButtonColor(_ :)), for: .touchUpInside)
+        selectRoomButton.addTarget(self, action: #selector(sortAudiences), for: .touchUpInside)
     }
     
     private func createPairArea() {
@@ -208,7 +219,7 @@ class FilterViewController: UIViewController {
             .height(100)
             .width(100)
         
-        firstPairTextField.placeholder = "1я"
+        firstPairTextField.placeholder = "1"
         firstPairTextField.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         
         firstPairTextField.pin
@@ -222,16 +233,16 @@ class FilterViewController: UIViewController {
         firstPairTextField.borderStyle = UITextField.BorderStyle.roundedRect
 //        audienceTextField.layer.borderColor = borderColor.cgColor
         firstPairTextField.autocorrectionType = UITextAutocorrectionType.no
-//        audienceTextField.keyboardType = UIKeyboardType.default
-//        audienceTextField.returnKeyType = UIReturnKeyType.done
+        firstPairTextField.keyboardType = UIKeyboardType.numberPad
+        firstPairTextField.returnKeyType = UIReturnKeyType.done
         firstPairTextField.clearButtonMode = UITextField.ViewMode.never
         firstPairTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-        
+//
         firstPairTextField.textAlignment = .center
         pairSelectView.addSubview(firstPairTextField)
         pairSelectView.addSubview(firstPairTextField)
         
-        secondPairTextField.placeholder = "6я"
+        secondPairTextField.placeholder = "7"
         secondPairTextField.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         
         secondPairTextField.pin
@@ -245,15 +256,14 @@ class FilterViewController: UIViewController {
         secondPairTextField.borderStyle = UITextField.BorderStyle.roundedRect
 //        audienceTextField.layer.borderColor = borderColor.cgColor
         secondPairTextField.autocorrectionType = UITextAutocorrectionType.no
-//        audienceTextField.keyboardType = UIKeyboardType.default
-//        audienceTextField.returnKeyType = UIReturnKeyType.done
+        secondPairTextField.keyboardType = UIKeyboardType.numberPad
+        secondPairTextField.returnKeyType = UIReturnKeyType.done
         secondPairTextField.clearButtonMode = UITextField.ViewMode.never
         secondPairTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
         
         secondPairTextField.textAlignment = .center
         pairSelectView.addSubview(secondPairTextField)
         pairSelectView.addSubview(secondPairTextField)
-        
     }
     
     private func createBuildingArea() {
@@ -334,7 +344,7 @@ class FilterViewController: UIViewController {
             .height(100)
             .width(100)
         
-        audienceTextField.placeholder = "501ю"
+        audienceTextField.placeholder = "501"
         audienceTextField.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         
         audienceTextField.pin
@@ -348,8 +358,8 @@ class FilterViewController: UIViewController {
         audienceTextField.borderStyle = UITextField.BorderStyle.roundedRect
 //        audienceTextField.layer.borderColor = borderColor.cgColor
         audienceTextField.autocorrectionType = UITextAutocorrectionType.no
-//        audienceTextField.keyboardType = UIKeyboardType.default
-//        audienceTextField.returnKeyType = UIReturnKeyType.done
+        audienceTextField.keyboardType = UIKeyboardType.numberPad
+        audienceTextField.returnKeyType = UIReturnKeyType.done
         audienceTextField.clearButtonMode = UITextField.ViewMode.never
         audienceTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
         
@@ -398,5 +408,12 @@ class FilterViewController: UIViewController {
             .left(buttonSubView.frame.width / 2 - 17)
             .height(35)
             .width(35)
+    }
+    
+    @objc
+    private func sortAudiences() {
+        let viewController = SortedViewController()
+        let navigationController = UINavigationController(rootViewController: viewController)
+        present(navigationController, animated: true, completion: nil)
     }
 }
