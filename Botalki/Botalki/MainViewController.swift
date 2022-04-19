@@ -138,7 +138,11 @@ class PairsViewController: UIViewController {
             
             dayOfWeakButton.frame = .init(x: CGFloat(x), y: 130, width: sizeOfButton, height: sizeOfButton)
             
+            
+            
             view.addSubview(dayOfWeakButton)
+
+            
             daysOfWeakButton[indexOfDay] = dayOfWeakButton
             
             x += Int(sizeOfButton) + 16
@@ -154,9 +158,6 @@ class PairsViewController: UIViewController {
             
             buttonSubView.backgroundColor = UIColor(rgb: 0xEA7500)
         }
-//        else {
-//            buttonSubView.backgroundColor = UIColor(rgb: 0xC2A894)
-//        }
         
 //        print(daysOfWeakButton[buttonSubView]!)
     }
@@ -171,6 +172,17 @@ class PairsViewController: UIViewController {
             .right(0)
 //            .horizontally(0)
 //            .vertically(200)
+        
+        
+        // не работает ааааа
+//        for i in 0...5 {
+//            daysOfWeakButton[i]?.pin
+//                .top(50)
+//                .left(30)
+////                .bottom(130)
+//                .width(30)
+//                .height(30)
+//        }
     }
     
     
