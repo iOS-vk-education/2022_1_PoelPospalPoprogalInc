@@ -21,7 +21,7 @@
 		4A9D0093280CA91700A7A778 /* magnifier.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D0092280CA91700A7A778 /* magnifier.png */; };
 		4A9D0095280CAECD00A7A778 /* house.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D0094280CAECD00A7A778 /* house.png */; };
 		4A9D0097280D6F7200A7A778 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9D0096280D6F7200A7A778 /* FilterViewController.swift */; };
-		B305A238280D7F1B00289466 /* PairTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B305A237280D7F1B00289466 /* PairTableViewCell.swift */; };
+		B305A23A280DB99700289466 /* PairTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B305A239280DB99700289466 /* PairTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,7 +40,7 @@
 		4A9D0092280CA91700A7A778 /* magnifier.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = magnifier.png; sourceTree = "<group>"; };
 		4A9D0094280CAECD00A7A778 /* house.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = house.png; sourceTree = "<group>"; };
 		4A9D0096280D6F7200A7A778 /* FilterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
-		B305A237280D7F1B00289466 /* PairTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PairTableViewCell.swift; path = ../../../../../Downloads/PairTableViewCell.swift; sourceTree = "<group>"; };
+		B305A239280DB99700289466 /* PairTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PairTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,12 +74,12 @@
 		4A0612C82809D0BB001AE9CB /* Botalki */ = {
 			isa = PBXGroup;
 			children = (
+				B305A239280DB99700289466 /* PairTableViewCell.swift */,
 				4A9D0096280D6F7200A7A778 /* FilterViewController.swift */,
 				4A0612EB2809D7F8001AE9CB /* City.swift */,
 				4A0612E72809D2C5001AE9CB /* images */,
 				4A0612E02809D2BD001AE9CB /* MainViewController.swift */,
 				4A0612DD2809D2BD001AE9CB /* PairFullCell.swift */,
-				B305A237280D7F1B00289466 /* PairTableViewCell.swift */,
 				4A0612C92809D0BB001AE9CB /* AppDelegate.swift */,
 				4A0612CB2809D0BB001AE9CB /* SceneDelegate.swift */,
 				4A0612CF2809D0BB001AE9CB /* Main.storyboard */,
@@ -183,7 +183,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A9D0097280D6F7200A7A778 /* FilterViewController.swift in Sources */,
-				B305A238280D7F1B00289466 /* PairTableViewCell.swift in Sources */,
+				B305A23A280DB99700289466 /* PairTableViewCell.swift in Sources */,
 				4A0612E22809D2BD001AE9CB /* PairFullCell.swift in Sources */,
 				4A0612E52809D2BD001AE9CB /* MainViewController.swift in Sources */,
 				4A0612CA2809D0BB001AE9CB /* AppDelegate.swift in Sources */,
@@ -335,6 +335,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QK9Y4P3VFS;
@@ -352,6 +353,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = poliorang.Botalki;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -363,6 +365,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QK9Y4P3VFS;
@@ -380,6 +383,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = poliorang.Botalki;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
