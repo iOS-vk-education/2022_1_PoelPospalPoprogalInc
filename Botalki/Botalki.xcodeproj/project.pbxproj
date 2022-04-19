@@ -23,7 +23,7 @@
 		4A9D0097280D6F7200A7A778 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9D0096280D6F7200A7A778 /* FilterViewController.swift */; };
 		4A9D009C280EDBF300A7A778 /* calendarBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D009A280EDBF200A7A778 /* calendarBlack.png */; };
 		4A9D009D280EDBF300A7A778 /* calendarWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D009B280EDBF200A7A778 /* calendarWhite.png */; };
-
+		B305A23C280EF0A700289466 /* PairTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B305A23B280EF0A700289466 /* PairTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,7 +44,7 @@
 		4A9D0096280D6F7200A7A778 /* FilterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		4A9D009A280EDBF200A7A778 /* calendarBlack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calendarBlack.png; sourceTree = "<group>"; };
 		4A9D009B280EDBF200A7A778 /* calendarWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calendarWhite.png; sourceTree = "<group>"; };
-
+		B305A23B280EF0A700289466 /* PairTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PairTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,7 +78,7 @@
 		4A0612C82809D0BB001AE9CB /* Botalki */ = {
 			isa = PBXGroup;
 			children = (
-				B305A239280DB99700289466 /* PairTableViewCell.swift */,
+				B305A23B280EF0A700289466 /* PairTableViewCell.swift */,
 				4A9D0096280D6F7200A7A778 /* FilterViewController.swift */,
 				4A0612EB2809D7F8001AE9CB /* City.swift */,
 				4A0612E72809D2C5001AE9CB /* images */,
@@ -191,11 +191,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A9D0097280D6F7200A7A778 /* FilterViewController.swift in Sources */,
-				B305A23A280DB99700289466 /* PairTableViewCell.swift in Sources */,
 				4A0612E22809D2BD001AE9CB /* PairFullCell.swift in Sources */,
 				4A0612E52809D2BD001AE9CB /* MainViewController.swift in Sources */,
 				4A0612CA2809D0BB001AE9CB /* AppDelegate.swift in Sources */,
 				4A0612CC2809D0BB001AE9CB /* SceneDelegate.swift in Sources */,
+				B305A23C280EF0A700289466 /* PairTableViewCell.swift in Sources */,
 				4A0612EC2809D7F8001AE9CB /* City.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
