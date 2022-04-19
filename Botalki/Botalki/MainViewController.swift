@@ -13,19 +13,20 @@ class PairsViewController: UIViewController {
     private var firstScreenButton = UIButton()
     private var secondScreenButton = UIButton()
     
-    var daysOfWeakButton: [UIButton:Int] = [:]
+    var daysOfWeakButton: [Int:UIButton] = [:]
     
     private var muxosranskCount = 6
     
-//    private var cities: [City] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = UIColor.systemBackground
         
         navigationController?.setNavigationBarHidden(true, animated: true)
         navigationController?.navigationBar.prefersLargeTitles = true
 //        navigationItem.rightBarButtosnItem = .init(barButtonSystemItem: .add, target: self, action: #selector(didTapAddButton))
-        typealias ConfigurationUpdateHandler = (UIButton) -> Void
+//        typealias ConfigurationUpdateHandler = (UIButton) -> Void
+        
         
         view.addSubview(tableView)
         view.addSubview(weakButton)
@@ -139,8 +140,12 @@ class PairsViewController: UIViewController {
             
             dayOfWeakButton.frame = .init(x: CGFloat(x), y: 130, width: sizeOfButton, height: sizeOfButton)
             
+            
+            
             view.addSubview(dayOfWeakButton)
-            daysOfWeakButton[dayOfWeakButton] = indexOfDay
+
+            
+            daysOfWeakButton[indexOfDay] = dayOfWeakButton
             
             x += Int(sizeOfButton) + 16
         }
@@ -150,13 +155,14 @@ class PairsViewController: UIViewController {
     func changeButtonColor(_ buttonSubView: UIButton) {
         tableView.reloadData()
         if buttonSubView.backgroundColor == UIColor(rgb: 0xC2A894) {
+            for indexOfDay in 0...5 {
+                daysOfWeakButton[indexOfDay]?.backgroundColor = UIColor(rgb: 0xC2A894)
+            }
+            
             buttonSubView.backgroundColor = UIColor(rgb: 0xEA7500)
         }
-        else {
-            buttonSubView.backgroundColor = UIColor(rgb: 0xC2A894)
-        }
         
-        print(daysOfWeakButton[buttonSubView]!)
+//        print(daysOfWeakButton[buttonSubView]!)
     }
     
     override func viewDidLayoutSubviews() {
@@ -169,6 +175,17 @@ class PairsViewController: UIViewController {
             .right(0)
 //            .horizontally(0)
 //            .vertically(200)
+        
+        
+        // не работает ааааа
+//        for i in 0...5 {
+//            daysOfWeakButton[i]?.pin
+//                .top(50)
+//                .left(30)
+////                .bottom(130)
+//                .width(30)
+//                .height(30)
+//        }
     }
     
     
