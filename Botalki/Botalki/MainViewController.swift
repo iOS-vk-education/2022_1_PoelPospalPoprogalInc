@@ -129,22 +129,36 @@ class PairsViewController: UIViewController {
             let dayOfWeakButton = UIButton(type: .system)
             dayOfWeakButton.frame = CGRect(x: 15, y: 120, width: view.frame.width / 7, height: view.frame.width / 7)
             
-            dayOfWeakButton.backgroundColor = UIColor(rgb: 0xC2A894)
+            dayOfWeakButton.backgroundColor = UIColor.systemGroupedBackground
             dayOfWeakButton.layer.cornerRadius = 16
             dayOfWeakButton.layer.masksToBounds = true
             dayOfWeakButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
-            dayOfWeakButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
+//            dayOfWeakButton.setTitleColor(UIColor.systemBackground, for: .normal)
+            dayOfWeakButton.layer.borderWidth = 2
+            dayOfWeakButton.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
 
-            dayOfWeakButton.setTitle(dayOfWeak[indexOfDay], for: .normal)
+//            dayOfWeakButton.setTitle(dayOfWeak[indexOfDay], for: .normal)
             dayOfWeakButton.addTarget(self, action: #selector(changeButtonColor(_ :)), for: .touchUpInside)
+            
+            let dayLabel = UILabel()
+            dayLabel.font = .systemFont(ofSize: 18, weight: .bold)
+            dayLabel.numberOfLines = 1
+            dayLabel.textAlignment = .right
+            dayLabel.text = dayOfWeak[indexOfDay]
+            
+            dayOfWeakButton.addSubview(dayLabel)
+            dayOfWeakButton.bringSubviewToFront(dayLabel)
+            dayOfWeakButton.layoutSubviews()
+            
+            dayLabel.pin
+                .top(17)
+                .left(3)
+                .height(20)
+                .width(35)
             
             dayOfWeakButton.frame = .init(x: CGFloat(x), y: 130, width: sizeOfButton, height: sizeOfButton)
             
-            
-            
             view.addSubview(dayOfWeakButton)
-
-            
             daysOfWeakButton[indexOfDay] = dayOfWeakButton
             
             x += Int(sizeOfButton) + 16
@@ -154,12 +168,15 @@ class PairsViewController: UIViewController {
     @objc
     func changeButtonColor(_ buttonSubView: UIButton) {
         tableView.reloadData()
-        if buttonSubView.backgroundColor == UIColor(rgb: 0xC2A894) {
+        if buttonSubView.backgroundColor == .systemGroupedBackground {
             for indexOfDay in 0...5 {
-                daysOfWeakButton[indexOfDay]?.backgroundColor = UIColor(rgb: 0xC2A894)
+                daysOfWeakButton[indexOfDay]?.backgroundColor = .systemGroupedBackground
+                daysOfWeakButton[indexOfDay]?.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
             }
             
             buttonSubView.backgroundColor = UIColor(rgb: 0xEA7500)
+            buttonSubView.layer.borderColor = UIColor(rgb: 0xEA7500).cgColor
+            
         }
         
 //        print(daysOfWeakButton[buttonSubView]!)
