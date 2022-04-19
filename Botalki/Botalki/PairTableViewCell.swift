@@ -11,8 +11,9 @@ final class PairTableViewCell: UITableViewCell {
     private let GZListText = UILabel()
     private let ULKListText = UILabel()
     
-    private var dor2FullPos: UIEdgeInsets = UIEdgeInsets(top: 45, left: 0, bottom: 0, right: 0)
-    private var ULKListFullPos: UIEdgeInsets = UIEdgeInsets(top: 47, left: 0, bottom: 0, right: 0)
+    private var dor2FullPos = CGFloat(45)
+    private var ULKListFullPos = CGFloat(47)
+    private var ListWidth = CGFloat(UIScreen.main.bounds.width - 220)
 //    private var ULKTextFullPos: UIEdgeInsets = UIEdgeInsets(top: 47, left: 0, bottom: 0, right: 0)
 
     private let imageViewClock = UIImageView(image: UIImage(named: "clock.png"))
@@ -48,16 +49,17 @@ final class PairTableViewCell: UITableViewCell {
                 }
         
         
-        self.numberOfCabinets = Int((UIScreen.main.bounds.width - 220)/50) - 1
+        self.numberOfCabinets = Int((UIScreen.main.bounds.width - 220)/51) - 1
+        print(UIScreen.main.bounds.width, numberOfCabinets)
         for k in 0...6 {
             self.GZcabinetsShortStrings.append("")
             self.ULKcabinetsShortStrings.append("")
             for i in 0..<self.numberOfCabinets {
-                self.GZcabinetsShortStrings[k] += (GZcabinets[Int.random(in: i..<GZcabinets.count)] + ", ")
-                self.ULKcabinetsShortStrings[k] += (ULKcabinets[Int.random(in: i..<ULKcabinets.count)] + ", ")
+                self.GZcabinetsShortStrings[k] += (GZcabinets[Int.random(in: i..<GZcabinets.count)] + ((i != numberOfCabinets-1) ? ", " : "..."))
+                self.ULKcabinetsShortStrings[k] += (ULKcabinets[Int.random(in: i..<ULKcabinets.count)] + ((i != numberOfCabinets-1) ? ", " : "..."))
             }
-            self.GZcabinetsShortStrings[k] += "..."
-            self.ULKcabinetsShortStrings[k] += "..."
+//            self.GZcabinetsShortStrings[k] += "..."
+//            self.ULKcabinetsShortStrings[k] += "..."
         }
         
         let GZLines = Int.random(in: 1...6)
@@ -154,9 +156,8 @@ final class PairTableViewCell: UITableViewCell {
         super.layoutSubviews()
         
         containerView.pin
-            .horizontally(15)
+            .horizontally(22)
             .vertically(6)
-        
         
         timeText.pin
 //            .vCenter()
@@ -170,14 +171,14 @@ final class PairTableViewCell: UITableViewCell {
         GZText.pin
 //            .vCenter(-15)
             .top(15)
-            .right(25)
+            .right(21)
             .height(30)
             .width(35)
             .sizeToFit(.width)
         
         ULKText.pin
-            .top(dor2FullPos.top)
-            .right(25)
+            .top(dor2FullPos)
+            .right(21)
             .height(30)
             .width(35)
             .sizeToFit(.width)
@@ -186,14 +187,14 @@ final class PairTableViewCell: UITableViewCell {
             .top(15)
             .left(155)
             .height(60)
-            .width(200)
+            .width(ListWidth)
             .sizeToFit(.width)
         
         ULKListText.pin
-            .top(ULKListFullPos.top)
+            .top(ULKListFullPos)
             .left(155)
             .height(60)
-            .width(200)
+            .width(ListWidth)
             .sizeToFit(.width)
         
         imageViewClock.pin
@@ -214,7 +215,7 @@ final class PairTableViewCell: UITableViewCell {
 //        print(ULKListText.frame)
 //        }
         imageViewDor2.pin
-            .top(dor2FullPos.top)
+            .top(dor2FullPos)
             .left(110)
             .height(25)
             .width(25)
@@ -222,8 +223,8 @@ final class PairTableViewCell: UITableViewCell {
     
     func config(with indexCell: Int) {
         
-        dor2FullPos.top = 45
-        ULKListFullPos.top = 47
+        dor2FullPos = 45
+        ULKListFullPos = 47
         
         let studyTimes = ["8:30\n10:05", "10:15\n11:50", "12:00\n13:35", "13:50\n15:25", "15:40\n17:15", "17:25\n19:00", "19:10\n20:45"]
         
@@ -249,103 +250,19 @@ final class PairTableViewCell: UITableViewCell {
     }
     
     func config2(with indexCell: Int) {
-//        imageViewDor2.removeFromSuperview()
-//        GZText.pin
-//            .top(30)
-//            .right(25)
-//            .height(30)
-//            .width(35)
-//            .sizeToFit(.width)
-//
-//        ULKText.pin
-//            .top(120)
-//            .right(25)
-//            .height(30)
-//            .width(35)
-//            .sizeToFit(.width)
-//
-//        GZListText.pin
-//            .top(30)
-//            .left(155)
-//            .height(60)
-//            .width(60)
-//            .sizeToFit(.height)
-//
-//        ULKListText.pin
-//            .top(120)
-//            .left(155)
-//            .height(60)
-//            .width(60)
-//            .sizeToFit(.height)
-//
-//        imageViewDor.pin
-//            .top(11)
-//            .left(110)
-//            .height(25)
-//            .width(25)
-//
-//        containerView.addSubview(imageViewDor2)
-//        imageViewDor2 = UIImageView(image: UIImage(named: "dor.png"))
-//        containerView.addSubview(imageViewDor2)
-//        containerView.bringSubviewToFront(imageViewDor2)
-        
-//        imageViewDor2Full.pin
-//            .top(120)
-//            .left(110)
-//            .height(25)
-//            .width(25)
-        
-//        let numberOfCabinets = Int((frame.width - 220)/50) - 1
-        
-//        let ulkStrings = Int(ULKcabinets.count/numberOfCabinets) + 1
-//        let gzStrings = Int(GZcabinets.count/numberOfCabinets) + 1
-        
         
         let ulkStrings = ULKcabinetsFullStrings[indexCell].split(separator: "\n").count
         let gzStrings = GZcabinetsFullStrings[indexCell].split(separator: "\n").count
         
-//        print(ulkStrings, gzStrings)
         
-        dor2FullPos.top += CGFloat((gzStrings-1) * 21)
-        ULKListFullPos.top += CGFloat((gzStrings-1) * 21)
+        dor2FullPos += CGFloat((gzStrings-1) * 21)
+        ULKListFullPos += CGFloat((gzStrings-1) * 21)
+//        dor2FullPos.top = GZListText.frame.height
+//        ULKListFullPos.top += ULKListText.frame.height
         
         GZListText.numberOfLines = gzStrings
         ULKListText.numberOfLines = ulkStrings
         
-//        let studyTimes = ["8:30\n10:05", "10:15\n11:50", "12:00\n13:35",
-//                          "13:50\n15:25", "15:40\n17:15", "17:25\n19:00",
-//                          "19:10\n20:45"]
-        
-//        let timee: String
-//        var gzString: String = ""
-//        var ulkString: String = ""
-//
-//        if indexCell > 6 {
-//            timee = "Мухосранск"
-//        }
-//        else {
-//            timee = studyTimes[indexCell]
-//        }
-        
-//        GZText.text = "ГЗ"
-//        ULKText.text = "УЛК"
-//        timeText.text = timee
-        
-//        for k in 0..<gzStrings {
-//            for i in 0..<numberOfCabinets {
-//                gzString += (GZcabinets[k*numberOfCabinets + i] + ", ")
-//
-//            }
-//            gzString += "\n"
-//        }
-        
-//        for k in 0..<ulkStrings {
-//            for i in 0..<numberOfCabinets {
-//                ulkString += (ULKcabinets[k*numberOfCabinets + i] + ", ")
-//
-//            }
-//            ulkString += "\n"
-//        }
         GZListText.text = GZcabinetsFullStrings[indexCell]
         ULKListText.text = ULKcabinetsFullStrings[indexCell]
 
