@@ -5,8 +5,10 @@ import PinLayout
 class PairsViewController: UIViewController {
     
     private let tableView = UITableView()
+    private var myCells: [PairTableViewCell] = []
     
     private let weakButton = UIButton()
+    private var cellForReloadInd = -1
     
     private var firstScreenButton = UIButton()
     private var secondScreenButton = UIButton()
@@ -53,7 +55,8 @@ class PairsViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
 //        tableView.register(.init(nibName: "CityTableViewCell", bundle: nil), forCellReuseIdentifier: "CityTableViewCell")
-        tableView.register(PairTableViewCell.self, forCellReuseIdentifier: "CityTableViewCell")
+        tableView.register(PairTableViewCell.self, forCellReuseIdentifier: "PairTableViewCell")
+//        tableView.register(BigPairTableViewCell.self, forCellReuseIdentifier: "BigPairTableViewCell")
 
         //связать кастоиную ячейку с таблицей (если nib-ом)
 //        tableView.register(CityTableViewCell.self, forCellReuseIdentifier: "CityTableViewCell")
@@ -150,6 +153,7 @@ class PairsViewController: UIViewController {
     
     @objc
     func changeButtonColor(_ buttonSubView: UIButton) {
+        tableView.reloadData()
         if buttonSubView.backgroundColor == UIColor(rgb: 0xC2A894) {
             for indexOfDay in 0...5 {
                 daysOfWeakButton[indexOfDay]?.backgroundColor = UIColor(rgb: 0xC2A894)
@@ -195,6 +199,7 @@ class PairsViewController: UIViewController {
 //            self?.tableView.reloadData()
 //            compl?()
 //        }
+        compl?()
     }
     
     @objc
@@ -229,11 +234,26 @@ class PairsViewController: UIViewController {
 
 extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CityTableViewCell", for: indexPath) as? PairTableViewCell
+//        if indexPath.row == cellForReloadInd {
+//            let cell = tableView.dequeueReusableCell(withIdentifier: "BigPairTableViewCell", for: indexPath) as? BigPairTableViewCell
+//            cell?.config(with: indexPath.row)
+//            return cell ?? .init()
+//        }
+//        else {
+//            let cell = tableView.dequeueReusableCell(withIdentifier: "PairTableViewCell", for: indexPath) as? PairTableViewCell
+//            cell?.config(with: indexPath.row)
+//            return cell ?? .init()
+//        }
         
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PairTableViewCell", for: indexPath) as? PairTableViewCell
         cell?.config(with: indexPath.row)
-
+        myCells.append(cell ?? .init())
         return cell ?? .init()
+
+        
+//        cell?.config(with: indexPath.row)
+
+//        return cell ?? .init()
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -241,14 +261,43 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath.row)
+//        print(indexPath.row)
 //        let city = cities[indexPath.row]
-        open()
+//        open()
+        print("touched \(indexPath.row)")
+        if indexPath.row != cellForReloadInd {
+            if cellForReloadInd != -1 {
+                myCells[cellForReloadInd].config(with: cellForReloadInd)
+            }
+            
+            cellForReloadInd = indexPath.row
+            tableView.beginUpdates()
+            myCells[indexPath.row].config2(with: indexPath.row)
+            tableView.endUpdates()
+        }
+        else {
+            cellForReloadInd = -1
+            tableView.beginUpdates()
+            myCells[indexPath.row].config(with: indexPath.row)
+            tableView.endUpdates()
+        }
+//        tableView.reloadData()
+//        tableView.beginUpdates()
+//        myCells[indexPath.row].config2(with: indexPath.row)
+//        tableView.endUpdates()
+//        tableView.performBatchUpdates() {
+//            tableView.reloadRows(at: [indexPath], with: BigPairTableViewCell.self)
+//        }
 //        print("Tap on cell")
     }
 //
     //высота ячейки
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        95
+        if indexPath.row == cellForReloadInd {
+            return CGFloat(myCells[indexPath.row].fullCellSz)
+        }
+        else {
+            return 95
+        }
     }
 }

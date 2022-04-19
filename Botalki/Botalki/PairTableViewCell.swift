@@ -5,12 +5,33 @@ import PinLayout
 
 
 final class PairTableViewCell: UITableViewCell {
-    private let timeLabel = UILabel()
-    private let houseLabel = UILabel()
+    private let timeText = UILabel()
+    private let GZText = UILabel()
+    private let ULKText = UILabel()
+    private let GZListText = UILabel()
+    private let ULKListText = UILabel()
+    
+    private var dor2FullPos: UIEdgeInsets = UIEdgeInsets(top: 45, left: 0, bottom: 0, right: 0)
+    private var ULKListFullPos: UIEdgeInsets = UIEdgeInsets(top: 47, left: 0, bottom: 0, right: 0)
+//    private var ULKTextFullPos: UIEdgeInsets = UIEdgeInsets(top: 47, left: 0, bottom: 0, right: 0)
 
     private let imageViewClock = UIImageView(image: UIImage(named: "clock.png"))
     private let imageViewDor = UIImageView(image: UIImage(named: "dor.png"))
-    private let imageViewDor2 = UIImageView(image: UIImage(named: "dor.png"))
+    private var imageViewDor2 = UIImageView(image: UIImage(named: "dor.png"))
+//    private var imageViewDor2Full = UIImageView(image: UIImage(named: "dor.png"))
+    
+    private let GZcabinets = ["240", "333ю", "426", "232", "327.1", "430", "384", "323", "427ю", "502ю", "522", "514", "504", "425ю", "390", "432", "420", "419ю", "386", "429ю", "505", "304", "424", "526", "228"]
+    
+    private let ULKcabinets = ["218л", "829л", "1108л", "224л", "529л", "732л", "615л", "711л", "189.4", "708л", "520л", "836л", "437л", "533л", "908л", "141л", "818л", "225л", "523л", "114л", "259л", "1022л", "531л", "1019л", "822л", "522л", "619л", "530л", "1035л", "145л", "518л", "189.5", "243л", "212л", "532л", "544л", "253л", "222л", "915л", "534л", "1013л", "744л", "1139л", "834л", "536л", "820л", "1017л", "503", "727л", "210", "739л", "1120л", "255л", "725л", "831л"]
+    private var GZcabinetsShortStrings: [String] = []
+    private var ULKcabinetsShortStrings: [String] = []
+    
+    private var GZcabinetsFullStrings: [String] = []
+    private var ULKcabinetsFullStrings: [String] = []
+    
+    private var numberOfCabinets: Int = 0
+    var fullCellSz: Int = 95
+    
 //    private let timeLabel = UILabel()
     
 //    private let images: [String] = ["personalhotspot", "person", "asterisk"]
@@ -21,10 +42,49 @@ final class PairTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.alpha = 0
         self.layer.transform = CATransform3DMakeScale(0.5, 0.5, 0.5)
-                UIView.animate(withDuration: 1) {
+        UIView.animate(withDuration: 0.5) {
                     self.alpha = 1
                     self.layer.transform = CATransform3DScale(CATransform3DIdentity, 1, 1, 1)
                 }
+        
+        
+        self.numberOfCabinets = Int((UIScreen.main.bounds.width - 220)/50) - 1
+        for k in 0...6 {
+            self.GZcabinetsShortStrings.append("")
+            self.ULKcabinetsShortStrings.append("")
+            for i in 0..<self.numberOfCabinets {
+                self.GZcabinetsShortStrings[k] += (GZcabinets[Int.random(in: i..<GZcabinets.count)] + ", ")
+                self.ULKcabinetsShortStrings[k] += (ULKcabinets[Int.random(in: i..<ULKcabinets.count)] + ", ")
+            }
+            self.GZcabinetsShortStrings[k] += "..."
+            self.ULKcabinetsShortStrings[k] += "..."
+        }
+        
+        let GZLines = Int.random(in: 1...6)
+        let ULKLines = Int.random(in: 1...6)
+        for k in 0...6 {
+            self.GZcabinetsFullStrings.append("")
+            self.ULKcabinetsFullStrings.append("")
+            for j in 0..<GZLines {
+                for i in 0..<self.numberOfCabinets {
+                    self.GZcabinetsFullStrings[k] += (GZcabinets[Int.random(in: i..<GZcabinets.count)] + ((j == GZLines-1 && i == numberOfCabinets-1) ? "" : ", "))
+                }
+                if j != GZLines - 1 {
+                    self.GZcabinetsFullStrings[k] += "\n"
+                }
+            }
+            for j in 0..<ULKLines {
+                for i in 0..<self.numberOfCabinets {
+                    self.ULKcabinetsFullStrings[k] += (ULKcabinets[Int.random(in: i..<ULKcabinets.count)] + ((j == ULKLines-1 && i == numberOfCabinets-1) ? "" : ", "))
+                }
+                if j != ULKLines - 1 {
+                    self.ULKcabinetsFullStrings[k] += "\n"
+                }
+            }
+        }
+        
+        self.fullCellSz = 50 + (GZLines + ULKLines) * 21
+        
         setup()
     }
 
@@ -50,15 +110,30 @@ final class PairTableViewCell: UITableViewCell {
         
         selectionStyle = .none
         
-        timeLabel.font = .systemFont(ofSize: 17, weight: .semibold)
-        timeLabel.textColor = .black
-        timeLabel.numberOfLines = 2
-        timeLabel.textAlignment = .right
+        timeText.font = .systemFont(ofSize: 17, weight: .semibold)
+        timeText.textColor = .black
+        timeText.numberOfLines = 2
+        timeText.textAlignment = .right
         
-        houseLabel.font = .systemFont(ofSize: 17, weight: .bold)
-        houseLabel.textColor = .black
-        houseLabel.numberOfLines = 2
-        houseLabel.textAlignment = .left
+        GZText.font = .systemFont(ofSize: 17, weight: .bold)
+        GZText.textColor = .black
+        GZText.numberOfLines = 1
+        GZText.textAlignment = .left
+        
+        ULKText.font = .systemFont(ofSize: 17, weight: .bold)
+        ULKText.textColor = .black
+        ULKText.numberOfLines = 1
+        ULKText.textAlignment = .left
+        
+        GZListText.font = .systemFont(ofSize: 17, weight: .medium)
+        GZListText.textColor = .black
+        GZListText.numberOfLines = 1
+        GZListText.textAlignment = .left
+        
+        ULKListText.font = .systemFont(ofSize: 17, weight: .medium)
+        ULKListText.textColor = .black
+        ULKListText.numberOfLines = 1
+        ULKListText.textAlignment = .left
         
         containerView.layer.shadowColor = UIColor.black.cgColor
         containerView.layer.shadowRadius = 0.5
@@ -68,7 +143,7 @@ final class PairTableViewCell: UITableViewCell {
         containerView.backgroundColor = UIColor(rgb: 0xC4C4C4)
         
         
-        [timeLabel, houseLabel].forEach {
+        [timeText, GZText, ULKText, GZListText, ULKListText].forEach {
             containerView.addSubview($0)
         }
         
@@ -83,48 +158,79 @@ final class PairTableViewCell: UITableViewCell {
             .vertically(6)
         
         
-        timeLabel.pin
-            .vCenter()
+        timeText.pin
+//            .vCenter()
 //            .bottom(8)
-            .left(60)
+            .top(11)
+            .left(52)
             .height(60)
             .width(60)
             .sizeToFit(.height)
         
-        houseLabel.pin
-            .vCenter()
-//            .bottom(8)
-            .right(30)
+        GZText.pin
+//            .vCenter(-15)
+            .top(15)
+            .right(25)
+            .height(30)
+            .width(35)
+            .sizeToFit(.width)
+        
+        ULKText.pin
+            .top(dor2FullPos.top)
+            .right(25)
+            .height(30)
+            .width(35)
+            .sizeToFit(.width)
+        
+        GZListText.pin
+            .top(15)
+            .left(155)
             .height(60)
-            .width(60)
-            .sizeToFit(.height)
+            .width(200)
+            .sizeToFit(.width)
+        
+        ULKListText.pin
+            .top(ULKListFullPos.top)
+            .left(155)
+            .height(60)
+            .width(200)
+            .sizeToFit(.width)
         
         imageViewClock.pin
-            .vCenter()
-            .left(20)
-            .height(27)
-            .width(27)
+//            .vCenter()
+            .top(28)
+            .left(15)
+            .height(25)
+            .width(25)
 //            .sizeToFit(.height)
         
         imageViewDor.pin
             .top(11)
-            .left(120)
+            .left(110)
             .height(25)
             .width(25)
         
+//        if let coords = ULKListText.superview?.convert(ULKListText.frame, to: nil) {
+//        print(ULKListText.frame)
+//        }
         imageViewDor2.pin
-            .top(46)
-            .left(120)
+            .top(dor2FullPos.top)
+            .left(110)
             .height(25)
             .width(25)
     }
     
     func config(with indexCell: Int) {
-        let studyTimes = ["8:30\n10:05", "10:15\n11:50", "12:00\n13:35",
-                          "13:50\n15:25", "15:40\n17:15", "17:25\n19:00",
-                          "19:10\n20:45"]
+        
+        dor2FullPos.top = 45
+        ULKListFullPos.top = 47
+        
+        let studyTimes = ["8:30\n10:05", "10:15\n11:50", "12:00\n13:35", "13:50\n15:25", "15:40\n17:15", "17:25\n19:00", "19:10\n20:45"]
         
         let timee: String
+//        let gzString: String = ""
+//        let ulkString: String = ""
+        
         if indexCell > 6 {
             timee = "Мухосранск"
         }
@@ -132,11 +238,378 @@ final class PairTableViewCell: UITableViewCell {
             timee = studyTimes[indexCell]
         }
         
-        houseLabel.text = "ГЗ\nУЛК"
-        timeLabel.text = timee
+        GZText.text = "ГЗ"
+        ULKText.text = "УЛК"
+        timeText.text = timee
+        
+        GZListText.text = GZcabinetsShortStrings[indexCell]
+        ULKListText.text = ULKcabinetsShortStrings[indexCell]
+//        print(ULKListText.frame.height)
+
+    }
+    
+    func config2(with indexCell: Int) {
+//        imageViewDor2.removeFromSuperview()
+//        GZText.pin
+//            .top(30)
+//            .right(25)
+//            .height(30)
+//            .width(35)
+//            .sizeToFit(.width)
+//
+//        ULKText.pin
+//            .top(120)
+//            .right(25)
+//            .height(30)
+//            .width(35)
+//            .sizeToFit(.width)
+//
+//        GZListText.pin
+//            .top(30)
+//            .left(155)
+//            .height(60)
+//            .width(60)
+//            .sizeToFit(.height)
+//
+//        ULKListText.pin
+//            .top(120)
+//            .left(155)
+//            .height(60)
+//            .width(60)
+//            .sizeToFit(.height)
+//
+//        imageViewDor.pin
+//            .top(11)
+//            .left(110)
+//            .height(25)
+//            .width(25)
+//
+//        containerView.addSubview(imageViewDor2)
+//        imageViewDor2 = UIImageView(image: UIImage(named: "dor.png"))
+//        containerView.addSubview(imageViewDor2)
+//        containerView.bringSubviewToFront(imageViewDor2)
+        
+//        imageViewDor2Full.pin
+//            .top(120)
+//            .left(110)
+//            .height(25)
+//            .width(25)
+        
+//        let numberOfCabinets = Int((frame.width - 220)/50) - 1
+        
+//        let ulkStrings = Int(ULKcabinets.count/numberOfCabinets) + 1
+//        let gzStrings = Int(GZcabinets.count/numberOfCabinets) + 1
+        
+        
+        let ulkStrings = ULKcabinetsFullStrings[indexCell].split(separator: "\n").count
+        let gzStrings = GZcabinetsFullStrings[indexCell].split(separator: "\n").count
+        
+//        print(ulkStrings, gzStrings)
+        
+        dor2FullPos.top += CGFloat((gzStrings-1) * 21)
+        ULKListFullPos.top += CGFloat((gzStrings-1) * 21)
+        
+        GZListText.numberOfLines = gzStrings
+        ULKListText.numberOfLines = ulkStrings
+        
+//        let studyTimes = ["8:30\n10:05", "10:15\n11:50", "12:00\n13:35",
+//                          "13:50\n15:25", "15:40\n17:15", "17:25\n19:00",
+//                          "19:10\n20:45"]
+        
+//        let timee: String
+//        var gzString: String = ""
+//        var ulkString: String = ""
+//
+//        if indexCell > 6 {
+//            timee = "Мухосранск"
+//        }
+//        else {
+//            timee = studyTimes[indexCell]
+//        }
+        
+//        GZText.text = "ГЗ"
+//        ULKText.text = "УЛК"
+//        timeText.text = timee
+        
+//        for k in 0..<gzStrings {
+//            for i in 0..<numberOfCabinets {
+//                gzString += (GZcabinets[k*numberOfCabinets + i] + ", ")
+//
+//            }
+//            gzString += "\n"
+//        }
+        
+//        for k in 0..<ulkStrings {
+//            for i in 0..<numberOfCabinets {
+//                ulkString += (ULKcabinets[k*numberOfCabinets + i] + ", ")
+//
+//            }
+//            ulkString += "\n"
+//        }
+        GZListText.text = GZcabinetsFullStrings[indexCell]
+        ULKListText.text = ULKcabinetsFullStrings[indexCell]
 
     }
 }
+
+//
+//final class BigPairTableViewCell: UITableViewCell {
+//    private let timeText = UILabel()
+//    private let GZText = UILabel()
+//    private let ULKText = UILabel()
+//    private let GZListText = UILabel()
+//    private let ULKListText = UILabel()
+//
+//    private let imageViewClock = UIImageView(image: UIImage(named: "clock.png"))
+//    private let imageViewDor = UIImageView(image: UIImage(named: "dor.png"))
+//    private let imageViewDor2 = UIImageView(image: UIImage(named: "dor.png"))
+//
+//    private let GZcabinets = ["240", "333ю", "426", "232", "327.1", "430", "384", "323", "427ю", "502ю", "522", "514", "504", "425ю", "390", "432", "420", "419ю", "386", "429ю", "505", "304", "424", "526", "228"]
+//
+//    private let ULKcabinets = ["218л", "829л", "1108л", "224л", "529л", "732л", "615л", "711л", "189.4", "708л", "520л", "836л", "437л", "533л", "908л", "141л", "818л", "225л", "523л", "114л", "259л", "1022л", "531л", "1019л", "822л", "522л", "619л", "530л", "1035л", "145л", "518л", "189.5", "243л", "212л", "532л", "544л", "253л", "222л", "915л", "534л", "1013л", "744л", "1139л", "834л", "536л", "820л", "1017л", "503", "727л", "210", "739л", "1120л", "255л", "725л", "831л"]
+////    private let timeLabel = UILabel()
+//
+////    private let images: [String] = ["personalhotspot", "person", "asterisk"]
+//
+//    private let containerView = UIView()
+//
+//    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+//        super.init(style: style, reuseIdentifier: reuseIdentifier)
+////        self.alpha = 0
+////        self.layer.transform = CATransform3DMakeScale(0.5, 0.5, 0.5)
+////                UIView.animate(withDuration: 1) {
+////                    self.alpha = 1
+////                    self.layer.transform = CATransform3DScale(CATransform3DIdentity, 1, 1, 1)
+////                }
+//        setup()
+//    }
+//
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
+//
+//    private func setup() {
+//        containerView.addSubview(imageViewClock)
+//        containerView.bringSubviewToFront(imageViewClock)
+//
+//        containerView.addSubview(imageViewDor)
+//        containerView.bringSubviewToFront(imageViewDor)
+//
+//        containerView.addSubview(imageViewDor2)
+//        containerView.bringSubviewToFront(imageViewDor2)
+//
+//        selectionStyle = .none
+//
+//        timeText.font = .systemFont(ofSize: 17, weight: .semibold)
+//        timeText.textColor = .black
+//        timeText.numberOfLines = 2
+//        timeText.textAlignment = .right
+//
+//        GZText.font = .systemFont(ofSize: 17, weight: .bold)
+//        GZText.textColor = .black
+//        GZText.numberOfLines = 1
+//        GZText.textAlignment = .left
+//
+//        ULKText.font = .systemFont(ofSize: 17, weight: .bold)
+//        ULKText.textColor = .black
+//        ULKText.numberOfLines = 1
+//        ULKText.textAlignment = .left
+//
+//        GZListText.font = .systemFont(ofSize: 17, weight: .medium)
+//        GZListText.textColor = .black
+//        GZListText.numberOfLines = 1
+//        GZListText.textAlignment = .left
+//
+//        ULKListText.font = .systemFont(ofSize: 17, weight: .medium)
+//        ULKListText.textColor = .black
+//        ULKListText.numberOfLines = 1
+//        ULKListText.textAlignment = .left
+//
+//        containerView.layer.shadowColor = UIColor.black.cgColor
+//        containerView.layer.shadowRadius = 0.5
+//        containerView.layer.shadowOffset = .init(width: 0.5, height: 0.5)
+//        containerView.layer.shadowOpacity = 0.8
+//        containerView.layer.cornerRadius =  20
+//        containerView.backgroundColor = UIColor(rgb: 0xC4C4C4)
+//
+//
+//        [timeText, GZText, ULKText, GZListText, ULKListText].forEach {
+//            containerView.addSubview($0)
+//        }
+//
+//        contentView.addSubview(containerView)
+//    }
+//
+//    override func layoutSubviews() {
+//        super.layoutSubviews()
+//
+//        containerView.pin
+//            .horizontally(15)
+//            .vertically(6)
+//
+//
+//        timeText.pin
+//            .vCenter()
+////            .bottom(8)
+//            .left(52)
+//            .height(60)
+//            .width(60)
+//            .sizeToFit(.height)
+//
+//        GZText.pin
+//            .vCenter(-15)
+//            .right(25)
+//            .height(30)
+//            .width(35)
+//            .sizeToFit(.width)
+//
+//        ULKText.pin
+//            .vCenter(15)
+//            .right(25)
+//            .height(30)
+//            .width(35)
+//            .sizeToFit(.width)
+//
+//        GZListText.pin
+//            .vCenter(-15)
+//            .left(155)
+//            .height(60)
+//            .width(60)
+//            .sizeToFit(.height)
+//
+//        ULKListText.pin
+//            .vCenter(15)
+//            .left(155)
+//            .height(60)
+//            .width(60)
+//            .sizeToFit(.height)
+//
+//        imageViewClock.pin
+//            .vCenter()
+//            .left(15)
+//            .height(25)
+//            .width(25)
+////            .sizeToFit(.height)
+//
+//        imageViewDor.pin
+//            .top(11)
+//            .left(110)
+//            .height(25)
+//            .width(25)
+//
+//        imageViewDor2.pin
+//            .top(46)
+//            .left(110)
+//            .height(25)
+//            .width(25)
+//    }
+//
+//    func config(with indexCell: Int) {
+//        let studyTimes = ["8:30\n10:05", "10:15\n11:50", "12:00\n13:35",
+//                          "13:50\n15:25", "15:40\n17:15", "17:25\n19:00",
+//                          "19:10\n20:45"]
+//
+//        let timee: String
+//        var gzString: String = ""
+//        var ulkString: String = ""
+//
+//        if indexCell > 6 {
+//            timee = "Мухосранск"
+//        }
+//        else {
+//            timee = studyTimes[indexCell]
+//        }
+//
+//        GZText.text = "ГЗ"
+//        ULKText.text = "УЛК"
+//        timeText.text = timee
+//
+//        let numberOfCabinets = Int((frame.width - 220)/50) - 1
+//        print(numberOfCabinets)
+//        for i in 0..<numberOfCabinets {
+//            gzString += (GZcabinets[Int.random(in: i..<GZcabinets.count)] + ", ")
+//            ulkString += (ULKcabinets[Int.random(in: i..<ULKcabinets.count)] + ", ")
+//        }
+//        GZListText.text = gzString + "..."
+//        ULKListText.text = ulkString + "..."
+//
+//    }
+//
+//    private func setup2() {
+//        GZText.pin
+////            .vCenter(-15)
+//            .top(30)
+//            .right(25)
+//            .height(30)
+//            .width(35)
+//            .sizeToFit(.width)
+//
+//        ULKText.pin
+////            .vCenter(15)
+//            .top(120)
+//            .right(25)
+//            .height(30)
+//            .width(35)
+//            .sizeToFit(.width)
+//
+//        GZListText.pin
+//            .top(30)
+//            .left(155)
+//            .height(60)
+//            .width(60)
+//            .sizeToFit(.height)
+//
+//        ULKListText.pin
+//            .top(120)
+//            .left(155)
+//            .height(60)
+//            .width(60)
+//            .sizeToFit(.height)
+//
+//        imageViewDor.pin
+//            .top(11)
+//            .left(110)
+//            .height(25)
+//            .width(25)
+//
+//        imageViewDor2.pin
+//            .top(120)
+//            .left(110)
+//            .height(25)
+//            .width(25)
+//    }
+//
+//    func config2(with indexCell: Int) {
+//        let studyTimes = ["8:30\n10:05", "10:15\n11:50", "12:00\n13:35",
+//                          "13:50\n15:25", "15:40\n17:15", "17:25\n19:00",
+//                          "19:10\n20:45"]
+//
+//        let timee: String
+//        var gzString: String = ""
+//        var ulkString: String = ""
+//
+//        if indexCell > 6 {
+//            timee = "Мухосранск"
+//        }
+//        else {
+//            timee = studyTimes[indexCell]
+//        }
+//
+//        GZText.text = "ГЗ"
+//        ULKText.text = "УЛК"
+//        timeText.text = timee
+//
+//        let numberOfCabinets = Int((frame.width - 220)/50) - 1
+//        print(numberOfCabinets)
+//        for i in 0..<numberOfCabinets {
+//            gzString += (GZcabinets[Int.random(in: i..<GZcabinets.count)] + ", ")
+//            ulkString += (ULKcabinets[Int.random(in: i..<ULKcabinets.count)] + ", ")
+//        }
+//        GZListText.text = gzString + "..."
+//        ULKListText.text = ulkString + "..."
+//
+//    }
+//}
 
 extension UIColor {
    convenience init(red: Int, green: Int, blue: Int) {
