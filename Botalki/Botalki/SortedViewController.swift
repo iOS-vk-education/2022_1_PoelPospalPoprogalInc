@@ -32,6 +32,8 @@ final class SortedViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+        navigationController?.setNavigationBarHidden(true, animated: true)
+        
         tempLabel.pin
             .top(60)
             .right(37)

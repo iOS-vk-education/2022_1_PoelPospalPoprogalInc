@@ -30,7 +30,7 @@ class PairsViewController: UIViewController {
         self.view.backgroundColor = UIColor.systemBackground
         
         navigationController?.setNavigationBarHidden(true, animated: true)
-        navigationController?.navigationBar.prefersLargeTitles = true
+//        navigationController?.navigationBar.prefersLargeTitles = true
         
         
         view.addSubview(tableView)
@@ -138,17 +138,17 @@ class PairsViewController: UIViewController {
         
         for indexOfDay in 0...5 {
             let dayOfWeakButton = UIButton(type: .system)
-            dayOfWeakButton.frame = CGRect(x: 15, y: 120, width: view.frame.width / 7, height: view.frame.width / 7)
+//            dayOfWeakButton.frame = CGRect(x: 15, y: 120, width: view.frame.width / 7, height: view.frame.width / 7)
             
             dayOfWeakButton.backgroundColor = UIColor.systemGroupedBackground
             dayOfWeakButton.layer.cornerRadius = 16
             dayOfWeakButton.layer.masksToBounds = true
-            dayOfWeakButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
-            dayOfWeakButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
-            dayOfWeakButton.titleLabel?.numberOfLines = 2
-            dayOfWeakButton.titleLabel?.textAlignment = .center
+//            dayOfWeakButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+//            dayOfWeakButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
+//            dayOfWeakButton.titleLabel?.numberOfLines = 2
+//            dayOfWeakButton.titleLabel?.textAlignment = .center
 
-            dayOfWeakButton.setTitle(dayOfWeak[indexOfDay], for: .normal)
+//            dayOfWeakButton.setTitle(dayOfWeak[indexOfDay], for: .normal)
             dayOfWeakButton.addTarget(self, action: #selector(changeButtonColor(_ :)), for: .touchUpInside)
             
             dayOfWeakButton.pin
@@ -171,21 +171,28 @@ class PairsViewController: UIViewController {
             
             let dayLabel = UILabel()
             dayLabel.font = .systemFont(ofSize: 18, weight: .bold)
-            dayLabel.numberOfLines = 1
-            dayLabel.textAlignment = .right
+            dayLabel.numberOfLines = 2
+            dayLabel.textAlignment = .center
+            dayLabel.numberOfLines = 2
             dayLabel.text = dayOfWeak[indexOfDay]
             
             dayOfWeakButton.addSubview(dayLabel)
             dayOfWeakButton.bringSubviewToFront(dayLabel)
             dayOfWeakButton.layoutSubviews()
             
-            dayLabel.pin
-                .top(17)
-                .left(3)
-                .height(20)
-                .width(35)
+//            dayLabel.pin
+//                .top(130)
+//                .left(CGFloat(x))
+//                .width(CGFloat(sizeOfButton))
+//                .height(CGFloat(sizeOfButton))
+//            dayLabel.pin.center()
             
-            dayOfWeakButton.frame = .init(x: CGFloat(x), y: 130, width: sizeOfButton, height: sizeOfButton)
+            dayLabel.pin
+                .vCenter()
+                .height(CGFloat(sizeOfButton))
+                .width(CGFloat(sizeOfButton))
+            
+//            dayOfWeakButton.frame = .init(x: CGFloat(x), y: 130, width: sizeOfButton, height: sizeOfButton)
             
             view.addSubview(dayOfWeakButton)
             daysOfWeakButton[indexOfDay] = dayOfWeakButton
@@ -199,6 +206,9 @@ class PairsViewController: UIViewController {
         myCells = []
         cellForReloadInd = -1
         tableView.reloadData()
+//        tableView.beginUpdates()
+//        tableView.ani
+//        tableView.endUpdates()
         if buttonSubView.backgroundColor == .systemGroupedBackground {
             for indexOfDay in 0...5 {
                 daysOfWeakButton[indexOfDay]?.backgroundColor = .systemGroupedBackground
@@ -292,6 +302,8 @@ class PairsViewController: UIViewController {
     
     //тут completion нужен чтобы знать когда остановить анимацию
     private func loadData(compl: (() -> Void)? = nil) {
+        myCells = []
+        cellForReloadInd = -1
         tableView.reloadData()
 //        NetworkManager.shared.loadCities { [weak self] cities in
 //            self?.cities = cities
