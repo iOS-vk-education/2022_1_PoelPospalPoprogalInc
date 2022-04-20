@@ -142,6 +142,7 @@ class PairsViewController: UIViewController {
             
             dayOfWeakButton.backgroundColor = UIColor.systemGroupedBackground
             dayOfWeakButton.layer.cornerRadius = 16
+            dayOfWeakButton.layer.cornerRadius = 18
             dayOfWeakButton.layer.masksToBounds = true
 //            dayOfWeakButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
 //            dayOfWeakButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)

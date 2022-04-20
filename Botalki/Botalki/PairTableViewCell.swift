@@ -141,7 +141,7 @@ final class PairTableViewCell: UITableViewCell {
         containerView.layer.shadowRadius = 0.5
         containerView.layer.shadowOffset = .init(width: 0.5, height: 0.5)
         containerView.layer.shadowOpacity = 0.8
-        containerView.layer.cornerRadius = 20
+        containerView.layer.cornerRadius = 16
         containerView.backgroundColor = UIColor(rgb: 0xC4C4C4)
         
         
