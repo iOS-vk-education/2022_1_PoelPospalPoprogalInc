@@ -5,9 +5,9 @@
 Приложение для студентов МГТУ им.Баумана для поиска свободной аудитории для бота.  
   
 ## Команда  
-:boy: **ТимЛид:** [serzh](https://github.com/Serzh3142001)
-:girl: **Разработчик:** [polina](https://github.com/poliorang)
-:princess: **Ментор:** [mehrafruz](https://github.com/Mehrafruz)
+:boy: **ТимЛид:** [Serzh](https://github.com/Serzh3142001)  
+:girl: **Разработчик:** [Polina](https://github.com/poliorang)  
+:princess: **Ментор:** [Mehrafruz](https://github.com/Mehrafruz)  
   
 ## Стек технологий
 * PinLayout  
