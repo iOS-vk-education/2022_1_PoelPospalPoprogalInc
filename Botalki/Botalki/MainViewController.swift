@@ -1,6 +1,5 @@
 import UIKit
 import PinLayout
-//import SwiftUI
 
 class PairsViewController: UIViewController {
     
@@ -29,7 +28,6 @@ class PairsViewController: UIViewController {
         self.view.backgroundColor = UIColor.systemBackground
         
         navigationController?.setNavigationBarHidden(true, animated: true)
-//        navigationController?.navigationBar.prefersLargeTitles = true
         
         
         view.addSubview(tableView)
@@ -43,13 +41,9 @@ class PairsViewController: UIViewController {
         weakButton.layer.cornerRadius = 10
         weakButton.layer.masksToBounds = true
         weakButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-//        weakButton.setTitleColor = UIColor(rgb: 0x000000)
         weakButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
-        
-//        weakButton.titleLabel?.textColor = .black
         weakButton.setTitle("11 неделя - числитель", for: .normal)
         weakButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
-//        weakButton.frame = .init(x: 15, y: 75, width: view.frame.width / 2, height: 35)
         
         
         createDayButtons()
@@ -240,7 +234,7 @@ class PairsViewController: UIViewController {
         
     }
 
-//    @objc
+    
     @objc private func open() {
         let viewController = CityViewController()
         let navigationController = UINavigationController(rootViewController: viewController)
