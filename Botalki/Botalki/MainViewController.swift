@@ -20,7 +20,6 @@ class PairsViewController: UIViewController {
     
     var daysOfWeakButton: [Int:UIButton] = [:]
     
-    private var muxosranskCount = 6
     private let margins = CGFloat(22)
     private let screenWidth = UIScreen.main.bounds.width
     
@@ -63,17 +62,11 @@ class PairsViewController: UIViewController {
         tableView.dataSource = self
         
         tableView.register(PairTableViewCell.self, forCellReuseIdentifier: "PairTableViewCell")
-//        tableView.register(BigPairTableViewCell.self, forCellReuseIdentifier: "BigPairTableViewCell")
-
-        //связать кастоиную ячейку с таблицей (если nib-ом)
-//        tableView.register(CityTableViewCell.self, forCellReuseIdentifier: "CityTableViewCell")
-        //связать кастоиную ячейку с таблицей (если кодом)
         
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
         tableView.refreshControl = refreshControl
         
-        //в loadData completion не нужен, потому что не важно знать когда закончилась функция
         loadData()
     }
     
@@ -93,9 +86,6 @@ class PairsViewController: UIViewController {
         secondScreenButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
     
         secondScreenButton.addTarget(self, action: #selector(goToFilterScreen), for: .touchUpInside)
-        
-//        layoutScreenButtonsSubviews(buttonSubView: firstScreenButton, iconNameOfButton: "house")
-//        layoutScreenButtonsSubviews(buttonSubView: secondScreenButton, iconNameOfButton: "magnifier")
     }
     
     @objc
@@ -104,30 +94,9 @@ class PairsViewController: UIViewController {
         self.navigationController?.pushViewController(secondViewController, animated: false)
     }
     
-//    private func layoutScreenButtonsSubviews(buttonSubView: UIButton, iconNameOfButton: String) {
-//        let imageViewButton = UIImageView(image: UIImage(named: iconNameOfButton))
-//
-//        buttonSubView.addSubview(imageViewButton)
-//        buttonSubView.bringSubviewToFront(imageViewButton)
-//
-////        buttonSubView.layoutSubviews()
-//
-////        imageViewButton.pin
-////            .vCenter()
-////            .left(buttonSubView.frame.width / 2 - 17)
-////            .height(35)
-////            .width(35)
-//        imageViewButton.pin
-//            .center()
-////            .left(50)
-//            .height(35)
-//            .width(35)
-//    }
     
     private func createDayButtons() {
         let dayOfWeak = ["Пн\n18", "Вт\n19", "Ср\n20", "Чт\n21", "Пт\n22", "Сб\n23"]
-//        var x = 15
-//        let sizeOfButton = (UIScreen.main.bounds.width - (16*5 + 30)) / 6
         let sizeOfButton = 55
         var x = Int(margins)
         let sizeOfSeparator = (Int(UIScreen.main.bounds.width) - sizeOfButton*6 - x*2)/5
@@ -138,18 +107,10 @@ class PairsViewController: UIViewController {
         
         for indexOfDay in 0...5 {
             let dayOfWeakButton = UIButton(type: .system)
-//            dayOfWeakButton.frame = CGRect(x: 15, y: 120, width: view.frame.width / 7, height: view.frame.width / 7)
-            
             dayOfWeakButton.backgroundColor = UIColor.systemGroupedBackground
             dayOfWeakButton.layer.cornerRadius = 16
             dayOfWeakButton.layer.cornerRadius = 18
             dayOfWeakButton.layer.masksToBounds = true
-//            dayOfWeakButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
-//            dayOfWeakButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
-//            dayOfWeakButton.titleLabel?.numberOfLines = 2
-//            dayOfWeakButton.titleLabel?.textAlignment = .center
-
-//            dayOfWeakButton.setTitle(dayOfWeak[indexOfDay], for: .normal)
             dayOfWeakButton.addTarget(self, action: #selector(changeButtonColor(_ :)), for: .touchUpInside)
             
             dayOfWeakButton.pin
@@ -158,12 +119,11 @@ class PairsViewController: UIViewController {
                 .width(CGFloat(sizeOfButton))
                 .height(CGFloat(sizeOfButton))
             
-//            dayOfWeakButton.frame = .init(x: CGFloat(x), y: 130, width: sizeOfButton, height: sizeOfButton)
             
             dayOfWeakButton.layer.borderWidth = 2
             dayOfWeakButton.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
             
-            if indexOfDay == 0 {
+            if indexOfDay == 2 {
                 dayOfWeakButton.backgroundColor = UIColor(rgb: 0xEA7500)
                 dayOfWeakButton.layer.borderColor = UIColor(rgb: 0xEA7500).cgColor
             }
@@ -180,20 +140,13 @@ class PairsViewController: UIViewController {
             dayOfWeakButton.addSubview(dayLabel)
             dayOfWeakButton.bringSubviewToFront(dayLabel)
             dayOfWeakButton.layoutSubviews()
-            
-//            dayLabel.pin
-//                .top(130)
-//                .left(CGFloat(x))
-//                .width(CGFloat(sizeOfButton))
-//                .height(CGFloat(sizeOfButton))
-//            dayLabel.pin.center()
+
             
             dayLabel.pin
                 .vCenter()
                 .height(CGFloat(sizeOfButton))
                 .width(CGFloat(sizeOfButton))
             
-//            dayOfWeakButton.frame = .init(x: CGFloat(x), y: 130, width: sizeOfButton, height: sizeOfButton)
             
             view.addSubview(dayOfWeakButton)
             daysOfWeakButton[indexOfDay] = dayOfWeakButton
@@ -207,9 +160,7 @@ class PairsViewController: UIViewController {
         myCells = []
         cellForReloadInd = -1
         tableView.reloadData()
-//        tableView.beginUpdates()
-//        tableView.ani
-//        tableView.endUpdates()
+        
         if buttonSubView.backgroundColor == .systemGroupedBackground {
             for indexOfDay in 0...5 {
                 daysOfWeakButton[indexOfDay]?.backgroundColor = .systemGroupedBackground
@@ -220,8 +171,6 @@ class PairsViewController: UIViewController {
             buttonSubView.layer.borderColor = UIColor(rgb: 0xEA7500).cgColor
             
         }
-        
-//        print(daysOfWeakButton[buttonSubView]!)
     }
     
     override func viewDidLayoutSubviews() {
@@ -264,38 +213,6 @@ class PairsViewController: UIViewController {
             .right(ButtonsWidth/2 + margins - 35/2)
             .height(35)
             .width(35)
-        
-//        firstScreenButton.frame = .init(x: 20, y: view.frame.height - 95, width: view.frame.width / 2 - 30, height: 45)
-        
-//        secondScreenButton.frame = .init(x: view.frame.width / 2 + 15, y: view.frame.height - 95, width: view.frame.width / 2 - 30, height: 45)
-//        weakButton.frame = .init(x: 15, y: 75, width: view.frame.width / 2, height: 35)
-        
-//        viewForSwitcher.pin
-//            .height(200)
-//            .bottom(0)
-//            .left(0)
-//            .right(0)
-//            .sizeToFit(.height)
-////            .horizontally(0)
-////            .vertically(200)
-//
-//        weekSwitcher.pin
-//            .width(200)
-//            .bottom(0)
-//            .left(0)
-//            .right(0)
-//            .sizeToFit(.width)
-        
-        
-        // не работает ааааа
-//        for i in 0...5 {
-//            daysOfWeakButton[i]?.pin
-//                .top(50)
-//                .left(30)
-////                .bottom(130)
-//                .width(30)
-//                .height(30)
-//        }
     }
     
     
@@ -306,11 +223,6 @@ class PairsViewController: UIViewController {
         myCells = []
         cellForReloadInd = -1
         tableView.reloadData()
-//        NetworkManager.shared.loadCities { [weak self] cities in
-//            self?.cities = cities
-//            self?.tableView.reloadData()
-//            compl?()
-//        }
         compl?()
     }
     
@@ -331,9 +243,6 @@ class PairsViewController: UIViewController {
 //    @objc
     @objc private func open() {
         let viewController = CityViewController()
-//        let viewController = UIViewController()
-//        viewController.title = city.title
-//        viewController.view.backgroundColor = .systemBackground
         let navigationController = UINavigationController(rootViewController: viewController)
         present(navigationController, animated: true, completion: nil)
     }
@@ -349,7 +258,7 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (muxosranskCount + 1)
+        return 7
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -371,7 +280,7 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
             tableView.endUpdates()
         }
     }
-//
+    
     //высота ячейки
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.row == cellForReloadInd {
@@ -382,18 +291,3 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
         }
     }
 }
-
-//extension PairsViewController: UIPickerViewDelegate, UIPickerViewDataSource {
-//    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-//        weeks.count
-//    }
-//
-//    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-//        1
-//    }
-//
-//    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-////        weeks[row]
-//        "\(row)"
-//    }
-//}

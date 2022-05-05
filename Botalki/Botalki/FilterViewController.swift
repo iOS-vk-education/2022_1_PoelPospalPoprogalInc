@@ -262,6 +262,7 @@ class FilterViewController: UIViewController {
             .width(140)
         
         firstPairTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
+//        firstPairTextField.backgroundColor = UIColor.systemBackground
         firstPairTextField.textColor = .black
         firstPairTextField.borderStyle = UITextField.BorderStyle.roundedRect
 //        audienceTextField.layer.borderColor = borderColor.cgColor
@@ -419,8 +420,9 @@ class FilterViewController: UIViewController {
     
     @objc
     func goToFirstScreen() {
-        let firstViewController: PairsViewController = PairsViewController()
-        self.navigationController?.pushViewController(firstViewController, animated: false)
+//        let firstViewController: PairsViewController = PairsViewController()
+//        self.navigationController?.pushViewController(firstViewController, animated: false)
+        self.navigationController?.popViewController(animated: false)
     }
   
     private func layoutScreenButtonsSubviews(buttonSubView: UIButton, iconNameOfButton: String) {
