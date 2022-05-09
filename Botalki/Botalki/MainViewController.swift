@@ -1,23 +1,31 @@
 import UIKit
 import PinLayout
+import FirebaseStorage
 
 class PairsViewController: UIViewController {
     
     private let tableView = UITableView()
     private let houseImg = UIImageView(image: UIImage(named: "house"))
     private let magnifierImg = UIImageView(image: UIImage(named: "magnifier"))
+    private let storage = Storage.storage().reference()
 //    private let weekSwitcher = UIPickerView()
 //    private let viewForSwitcher = UIView()
     private let weeks = (1...17).map {"\($0) неделя - \(["знаменатель", " числитель"][$0%2])" }
-    private var myCells: [PairTableViewCell] = []
+    private var myCells = [PairTableViewCell?]()
     
     private let weakButton = UIButton()
+    private var allCabinets: String = ""
     private var cellForReloadInd = -1
+    private var cellForReloadIndexes = [Int]()
+    private var curNumOrDenom = 0
+    private var curDay = 2
+    
+    var FreeCabinets = [[[[String]]]]()
     
     private var firstScreenButton = UIButton()
     private var secondScreenButton = UIButton()
     
-    var daysOfWeakButton: [Int:UIButton] = [:]
+    var daysOfWeakButton: [UIButton:Int] = [:]
     
     private let margins = CGFloat(22)
     private let screenWidth = UIScreen.main.bounds.width
@@ -45,23 +53,80 @@ class PairsViewController: UIViewController {
         weakButton.setTitle("11 неделя - числитель", for: .normal)
         weakButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         
+        let date = Date()
+        let calendar = Calendar.current
+//        print(calendar.component(.day, from: date))
+        curDay = calendar.component(.weekday, from: date) - 2
         
         createDayButtons()
         screenSelection()
         
         tableView.frame = view.bounds
         tableView.separatorStyle = .none
-
-        tableView.delegate = self
-        tableView.dataSource = self
         
+//        for day in 0...5 {
+//            tableView.register(PairTableViewCell.self, forCellReuseIdentifier: "PairTableViewCell\(day)")
+//        }
         tableView.register(PairTableViewCell.self, forCellReuseIdentifier: "PairTableViewCell")
         
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
         tableView.refreshControl = refreshControl
         
-        loadData()
+        tableView.refreshControl?.beginRefreshing()
+        
+
+//        let cabinetsRef = storageRef.child("cabinets.txt")
+        allocateCellsArr()
+        
+        self.allCabinets = self.readTextFile(with: "cabinets.txt") ?? ""
+        
+        if self.allCabinets == "" {
+            downloadFile(with: "cabinets.txt") {
+                self.allCabinets = self.readTextFile(with: "cabinets.txt") ?? ""
+                
+                if self.allCabinets == "" {
+                    print("Downloading file error...")
+                }
+                else {
+                    
+                    self.parseSourceFile()
+                }
+                
+                
+                self.tableView.refreshControl?.endRefreshing()
+                self.tableView.delegate = self
+                self.tableView.dataSource = self
+                self.loadData()
+            }
+        }
+        else {
+            self.parseSourceFile()
+            self.tableView.refreshControl?.endRefreshing()
+            self.tableView.delegate = self
+            self.tableView.dataSource = self
+            self.loadData()
+        }
+        
+        
+    }
+    
+    private func parseSourceFile() {
+        self.allCabinets.split(separator: "\n").forEach { line in
+            var pairsForNumenatorOrDen = [[[String]]]()
+            line.components(separatedBy: "###").forEach { day in
+                var pairsForDay = [[String]]()
+                day.components(separatedBy: "##").forEach { pair in
+                    var cabinetsForPair = [String]()
+                    pair.components(separatedBy: "#").forEach { cabinet in
+                        cabinetsForPair.append(cabinet.trimmingCharacters(in: CharacterSet(charactersIn: "кк ")))
+                    }
+                    pairsForDay.append(cabinetsForPair)
+                }
+                pairsForNumenatorOrDen.append(pairsForDay)
+            }
+            self.FreeCabinets.append(pairsForNumenatorOrDen)
+        }
     }
     
     private func screenSelection() {
@@ -86,6 +151,67 @@ class PairsViewController: UIViewController {
     func goToFilterScreen() {
         let secondViewController:FilterViewController = FilterViewController()
         self.navigationController?.pushViewController(secondViewController, animated: false)
+    }
+    
+    func downloadFile(with fName: String, completion: @escaping () -> Void) {
+//        if let image = cache[name] {
+//            completion(image)
+//            return
+//        }
+        guard let documentsUrl = documentDirUrl() else {
+            print("documentsUrl Error!")
+            return
+        }
+        
+        let filename: String = "cabinets.txt"
+        
+        let filePath = documentsUrl.appendingPathComponent(filename)
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            let downloadTask = self.storage.child(fName).write(toFile: filePath) { url, error in
+              if let error = error {
+                  print("Uh-oh, an error occurred!")
+                  let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                  let okAction = UIAlertAction(title: "OK", style: .cancel)
+                  alertController.addAction(okAction)
+                  self.present(alertController, animated: true, completion: nil)
+                  self.tableView.refreshControl?.endRefreshing()
+                // Uh-oh, an error occurred!
+              } else {
+                  print("Local file URL is returned")
+                  DispatchQueue.main.async {
+                      completion()
+                  }
+                // Local file URL for "images/island.jpg" is returned
+              }
+            }
+        }
+    }
+    
+    func readTextFile(with fName: String) -> String? {
+        guard let documentsUrl = documentDirUrl() else {
+            print("documentsUrl Error!")
+            return nil
+        }
+        
+        let filename: String = fName
+        
+        let manager = FileManager.default
+        
+        let filePath = documentsUrl.appendingPathComponent(filename)
+        
+        if !manager.fileExists(atPath: filePath.path) {
+            print("File not exist!")
+            return nil
+        }
+        
+        let content = (try? String(contentsOf: filePath, encoding: .utf8)) ?? ""
+        
+        return content
+    }
+    
+    private func documentDirUrl() -> URL? {
+        return try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
     }
     
     
@@ -117,7 +243,7 @@ class PairsViewController: UIViewController {
             dayOfWeakButton.layer.borderWidth = 2
             dayOfWeakButton.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
             
-            if indexOfDay == 2 {
+            if indexOfDay == curDay {
                 dayOfWeakButton.backgroundColor = UIColor(rgb: 0xEA7500)
                 dayOfWeakButton.layer.borderColor = UIColor(rgb: 0xEA7500).cgColor
             }
@@ -143,7 +269,7 @@ class PairsViewController: UIViewController {
             
             
             view.addSubview(dayOfWeakButton)
-            daysOfWeakButton[indexOfDay] = dayOfWeakButton
+            daysOfWeakButton[dayOfWeakButton] = indexOfDay
             
             x += Int(sizeOfButton) + sizeOfSeparator
         }
@@ -151,15 +277,25 @@ class PairsViewController: UIViewController {
     
     @objc
     func changeButtonColor(_ buttonSubView: UIButton) {
-        myCells = []
+//        myCells = []
         cellForReloadInd = -1
+        cellForReloadIndexes = []
+        curDay = daysOfWeakButton[buttonSubView] ?? 0
+        for cell in myCells {
+            cell?.wasConfiguredFlag = 0
+        }
         tableView.reloadData()
         
+        
         if buttonSubView.backgroundColor == .systemGroupedBackground {
-            for indexOfDay in 0...5 {
-                daysOfWeakButton[indexOfDay]?.backgroundColor = .systemGroupedBackground
-                daysOfWeakButton[indexOfDay]?.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
+            for button in daysOfWeakButton.keys {
+                button.backgroundColor = .systemGroupedBackground
+                button.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
             }
+//            for indexOfDay in 0...5 {
+//                daysOfWeakButton[indexOfDay]?.backgroundColor = .systemGroupedBackground
+//                daysOfWeakButton[indexOfDay]?.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
+//            }
             
             buttonSubView.backgroundColor = UIColor(rgb: 0xEA7500)
             buttonSubView.layer.borderColor = UIColor(rgb: 0xEA7500).cgColor
@@ -214,7 +350,8 @@ class PairsViewController: UIViewController {
     
     //тут completion нужен чтобы знать когда остановить анимацию
     private func loadData(compl: (() -> Void)? = nil) {
-        myCells = []
+//        allocateCellsArr()
+        cellForReloadIndexes = []
         cellForReloadInd = -1
         tableView.reloadData()
         compl?()
@@ -233,6 +370,16 @@ class PairsViewController: UIViewController {
         print("tapped week B")
         
     }
+    
+    private func allocateCellsArr() {
+        for _ in 0...6 {
+            myCells.append(nil)
+        }
+//            for _ in 0...6 {
+//                myCells[myCells.count-1].append(nil)
+//            }
+//        }
+    }
 
     
     @objc private func open() {
@@ -246,8 +393,19 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "PairTableViewCell", for: indexPath) as? PairTableViewCell
-        cell?.config(with: indexPath.row)
-        myCells.append(cell ?? .init())
+        
+//        let cell = tableView.cellForRow(at: indexPath) as? PairTableViewCell
+        
+//        let cell = PairTableViewCell?(style: UITableView.Cel, reuseIdentifier: "PairTableViewCell")
+//        if cell?.wasConfiguredFlag == 0 {
+            
+        if cell?.wasConfiguredFlag == 0 { //когда день поменяется, надо будет сюда войти!
+            cell?.loadCabinets(Cabinets: FreeCabinets[curNumOrDenom][curDay][indexPath.row])
+            cell?.config(with: indexPath.row)
+            myCells[indexPath.row] = cell ?? .init()
+        }
+//        }
+        
         return cell ?? .init()
     }
 
@@ -258,27 +416,31 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("touched \(indexPath.row)")
         if indexPath.row != cellForReloadInd {
+//        if !cellForReloadIndexes.contains(indexPath.row) {
             if cellForReloadInd != -1 {
-                myCells[cellForReloadInd].config(with: cellForReloadInd)
+                myCells[cellForReloadInd]?.config(with: cellForReloadInd)
             }
             
             cellForReloadInd = indexPath.row
+//            cellForReloadIndexes.append(indexPath.row)
             tableView.beginUpdates()
-            myCells[indexPath.row].config2(with: indexPath.row)
+            myCells[indexPath.row]?.config2(with: indexPath.row)
             tableView.endUpdates()
         }
         else {
+//            cellForReloadIndexes = cellForReloadIndexes.filter{$0 != indexPath.row}
             cellForReloadInd = -1
             tableView.beginUpdates()
-            myCells[indexPath.row].config(with: indexPath.row)
+            myCells[indexPath.row]?.config(with: indexPath.row)
             tableView.endUpdates()
         }
     }
     
     //высота ячейки
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        if cellForReloadIndexes.contains(indexPath.row) {
         if indexPath.row == cellForReloadInd {
-            return CGFloat(myCells[indexPath.row].fullCellSz)
+            return CGFloat(myCells[indexPath.row]?.fullCellSz ?? 95)
         }
         else {
             return 95
