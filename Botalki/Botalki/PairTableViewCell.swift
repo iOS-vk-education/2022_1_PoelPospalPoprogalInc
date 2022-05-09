@@ -81,37 +81,89 @@ final class PairTableViewCell: UITableViewCell {
             ULKcabinetsShortString += (ULKcabinets[i] + ((i != numberOfCabinetsInLine-1) ? ", " : "..."))
         }
         
-        var GZLines = Int(GZcabinets.count/numberOfCabinetsInLine)
-        if GZcabinets.count % numberOfCabinetsInLine != 0 {
-            GZLines += 1
+        var GZLines = 1
+        var ULKLines = 1
+        
+        var i = 0
+        for (j, cab) in GZcabinets.enumerated() {
+            if (i + 1) % numberOfCabinetsInLine == 0 {
+                if j != GZcabinets.count - 1 && cab[String.Index(encodedOffset: 0)] != GZcabinets[j+1][String.Index(encodedOffset: 0)] {
+                    GZcabinetsFullString += "\(cab);\n"
+                    i = 0
+                    GZLines += 1
+                } else if j != GZcabinets.count - 1 {
+                    GZcabinetsFullString += "\(cab),\n"
+                    GZLines += 1
+                    i = 0
+                } else {
+                    GZcabinetsFullString += "\(cab)"
+                }
+            } else if j != GZcabinets.count - 1 && cab[String.Index(encodedOffset: 0)] != GZcabinets[j+1][String.Index(encodedOffset: 0)] {
+                GZcabinetsFullString += "\(cab);\n"
+                i = 0
+                GZLines += 1
+            } else {
+                i += 1
+                GZcabinetsFullString += "\(cab)" + ((j != GZcabinets.count - 1) ? ", " : "")
+            }
         }
         
-        var ULKLines = Int(ULKcabinets.count/numberOfCabinetsInLine)
-        if ULKcabinets.count % numberOfCabinetsInLine != 0 {
-            ULKLines += 1
+        i = 0
+        for (j, cab) in ULKcabinets.enumerated() {
+            if (i + 1) % numberOfCabinetsInLine == 0 {
+                if j != ULKcabinets.count - 1 && cab[String.Index(encodedOffset: 0)] != ULKcabinets[j+1][String.Index(encodedOffset: 0)] {
+                    ULKcabinetsFullString += "\(cab);\n"
+                    i = 0
+                    ULKLines += 1
+                } else if j != ULKcabinets.count - 1 {
+                    ULKcabinetsFullString += "\(cab),\n"
+                    ULKLines += 1
+                    i = 0
+                } else {
+                    ULKcabinetsFullString += "\(cab)"
+                }
+            } else if j != ULKcabinets.count - 1 && cab[String.Index(encodedOffset: 0)] != ULKcabinets[j+1][String.Index(encodedOffset: 0)] {
+                ULKcabinetsFullString += "\(cab);\n"
+                i = 0
+                ULKLines += 1
+            } else {
+                i += 1
+                ULKcabinetsFullString += "\(cab)" + ((j != ULKcabinets.count - 1) ? ", " : "")
+            }
         }
+        
+        
+//        var GZLines = Int(GZcabinets.count/numberOfCabinetsInLine)
+//        if GZcabinets.count % numberOfCabinetsInLine == 0 {
+//            GZLines -= 1
+//        }
+//
+//        var ULKLines = Int(ULKcabinets.count/numberOfCabinetsInLine)
+//        if ULKcabinets.count % numberOfCabinetsInLine == 0 {
+//            ULKLines -= 1
+//        }
 //        let ULKLines = Int(ULKcabinets.count/numberOfCabinetsInLine) + (ULKcabinets.count/numberOfCabinetsInLine % 2)) != 0) ? 1 : 0
         
-        for j in 0..<GZLines {
-            for i in 0..<numberOfCabinetsInLine {
-                if j*numberOfCabinetsInLine + i < GZcabinets.count {
-                    GZcabinetsFullString += (GZcabinets[j*numberOfCabinetsInLine + i] + ((j == GZLines-1 && i == numberOfCabinetsInLine-1) ? "" : ", "))
-                }
-            }
-            if j != GZLines {
-                GZcabinetsFullString += "\n"
-            }
-        }
-        for j in 0..<ULKLines {
-            for i in 0..<numberOfCabinetsInLine {
-                if j*numberOfCabinetsInLine + i < ULKcabinets.count {
-                ULKcabinetsFullString += (ULKcabinets[j*numberOfCabinetsInLine + i] + ((j == ULKLines-1 && i == numberOfCabinetsInLine-1) ? "" : ", "))
-                }
-            }
-            if j != ULKLines {
-                ULKcabinetsFullString += "\n"
-            }
-        }
+//        for j in 0..<GZLines {
+//            for i in 0..<numberOfCabinetsInLine {
+//                if j*numberOfCabinetsInLine + i < GZcabinets.count {
+//                    GZcabinetsFullString += (GZcabinets[j*numberOfCabinetsInLine + i] + ((j == GZLines-1 && i == numberOfCabinetsInLine-1) ? "" : ", "))
+//                }
+//            }
+//            if j != GZLines {
+//                GZcabinetsFullString += "\n"
+//            }
+//        }
+//        for j in 0..<ULKLines {
+//            for i in 0..<numberOfCabinetsInLine {
+//                if j*numberOfCabinetsInLine + i < ULKcabinets.count {
+//                ULKcabinetsFullString += (ULKcabinets[j*numberOfCabinetsInLine + i] + ((j == ULKLines-1 && i == numberOfCabinetsInLine-1) ? "" : ", "))
+//                }
+//            }
+//            if j != ULKLines {
+//                ULKcabinetsFullString += "\n"
+//            }
+//        }
         
         fullCellSz = 45 + (GZLines + ULKLines) * 21
     }

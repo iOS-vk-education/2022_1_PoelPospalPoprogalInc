@@ -19,6 +19,7 @@ class PairsViewController: UIViewController {
     private var cellForReloadIndexes = [Int]()
     private var curNumOrDenom = 0
     private var curDay = 2
+    var daysOfWeak = ["Пн\n", "Вт\n", "Ср\n", "Чт\n", "Пт\n", "Сб\n"]
     
     var FreeCabinets = [[[[String]]]]()
     
@@ -53,10 +54,25 @@ class PairsViewController: UIViewController {
         weakButton.setTitle("11 неделя - числитель", for: .normal)
         weakButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         
-        let date = Date()
+        var date = Date()
         let calendar = Calendar.current
 //        print(calendar.component(.day, from: date))
         curDay = calendar.component(.weekday, from: date) - 2
+        
+        //Обработка воскресенья
+        if curDay == -1 {
+            curDay = 0
+            date = calendar.date(byAdding: .day, value: 1, to: date) ?? date
+            changeNumOrDenom()
+            // + в кнопке включить некст неделю
+        }
+        
+//        var startDay = calendar.component(.day, from: date)
+        var i = 0
+        for delta in -curDay...(5 - curDay) {
+            daysOfWeak[i] += String(calendar.component(.day, from: calendar.date(byAdding: .day, value: delta, to: date) ?? date))
+            i += 1
+        }
         
         createDayButtons()
         screenSelection()
@@ -167,6 +183,14 @@ class PairsViewController: UIViewController {
         self.navigationController?.pushViewController(secondViewController, animated: false)
     }
     
+    private func changeNumOrDenom() {
+        if curNumOrDenom == 0 {
+            curNumOrDenom = 1
+        } else {
+            curNumOrDenom = 0
+        }
+    }
+    
     func downloadFile(with fName: String, completion: @escaping () -> Void) {
 //        if let image = cache[name] {
 //            completion(image)
@@ -230,7 +254,6 @@ class PairsViewController: UIViewController {
     
     
     private func createDayButtons() {
-        let dayOfWeak = ["Пн\n18", "Вт\n19", "Ср\n20", "Чт\n21", "Пт\n22", "Сб\n23"]
         let sizeOfButton = 55
         var x = Int(margins)
         let sizeOfSeparator = (Int(UIScreen.main.bounds.width) - sizeOfButton*6 - x*2)/5
@@ -269,7 +292,7 @@ class PairsViewController: UIViewController {
             dayLabel.numberOfLines = 2
             dayLabel.textAlignment = .center
             dayLabel.numberOfLines = 2
-            dayLabel.text = dayOfWeak[indexOfDay]
+            dayLabel.text = daysOfWeak[indexOfDay]
             
             dayOfWeakButton.addSubview(dayLabel)
             dayOfWeakButton.bringSubviewToFront(dayLabel)
