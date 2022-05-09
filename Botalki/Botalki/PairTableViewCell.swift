@@ -68,6 +68,11 @@ final class PairTableViewCell: UITableViewCell {
     }
     
     private func initCabinetsFields() {
+        GZcabinetsShortString = ""
+        ULKcabinetsShortString = ""
+        GZcabinetsFullString = ""
+        ULKcabinetsFullString = ""
+        
         numberOfCabinetsInLine = Int((UIScreen.main.bounds.width - 220)/51) - 1
 //        print(UIScreen.main.bounds.width, numberOfCabinetsInLine)
         
@@ -240,9 +245,11 @@ final class PairTableViewCell: UITableViewCell {
     }
     
     func loadCabinets(Cabinets CabinetsForCell: [String]) {
-//        ULKcabinets = []
-//        GZcabinets = []
-        if ULKcabinets.count == 0 {
+        ULKcabinets = []
+        GZcabinets = []
+//        if ULKcabinets.count != 0 {
+//
+//        }
             for cab in CabinetsForCell {
                 if cab.contains("л") {
                     ULKcabinets.append(cab)
@@ -255,7 +262,7 @@ final class PairTableViewCell: UITableViewCell {
 //                wasConfiguredFlag = 0
 //            }
             initCabinetsFields()
-        }
+//        }
     }
     
     func config(with indexCell: Int) {

@@ -93,6 +93,12 @@ class PairsViewController: UIViewController {
                     self.parseSourceFile()
                 }
                 
+                var indexPath: IndexPath = IndexPath(row: 0, section: 0)
+                for i in 0...6 {
+                    indexPath.row = i
+                    indexPath.section = 0
+                    self.myCells[i] = self.tableView.dequeueReusableCell(withIdentifier: "PairTableViewCell", for: indexPath) as? PairTableViewCell
+                }
                 
                 self.tableView.refreshControl?.endRefreshing()
                 self.tableView.delegate = self
@@ -101,6 +107,14 @@ class PairsViewController: UIViewController {
             }
         }
         else {
+            
+            var indexPath: IndexPath = IndexPath(row: 0, section: 0)
+            for i in 0...6 {
+                indexPath.row = i
+                indexPath.section = 0
+                self.myCells[i] = self.tableView.dequeueReusableCell(withIdentifier: "PairTableViewCell", for: indexPath) as? PairTableViewCell
+            }
+            
             self.parseSourceFile()
             self.tableView.refreshControl?.endRefreshing()
             self.tableView.delegate = self
@@ -392,9 +406,9 @@ class PairsViewController: UIViewController {
 extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "PairTableViewCell", for: indexPath) as? PairTableViewCell
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "PairTableViewCell", for: indexPath) as? PairTableViewCell
         
-//        let cell = tableView.cellForRow(at: indexPath) as? PairTableViewCell
+        let cell = myCells[indexPath.row]
         
 //        let cell = PairTableViewCell?(style: UITableView.Cel, reuseIdentifier: "PairTableViewCell")
 //        if cell?.wasConfiguredFlag == 0 {
@@ -402,7 +416,7 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
         if cell?.wasConfiguredFlag == 0 { //когда день поменяется, надо будет сюда войти!
             cell?.loadCabinets(Cabinets: FreeCabinets[curNumOrDenom][curDay][indexPath.row])
             cell?.config(with: indexPath.row)
-            myCells[indexPath.row] = cell ?? .init()
+//            myCells[indexPath.row] = cell ?? .init()
         }
 //        }
         
@@ -415,20 +429,20 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("touched \(indexPath.row)")
-        if indexPath.row != cellForReloadInd {
-//        if !cellForReloadIndexes.contains(indexPath.row) {
-            if cellForReloadInd != -1 {
-                myCells[cellForReloadInd]?.config(with: cellForReloadInd)
-            }
+//        if indexPath.row != cellForReloadInd {
+        if !cellForReloadIndexes.contains(indexPath.row) {
+//            if cellForReloadInd != -1 {
+//                myCells[cellForReloadInd]?.config(with: cellForReloadInd)
+//            }
             
-            cellForReloadInd = indexPath.row
-//            cellForReloadIndexes.append(indexPath.row)
+//            cellForReloadInd = indexPath.row
+            cellForReloadIndexes.append(indexPath.row)
             tableView.beginUpdates()
             myCells[indexPath.row]?.config2(with: indexPath.row)
             tableView.endUpdates()
         }
         else {
-//            cellForReloadIndexes = cellForReloadIndexes.filter{$0 != indexPath.row}
+            cellForReloadIndexes = cellForReloadIndexes.filter{$0 != indexPath.row}
             cellForReloadInd = -1
             tableView.beginUpdates()
             myCells[indexPath.row]?.config(with: indexPath.row)
@@ -438,8 +452,8 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     
     //высота ячейки
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        if cellForReloadIndexes.contains(indexPath.row) {
-        if indexPath.row == cellForReloadInd {
+        if cellForReloadIndexes.contains(indexPath.row) {
+//        if indexPath.row == cellForReloadInd {
             return CGFloat(myCells[indexPath.row]?.fullCellSz ?? 95)
         }
         else {
