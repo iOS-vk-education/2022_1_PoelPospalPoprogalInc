@@ -22,6 +22,7 @@ class PairsViewController: UIViewController {
     private let margins = CGFloat(22)
     private let screenWidth = UIScreen.main.bounds.width
     
+    private let lowerView = UIView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,10 +33,12 @@ class PairsViewController: UIViewController {
         
         view.addSubview(tableView)
         view.addSubview(weakButton)
+        view.addSubview(lowerView)
         view.addSubview(firstScreenButton)
         view.addSubview(secondScreenButton)
         view.addSubview(houseImg)
         view.addSubview(magnifierImg)
+        
         
         weakButton.backgroundColor = UIColor(rgb: 0xC4C4C4)
         weakButton.layer.cornerRadius = 10
@@ -44,7 +47,6 @@ class PairsViewController: UIViewController {
         weakButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
         weakButton.setTitle("11 неделя - числитель", for: .normal)
         weakButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
-        
         
         createDayButtons()
         screenSelection()
@@ -61,6 +63,7 @@ class PairsViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
         tableView.refreshControl = refreshControl
         
+        setupLowerSubview()
         loadData()
     }
     
@@ -80,6 +83,16 @@ class PairsViewController: UIViewController {
         secondScreenButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
     
         secondScreenButton.addTarget(self, action: #selector(goToFilterScreen), for: .touchUpInside)
+    }
+    
+    private func setupLowerSubview() {
+//        lowerView.layer.shadowColor = UIColor.black.cgColor
+//        lowerView.layer.shadowRadius = 0.5
+//        lowerView.layer.shadowOffset = .init(width: 0.5, height: 0.5)
+//        lowerView.layer.shadowOpacity = 0.8
+        lowerView.layer.cornerRadius = 20
+        lowerView.backgroundColor = UIColor.systemGroupedBackground
+        lowerView.alpha = 0.8
     }
     
     @objc
@@ -170,12 +183,18 @@ class PairsViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+        
         tableView.pin
             .top(200)
-            .bottom(130)
+            .bottom(0)
             .left(0)
             .right(0)
         
+        lowerView.pin
+            .top(view.frame.height - 115)
+            .bottom(0)
+            .left(0)
+            .right(0)
         
         weakButton.pin
             .top(75)

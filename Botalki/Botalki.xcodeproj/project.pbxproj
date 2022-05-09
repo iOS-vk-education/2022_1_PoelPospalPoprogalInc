@@ -17,6 +17,8 @@
 		4A0612E62809D2BD001AE9CB /* clock.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0612E12809D2BD001AE9CB /* clock.png */; };
 		4A0612EA2809D67A001AE9CB /* PinLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 4A0612E92809D67A001AE9CB /* PinLayout */; };
 		4A0612EC2809D7F8001AE9CB /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0612EB2809D7F8001AE9CB /* City.swift */; };
+		4A4BA7002826A7CE00CD5054 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A4BA6FF2826A7CE00CD5054 /* SplashViewController.swift */; };
+		4A7AD7C82828503A008CC511 /* SplashPresenterswift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A7AD7C728285039008CC511 /* SplashPresenterswift.swift */; };
 		4A9D0093280CA91700A7A778 /* magnifier.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D0092280CA91700A7A778 /* magnifier.png */; };
 		4A9D0095280CAECD00A7A778 /* house.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D0094280CAECD00A7A778 /* house.png */; };
 		4A9D0097280D6F7200A7A778 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9D0096280D6F7200A7A778 /* FilterViewController.swift */; };
@@ -43,6 +45,8 @@
 		4A0612E02809D2BD001AE9CB /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		4A0612E12809D2BD001AE9CB /* clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clock.png; sourceTree = "<group>"; };
 		4A0612EB2809D7F8001AE9CB /* City.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
+		4A4BA6FF2826A7CE00CD5054 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
+		4A7AD7C728285039008CC511 /* SplashPresenterswift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashPresenterswift.swift; sourceTree = "<group>"; };
 		4A9D0092280CA91700A7A778 /* magnifier.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = magnifier.png; sourceTree = "<group>"; };
 		4A9D0094280CAECD00A7A778 /* house.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = house.png; sourceTree = "<group>"; };
 		4A9D0096280D6F7200A7A778 /* FilterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
@@ -88,6 +92,8 @@
 		4A0612C82809D0BB001AE9CB /* Botalki */ = {
 			isa = PBXGroup;
 			children = (
+				4A7AD7C728285039008CC511 /* SplashPresenterswift.swift */,
+				4A4BA6FF2826A7CE00CD5054 /* SplashViewController.swift */,
 				4A9D00A6280F255000A7A778 /* FilterTableViewCell.swift */,
 				4A9D00A0280F10D300A7A778 /* SortedViewController.swift */,
 				B305A23B280EF0A700289466 /* PairTableViewCell.swift */,
@@ -213,8 +219,10 @@
 				4A0612E22809D2BD001AE9CB /* PairFullCell.swift in Sources */,
 				4A0612E52809D2BD001AE9CB /* MainViewController.swift in Sources */,
 				4A0612CA2809D0BB001AE9CB /* AppDelegate.swift in Sources */,
+				4A7AD7C82828503A008CC511 /* SplashPresenterswift.swift in Sources */,
 				4A0612CC2809D0BB001AE9CB /* SceneDelegate.swift in Sources */,
 				4A9D00A1280F10D300A7A778 /* SortedViewController.swift in Sources */,
+				4A4BA7002826A7CE00CD5054 /* SplashViewController.swift in Sources */,
 				B305A23C280EF0A700289466 /* PairTableViewCell.swift in Sources */,
 				4A0612EC2809D7F8001AE9CB /* City.swift in Sources */,
 			);

@@ -11,9 +11,17 @@ final class SortedViewController: UIViewController {
     private var audCells: [FilterTableViewCell] = []
     private var cellForReloadInd = -1
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .systemGroupedBackground
+        self.view.backgroundColor = .systemBackground
+        
+        if self.traitCollection.userInterfaceStyle == .dark {
+            imageDoor.setImageColor(color: UIColor.white)
+        } else {
+            imageDoor.setImageColor(color: UIColor.black)
+        }
         
         view.addSubview(tableView)
         view.addSubview(tempLabel)
