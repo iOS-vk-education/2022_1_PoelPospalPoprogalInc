@@ -200,10 +200,10 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
             .right(0)
         
         weekPicker.pin
-            .top(70)
-            .height(CGFloat(35) + 20)
-            .left(margins)
-            .width(CGFloat(view.frame.width / (3 / 2)) + 5)
+            .top(55)
+            .height(CGFloat(35) + 40)
+            .right(margins)
+            .width(CGFloat(view.frame.width / (4 / 3)))
         
         let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
         firstScreenButton.pin
