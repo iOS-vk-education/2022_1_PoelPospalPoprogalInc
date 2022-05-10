@@ -16,26 +16,17 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     private let houseImg = UIImageView(image: UIImage(named: "house"))
     private let magnifierImg = UIImageView(image: UIImage(named: "magnifier"))
     
-    private let dateButton = UIButton()
+    private let dateField = UITextField()
     private let selectRoomButton = UIButton()
     
     private let pairSelectView = UIView()
     private let pairSwitcher = UISwitch()
     
+    private let datePicker = UIDatePicker()
     
     let gradePickerValues = ["1", "2", "3", "4", "5", "6", "7"]
-    
     private let firstPairPicker = UIPickerView()
     private let secondPairPicker = UIPickerView()
-    
-
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
-        return gradePickerValues.count
-    }
-
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return gradePickerValues[row]
-    }
     
     private let buildingSelectView = UIView()
     private let buildingSegController = UISegmentedControl(items: ["ГЗ", "УЛК"])
@@ -64,7 +55,6 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
             imageCalendar.setImageColor(color: UIColor.black)
         }
         
-        
         firstPairPicker.dataSource = self
         firstPairPicker.delegate = self
         secondPairPicker.dataSource = self
@@ -77,7 +67,7 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         view.addSubview(houseImg)
         view.addSubview(magnifierImg)
         
-        view.addSubview(dateButton)
+        view.addSubview(dateField)
         view.addSubview(selectRoomButton)
     
         
@@ -88,12 +78,16 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(FilterViewController.tap(_:)))
         view.addGestureRecognizer(tapGestureReconizer)
         
+        
+        // календарь
+        dateField.inputView = datePicker
+        datePicker.datePickerMode = .date
+        
 //        let tapScreen = UITapGestureRecognizer(target: self, action: "dismissKeyboard:")
 //        func dismissKeyboard(sender: UITapGestureRecognizer) {
 //            view.endEditing(true)
 //        }
         
-        createDateButton()
         createSelectRoomButton()
         createPairArea()
         createBuildingArea()
@@ -102,6 +96,25 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         screenSelection()
         
         setupLowerSubview()
+        showDatePicker()
+        view.addSubview(datePicker)
+    }
+    
+    
+    func showDatePicker() {
+        datePicker.date = Date()
+        datePicker.locale = .current
+        datePicker.preferredDatePickerStyle = .compact
+//        datePicker.addTarget(self, action: #selector(handleDateSelection), for: .valueChanged)
+        
+        datePicker.backgroundColor = UIColor.secondarySystemBackground
+        datePicker.layer.borderWidth = 2
+        datePicker.layer.borderColor = borderColor.cgColor
+        
+        datePicker.layer.cornerRadius = 16
+        datePicker.layer.masksToBounds = true
+//        datePicker.titleLabel?.font = .systemFont(ofSize: 22, weight: .semibold)
+
     }
     
     private func setupLowerSubview() {
@@ -163,21 +176,18 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
             .width(45)
         view.addSubview(imageCalendar)
         view.bringSubviewToFront(imageCalendar)
-//        } else {
-//            imageCalendarBlack.pin
-//                .top(82)
-//                .left(54)
-//                .height(45)
-//                .width(45)
-//            view.addSubview(imageCalendarBlack)
-//            view.bringSubviewToFront(imageCalendarBlack)
-//        }
         
-        dateButton.pin
+        datePicker.pin
             .top(82)
-            .left(self.view.frame.width / 2 + 10)
+            .left(self.view.frame.width / 2 + 30)
             .height(42)
-            .width(self.view.frame.width / 3 + 20)
+            .width(self.view.frame.width / 3 - 5)
+        
+//        dateField.pin
+//            .top(82)
+//            .left(self.view.frame.width / 2 + 10)
+//            .height(42)
+//            .width(self.view.frame.width / 3 + 20)
         
         selectRoomButton.pin
             .top((self.view.frame.height / 3) * 2)
@@ -222,32 +232,14 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         view.endEditing(true)
     }
     
-    private func createDateButton() {
-        dateButton.backgroundColor = UIColor.systemGroupedBackground
-        dateButton.layer.borderWidth = 2
-        dateButton.layer.borderColor = borderColor.cgColor
-        
-        dateButton.layer.cornerRadius = 16
-        dateButton.layer.masksToBounds = true
-        dateButton.titleLabel?.font = .systemFont(ofSize: 22, weight: .semibold)
-        
-        let dateLabel = UILabel()
-        
-        dateLabel.font = .systemFont(ofSize: 22, weight: .bold)
-        dateLabel.numberOfLines = 1
-        dateLabel.textAlignment = .right
-        dateLabel.text = "20.04.2022"
-        
-        dateButton.addSubview(dateLabel)
-        dateButton.bringSubviewToFront(dateLabel)
-        dateButton.layoutSubviews()
-        
-        dateLabel.pin
-            .top(7)
-            .left(12)
-            .height(30)
-            .width(130)
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
+        return gradePickerValues.count
     }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return gradePickerValues[row]
+    }
+    
     
     private func createSelectRoomButton() {
         selectRoomButton.backgroundColor = UIColor(rgb: 0xC2A894)
