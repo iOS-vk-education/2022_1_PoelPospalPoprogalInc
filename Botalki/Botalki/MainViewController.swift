@@ -2,7 +2,7 @@ import UIKit
 import PinLayout
 import FirebaseStorage
 
-class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+class PairsViewController: UIViewController {
 
     private let tableView = UITableView()
     private let houseImg = UIImageView(image: UIImage(named: "house"))
@@ -15,11 +15,14 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
     private let weekPicker = UIPickerView()
     private var myCells = [PairTableViewCell?]()
 
-    private var allCabinets: String = ""
+    private var allCabinetsFromFile: String = ""
+    private var semesterStartFromFile: String = ""
     private var cellForReloadInd = -1
     private var cellForReloadIndexes = [Int]()
     private var curNumOrDenom = 0
     private var curDay = 2
+    private var curWeek = 0
+    private var semStartDate = Date()
     var daysOfWeak = ["Пн\n", "Вт\n", "Ср\n", "Чт\n", "Пт\n", "Сб\n"]
     
     var FreeCabinets = [[[[String]]]]()
@@ -28,6 +31,7 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
     private var secondScreenButton = UIButton()
     
     var daysOfWeakButton: [UIButton:Int] = [:]
+    var labelsOfWeakButton: [UILabel] = []
     
     private let margins = CGFloat(22)
     private let screenWidth = UIScreen.main.bounds.width
@@ -63,6 +67,7 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         let calendar = Calendar.current
 //        print(calendar.component(.day, from: date))
         curDay = calendar.component(.weekday, from: date) - 2
+//        curNumOrDenom = weekPicker.hashValue
         
         //Обработка воскресенья
         if curDay == -1 {
@@ -101,13 +106,14 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
 //        let cabinetsRef = storageRef.child("cabinets.txt")
         allocateCellsArr()
         
-        self.allCabinets = self.readTextFile(with: "cabinets.txt") ?? ""
+        self.allCabinetsFromFile = self.readTextFile(with: "cabinets.txt") ?? ""
+        self.semesterStartFromFile = self.readTextFile(with: "uuids.txt") ?? ""
         
-        if self.allCabinets == "" {
+        if self.allCabinetsFromFile == "" {
             downloadFile(with: "cabinets.txt") {
-                self.allCabinets = self.readTextFile(with: "cabinets.txt") ?? ""
+                self.allCabinetsFromFile = self.readTextFile(with: "cabinets.txt") ?? ""
                 
-                if self.allCabinets == "" {
+                if self.allCabinetsFromFile == "" {
                     print("Downloading file error...")
                 }
                 else {
@@ -127,8 +133,7 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
                 self.tableView.dataSource = self
                 self.loadData()
             }
-        }
-        else {
+        } else {
             
             var indexPath: IndexPath = IndexPath(row: 0, section: 0)
             for i in 0...6 {
@@ -145,10 +150,31 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         }
         
         
+        
+
+        if self.semesterStartFromFile == "" {
+            downloadFile(with: "uuids.txt") {
+                self.semesterStartFromFile = self.readTextFile(with: "uuids.txt") ?? ""
+
+                if self.semesterStartFromFile == "" {
+                    print("Downloading file error...")
+                }
+                else {
+                    self.setCurWeekDate()
+                }
+
+                self.loadData()
+            }
+        } else {
+            self.setCurWeekDate()
+            self.loadData()
+        }
+        
+        
     }
     
     private func parseSourceFile() {
-        self.allCabinets.split(separator: "\n").forEach { line in
+        self.allCabinetsFromFile.split(separator: "\n").forEach { line in
             var pairsForNumenatorOrDen = [[[String]]]()
             line.components(separatedBy: "###").forEach { day in
                 var pairsForDay = [[String]]()
@@ -163,6 +189,27 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
             }
             self.FreeCabinets.append(pairsForNumenatorOrDen)
         }
+    }
+    
+    private func setCurWeekDate() {
+        semesterStartFromFile = semesterStartFromFile.components(separatedBy: "\n")[0]
+        let dateFormatter = ISO8601DateFormatter()
+        semStartDate = dateFormatter.date(from: semesterStartFromFile)!
+        semStartDate = Calendar.current.date(byAdding: .day, value: -1, to: semStartDate)!
+//        var cur = Calendar.current.date(byAdding: .day, value: -3, to: Date()) ?? Date()
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "yyyy/MM/dd HH:mm"
+//        let cur = formatter.date(from: "2022/05/8 01:00")!
+//        print("from: \(semStartDate) to \(cur)")
+        let deltaSecs = Date() - semStartDate
+        curWeek = Int(deltaSecs/604800 + 1)
+//        semesterStart = String(semesterStart[...semesterStart.index(semesterStart.startIndex, offsetBy: 9)])
+//        var startDate = Date(
+//        semesterStart.substring(with: Range(String.Index())
+//        print(Int(deltaWeeks + 1))
+        weekPicker.selectRow(curWeek-1, inComponent: 0, animated: true)
+        curNumOrDenom = (curWeek-1) % 2
+        print(curWeek)
     }
     
     private func screenSelection() {
@@ -217,7 +264,7 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
             return
         }
         
-        let filename: String = "cabinets.txt"
+        let filename: String = fName
         
         let filePath = documentsUrl.appendingPathComponent(filename)
         
@@ -323,6 +370,7 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
             
             view.addSubview(dayOfWeakButton)
             daysOfWeakButton[dayOfWeakButton] = indexOfDay
+            labelsOfWeakButton.append(dayLabel)
             
             x += Int(sizeOfButton) + sizeOfSeparator
         }
@@ -330,15 +378,8 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
     
     @objc
     func changeButtonColor(_ buttonSubView: UIButton) {
-//        myCells = []
-        cellForReloadInd = -1
-        cellForReloadIndexes = []
         curDay = daysOfWeakButton[buttonSubView] ?? 0
-        for cell in myCells {
-            cell?.wasConfiguredFlag = 0
-        }
-        tableView.reloadData()
-        
+        loadData()
         
         if buttonSubView.backgroundColor == .systemGroupedBackground {
             for button in daysOfWeakButton.keys {
@@ -354,6 +395,40 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
             buttonSubView.layer.borderColor = UIColor(rgb: 0xEA7500).cgColor
             
         }
+    }
+    
+    private func updateDayButtons(with ind: Int) {
+        let calendar = Calendar.current
+        let buttonsStartDate = calendar.date(byAdding: .day, value: ind * 7 + 1, to: semStartDate)!
+        
+        curDay = 0
+        daysOfWeak = ["Пн\n", "Вт\n", "Ср\n", "Чт\n", "Пт\n", "Сб\n"]
+        var i = 0
+        for delta in -curDay...(5 - curDay) {
+            daysOfWeak[i] += String(calendar.component(.day, from: calendar.date(byAdding: .day, value: delta, to: buttonsStartDate) ?? buttonsStartDate))
+            i += 1
+        }
+        
+        for (i, label) in labelsOfWeakButton.enumerated() {
+            label.text = daysOfWeak[i]
+        }
+        
+        var monButton = UIButton()
+        
+        for button in daysOfWeakButton.keys {
+            if daysOfWeakButton[button] == 0 {
+                monButton = button
+            }
+        }
+        
+//        let dayButtons = [UIButton](daysOfWeakButton.keys)
+        changeButtonColor(monButton)
+        
+//        loadData()
+    }
+    
+    private func unconfigCells() {
+        myCells.forEach {$0?.wasConfiguredFlag = 0}
     }
     
     override func viewDidLayoutSubviews() {
@@ -412,22 +487,11 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
 //        allocateCellsArr()
         cellForReloadIndexes = []
         cellForReloadInd = -1
+        unconfigCells()
         tableView.reloadData()
         compl?()
     }
     
-    // следующие 3 функции для пикера
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
-        return weeks.count
-    }
-
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return weeks[row]
-    }
     
     @objc
     private func didPullToRefresh() {
@@ -447,10 +511,6 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         for _ in 0...6 {
             myCells.append(nil)
         }
-//            for _ in 0...6 {
-//                myCells[myCells.count-1].append(nil)
-//            }
-//        }
     }
 
     
@@ -474,8 +534,9 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
         if cell?.wasConfiguredFlag == 0 { //когда день поменяется, надо будет сюда войти!
             cell?.loadCabinets(Cabinets: FreeCabinets[curNumOrDenom][curDay][indexPath.row])
             cell?.config(with: indexPath.row)
-//            myCells[indexPath.row] = cell ?? .init()
         }
+//            myCells[indexPath.row] = cell ?? .init()
+//        }
 //        }
         
         return cell ?? .init()
@@ -518,4 +579,35 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
             return 95
         }
     }
+}
+
+
+extension PairsViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    // следующие 3 функции для пикера
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
+        return weeks.count
+    }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return weeks[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        curNumOrDenom = row % 2
+        updateDayButtons(with: row)
+        self.loadData()
+    }
+}
+
+
+extension Date {
+
+    static func - (lhs: Date, rhs: Date) -> TimeInterval {
+        return lhs.timeIntervalSinceReferenceDate - rhs.timeIntervalSinceReferenceDate
+    }
+
 }
