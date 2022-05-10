@@ -73,7 +73,7 @@ final class PairTableViewCell: UITableViewCell {
         GZcabinetsFullString = ""
         ULKcabinetsFullString = ""
         
-        numberOfCabinetsInLine = Int((UIScreen.main.bounds.width - 220)/51) - 1
+        numberOfCabinetsInLine = Int((UIScreen.main.bounds.width - 220)/47) - 1
 //        print(UIScreen.main.bounds.width, numberOfCabinetsInLine)
         
         for i in 0..<numberOfCabinetsInLine {

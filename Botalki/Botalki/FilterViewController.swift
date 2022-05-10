@@ -49,11 +49,6 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         navigationController?.setNavigationBarHidden(true, animated: true)
         navigationController?.navigationBar.prefersLargeTitles = true
 
-        if self.traitCollection.userInterfaceStyle == .dark {
-            imageCalendar.setImageColor(color: UIColor.white)
-        } else {
-            imageCalendar.setImageColor(color: UIColor.black)
-        }
         
         firstPairPicker.dataSource = self
         firstPairPicker.delegate = self
@@ -98,6 +93,16 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         setupLowerSubview()
         showDatePicker()
         view.addSubview(datePicker)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if self.traitCollection.userInterfaceStyle == .dark {
+            imageCalendar.setImageColor(color: UIColor.white)
+        } else {
+            imageCalendar.setImageColor(color: UIColor.black)
+        }
     }
     
     
