@@ -94,6 +94,7 @@ class PairsViewController: UIViewController {
 //            tableView.register(PairTableViewCell.self, forCellReuseIdentifier: "PairTableViewCell\(day)")
 //        }
         tableView.register(PairTableViewCell.self, forCellReuseIdentifier: "PairTableViewCell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "basicStyle")
         
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
@@ -526,6 +527,10 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
         
 //        let cell = tableView.dequeueReusableCell(withIdentifier: "PairTableViewCell", for: indexPath) as? PairTableViewCell
         
+        if indexPath.row == 7 {
+            return tableView.dequeueReusableCell(withIdentifier: "basicStyle", for: indexPath)
+        }
+        
         let cell = myCells[indexPath.row]
         
 //        let cell = PairTableViewCell?(style: UITableView.Cel, reuseIdentifier: "PairTableViewCell")
@@ -543,7 +548,7 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 7
+        return 7 + 1
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

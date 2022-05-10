@@ -77,8 +77,12 @@ final class PairTableViewCell: UITableViewCell {
 //        print(UIScreen.main.bounds.width, numberOfCabinetsInLine)
         
         for i in 0..<numberOfCabinetsInLine {
-            GZcabinetsShortString += (GZcabinets[i] + ((i != numberOfCabinetsInLine-1) ? ", " : "..."))
-            ULKcabinetsShortString += (ULKcabinets[i] + ((i != numberOfCabinetsInLine-1) ? ", " : "..."))
+            if i < GZcabinets.count {
+                GZcabinetsShortString += (GZcabinets[i] + ((i != numberOfCabinetsInLine-1) ? ", " : "..."))
+            }
+            if i < ULKcabinets.count {
+                ULKcabinetsShortString += (ULKcabinets[i] + ((i != numberOfCabinetsInLine-1) ? ", " : "..."))
+            }
         }
         
         var GZLines = 1
