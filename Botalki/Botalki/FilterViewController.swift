@@ -192,6 +192,7 @@ class FilterViewController: UIViewController {
     @objc
     private func didChangeBuilding(_ sender: UISegmentedControl) {
         buildingSwitcher.setOn(true, animated: true)
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
     
     @objc
@@ -543,6 +544,7 @@ class FilterViewController: UIViewController {
     func goToFirstScreen() {
 //        let firstViewController: PairsViewController = PairsViewController()
 //        self.navigationController?.pushViewController(firstViewController, animated: false)
+        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         self.navigationController?.popViewController(animated: false)
     }
   
@@ -616,7 +618,7 @@ class FilterViewController: UIViewController {
             let beg = firstPairPicker.selectedRow(inComponent: 0)
             let end = secondPairPicker.selectedRow(inComponent: 0)
             
-            cellDataArr = cellDataArr.filter{$0.pairStartInd == beg && $0.pairEndInd == end}
+            cellDataArr = cellDataArr.filter{$0.pairStartInd <= beg && $0.pairEndInd >= end}
         }
         
         if buildingSwitcher.isOn {
@@ -634,7 +636,7 @@ class FilterViewController: UIViewController {
             present(navigationController, animated: true, completion: nil)
         } else {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
-            let alertController = UIAlertController(title: "Не найдено ни одной подходящей аюдитории...", message: "", preferredStyle: .alert)
+            let alertController = UIAlertController(title: "Не найдено ни одной подходящей аудитории...", message: "", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .cancel)
             alertController.addAction(okAction)
             self.present(alertController, animated: true, completion: nil)

@@ -246,6 +246,7 @@ class PairsViewController: UIViewController {
     @objc
     func goToFilterScreen() {
         secondViewController.FreeCabinets = FreeCabinets
+        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         self.navigationController?.pushViewController(secondViewController, animated: false)
     }
     
@@ -381,6 +382,7 @@ class PairsViewController: UIViewController {
     
     @objc
     func changeButtonColor(_ buttonSubView: UIButton) {
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         curDay = daysOfWeakButton[buttonSubView] ?? 0
         loadData()
         
@@ -555,6 +557,7 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("touched \(indexPath.row)")
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
 //        if indexPath.row != cellForReloadInd {
         if !cellForReloadIndexes.contains(indexPath.row) {
 //            if cellForReloadInd != -1 {

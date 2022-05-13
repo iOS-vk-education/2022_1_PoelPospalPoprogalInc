@@ -29,12 +29,6 @@ final class SortedViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor = .systemBackground
         
-        if self.traitCollection.userInterfaceStyle == .dark {
-            imageDoor.setImageColor(color: UIColor.white)
-        } else {
-            imageDoor.setImageColor(color: UIColor.black)
-        }
-        
         view.addSubview(tableView)
         view.addSubview(tempLabel)
         view.addSubview(imageDoor)
@@ -47,6 +41,16 @@ final class SortedViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(FilterTableViewCell.self, forCellReuseIdentifier: "FilterTableViewCell")
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if self.traitCollection.userInterfaceStyle == .dark {
+            imageDoor.setImageColor(color: UIColor.white)
+        } else {
+            imageDoor.setImageColor(color: UIColor.black)
+        }
     }
     
     override func viewDidLayoutSubviews() {
