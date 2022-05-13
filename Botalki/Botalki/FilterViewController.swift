@@ -1,10 +1,19 @@
 import UIKit
 import PinLayout
 
-class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+struct FilterCellData {
+    let pairStartInd: Int
+    let pairEndInd: Int
+    let buildingInd: Int
+    let cabinet: String
+}
+
+class FilterViewController: UIViewController {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
+    var FreeCabinets = [[[[String]]]]()
+    var semStartDate = Date()
     
     private let borderColor = UIColor(rgb: 0xC2A894)
     
@@ -27,13 +36,18 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     let gradePickerValues = ["1", "2", "3", "4", "5", "6", "7"]
     private let firstPairPicker = UIPickerView()
     private let secondPairPicker = UIPickerView()
+    private var pickersDict: [UIPickerView: Int] = [:]
     
     private let buildingSelectView = UIView()
+    private let buildingSwitcher = UISwitch()
     private let buildingSegController = UISegmentedControl(items: ["ГЗ", "УЛК"])
     
     private let audienceSelectView = UIView()
     private let audienceSwitcher = UISwitch()
     private let audienceTextField = UITextField()
+    
+    private var curWeek = 0
+    private var weekDay = 0
     
     
     private let margins = CGFloat(22)
@@ -49,11 +63,13 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         navigationController?.setNavigationBarHidden(true, animated: true)
         navigationController?.navigationBar.prefersLargeTitles = true
 
-        
+        pickersDict = [firstPairPicker: 0, secondPairPicker: 1]
         firstPairPicker.dataSource = self
         firstPairPicker.delegate = self
         secondPairPicker.dataSource = self
         secondPairPicker.delegate = self
+        buildingSegController.addTarget(self, action: #selector(didChangeBuilding(_ :)), for: .valueChanged)
+        audienceSwitcher.addTarget(self, action: #selector(didSwitchAudienceTrigger), for: .valueChanged)
         
         view.addSubview(lowerView)
         view.addSubview(firstScreenButton)
@@ -77,6 +93,7 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         // календарь
         dateField.inputView = datePicker
         datePicker.datePickerMode = .date
+        datePicker.addTarget(self, action: #selector(didChooseDate), for: .editingDidEnd)
         
 //        let tapScreen = UITapGestureRecognizer(target: self, action: "dismissKeyboard:")
 //        func dismissKeyboard(sender: UITapGestureRecognizer) {
@@ -105,6 +122,84 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         }
     }
     
+    @objc
+    private func didChooseDate() {
+        DispatchQueue.global().async {
+            usleep(1)
+            DispatchQueue.main.async {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "dd.MM.yyyy"
+                let calendar = Calendar.current
+                let semEnd = calendar.date(byAdding: .day, value: 7*17, to: self.semStartDate)!
+                
+                let deltaSecs = self.datePicker.date - self.semStartDate
+                self.curWeek = Int(deltaSecs/604800 + 1)
+                self.weekDay = calendar.component(.weekday, from: self.datePicker.date) - 2
+                
+                if self.weekDay == -1 {
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                    let alertController = UIAlertController(title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .cancel)
+                    alertController.addAction(okAction)
+                    self.datePicker.date = Date()
+                    self.present(alertController, animated: true, completion: nil)
+                    return
+                }
+                
+                if self.curWeek < 1 || self.curWeek > 17 {
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                    let alertController = UIAlertController(title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: self.semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .cancel)
+                    alertController.addAction(okAction)
+                    self.datePicker.date = Date()
+                    self.present(alertController, animated: true, completion: nil)
+                    return
+                }
+            }
+            
+        }
+        
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "dd.MM.yyyy"
+//        let calendar = Calendar.current
+//        let semEnd = calendar.date(byAdding: .day, value: 7*17, to: semStartDate)!
+//
+//        let deltaSecs = datePicker.date - semStartDate
+//        curWeek = Int(deltaSecs/604800 + 1)
+//        weekDay = calendar.component(.weekday, from: datePicker.date) - 2
+//
+//        if weekDay == -1 {
+//            UINotificationFeedbackGenerator().notificationOccurred(.error)
+//            let alertController = UIAlertController(title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день", preferredStyle: .alert)
+//            let okAction = UIAlertAction(title: "OK", style: .cancel)
+//            alertController.addAction(okAction)
+//            datePicker.date = Date()
+//            self.present(alertController, animated: true, completion: nil)
+//            return
+//        }
+//
+//        if curWeek < 1 || curWeek > 17 {
+//            UINotificationFeedbackGenerator().notificationOccurred(.error)
+//            let alertController = UIAlertController(title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок", preferredStyle: .alert)
+//            let okAction = UIAlertAction(title: "OK", style: .cancel)
+//            alertController.addAction(okAction)
+//            datePicker.date = Date()
+//            self.present(alertController, animated: true, completion: nil)
+//            return
+//        }
+    }
+    
+    @objc
+    private func didChangeBuilding(_ sender: UISegmentedControl) {
+        buildingSwitcher.setOn(true, animated: true)
+    }
+    
+    @objc
+    private func didSwitchAudienceTrigger() {
+        if !audienceSwitcher.isOn {
+            audienceTextField.layer.borderWidth = 0
+        }
+    }
     
     func showDatePicker() {
         datePicker.date = Date()
@@ -118,9 +213,8 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         
         datePicker.layer.cornerRadius = 16
         datePicker.layer.masksToBounds = true
-//        datePicker.titleLabel?.font = .systemFont(ofSize: 22, weight: .semibold)
-
     }
+    
     
     private func setupLowerSubview() {
         lowerView.layer.cornerRadius = 20
@@ -237,14 +331,6 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         view.endEditing(true)
     }
     
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
-        return gradePickerValues.count
-    }
-
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return gradePickerValues[row]
-    }
-    
     
     private func createSelectRoomButton() {
         selectRoomButton.backgroundColor = UIColor(rgb: 0xC2A894)
@@ -288,7 +374,7 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         pairSelectView.layoutSubviews()
         
         pairSelectView.addSubview(pairSwitcher)
-        pairSelectView.addSubview(pairSwitcher)
+//        pairSelectView.addSubview(pairSwitcher)
         pairSwitcher.pin
             .top(20)
             .left(pairSelectView.frame.width + 270)
@@ -302,7 +388,7 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
             .width(150)
         
         pairSelectView.addSubview(firstPairPicker)
-        pairSelectView.addSubview(firstPairPicker)
+//        pairSelectView.addSubview(firstPairPicker)
         
         secondPairPicker.pin
             .top(54)
@@ -313,7 +399,7 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
 //        secondPairTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
 
         pairSelectView.addSubview(secondPairPicker)
-        pairSelectView.addSubview(secondPairPicker)
+//        pairSelectView.addSubview(secondPairPicker)
     }
     
     private func createBuildingArea() {
@@ -348,7 +434,7 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
 
         buildingSegController.pin
             .top(18)
-            .left(buildingSelectView.frame.width + 230)
+            .left(buildingSelectView.frame.width + 145)
             .height(34)
             .width(90)
         // Add target action method
@@ -356,6 +442,12 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
 
         // Add this custom Segmented Control to our view
         buildingSelectView.addSubview(buildingSegController)
+        buildingSelectView.addSubview(buildingSwitcher)
+        buildingSwitcher.pin
+            .top(18)
+            .left(buildingSelectView.frame.width + 270)
+            .height(34)
+            .width(90)
         buildingSelectView.bringSubviewToFront(buildingSegController)
     
     }
@@ -417,10 +509,18 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         audienceTextField.returnKeyType = UIReturnKeyType.done
         audienceTextField.clearButtonMode = UITextField.ViewMode.never
         audienceTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        audienceTextField.layer.cornerRadius = 5
+        audienceTextField.layer.borderColor = UIColor.red.cgColor
+        audienceTextField.addTarget(self, action: #selector(didStartEnterAudience), for: .editingDidBegin)
         
         audienceTextField.textAlignment = .center
         audienceSelectView.addSubview(audienceTextField)
         audienceSelectView.addSubview(audienceTextField)
+    }
+    
+    @objc
+    func didStartEnterAudience() {
+        audienceTextField.layer.borderWidth = 0
     }
     
     private func screenSelection() {
@@ -463,9 +563,107 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     
     @objc
     private func sortAudiences() {
-        let viewController = SortedViewController()
-        let navigationController = UINavigationController(rootViewController: viewController)
-        present(navigationController, animated: true, completion: nil)
+        var cellDataArr: [FilterCellData] = []
+        
+        curWeek = Int((datePicker.date - semStartDate)/604800 + 1)
+        weekDay = Calendar.current.component(.weekday, from: datePicker.date) - 2
+        
+        let cabsForDay = FreeCabinets[(curWeek - 1) % 2][weekDay]
+        var cabFreePairsDict: [String: [Int]] = [:]
+        
+        for (i, pare) in cabsForDay.enumerated() {
+            for cab in pare {
+                if (cabFreePairsDict[cab] != nil) {
+                    cabFreePairsDict[cab]?.append(i)
+                } else {
+                    cabFreePairsDict[cab] = []
+                }
+            }
+        }
+        
+        var errorFlag = 0
+        if errorFlag == 1 && audienceTextField.text != "" || !audienceSwitcher.isOn {
+            audienceTextField.layer.borderWidth = 0
+        }
+        if audienceSwitcher.isOn && audienceTextField.text == "" {
+            audienceTextField.layer.borderWidth = 2
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            errorFlag = 1
+            return
+        }
+        
+        for cab in cabFreePairsDict.keys {
+            
+            let pairsArr = cabFreePairsDict[cab]!
+            var startInd = 0
+            var stopInd = 0
+//            var prevP = -1
+            for (i, pare) in pairsArr.enumerated() {
+                if i == 0 {
+                    startInd = pare
+                    continue
+                }
+                if pare != pairsArr[i-1] + 1 {
+                    stopInd = pairsArr[i-1]
+                    cellDataArr.append(FilterCellData(pairStartInd: startInd, pairEndInd: stopInd, buildingInd: cab.contains("л") ? 1 : 0, cabinet: cab))
+                    startInd = pare
+                }
+            }
+            cellDataArr.append(FilterCellData(pairStartInd: startInd, pairEndInd: startInd, buildingInd: cab.contains("л") ? 1 : 0, cabinet: cab))
+        }
+        
+        if pairSwitcher.isOn {
+            let beg = firstPairPicker.selectedRow(inComponent: 0)
+            let end = secondPairPicker.selectedRow(inComponent: 0)
+            
+            cellDataArr = cellDataArr.filter{$0.pairStartInd == beg && $0.pairEndInd == end}
+        }
+        
+        if buildingSwitcher.isOn {
+            cellDataArr = cellDataArr.filter{$0.buildingInd == buildingSegController.selectedSegmentIndex}
+        }
+        
+        if audienceSwitcher.isOn {
+            cellDataArr = cellDataArr.filter{$0.cabinet == audienceTextField.text || $0.cabinet == audienceTextField.text! + "л"}
+        }
+        
+        if cellDataArr.count != 0 {
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            let viewController = SortedViewController(cellData: cellDataArr)
+            let navigationController = UINavigationController(rootViewController: viewController)
+            present(navigationController, animated: true, completion: nil)
+        } else {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            let alertController = UIAlertController(title: "Не найдено ни одной подходящей аюдитории...", message: "", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .cancel)
+            alertController.addAction(okAction)
+            self.present(alertController, animated: true, completion: nil)
+        }
+        
+    }
+}
+
+extension FilterViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
+        return gradePickerValues.count
+    }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return gradePickerValues[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        pairSwitcher.setOn(true, animated: true)
+        if pickersDict[pickerView] == 0 {
+            if firstPairPicker.selectedRow(inComponent: 0) > secondPairPicker.selectedRow(inComponent: 0) {
+                secondPairPicker.selectRow(firstPairPicker.selectedRow(inComponent: 0), inComponent: 0, animated: true)
+            }
+        } else {
+            if firstPairPicker.selectedRow(inComponent: 0) > secondPairPicker.selectedRow(inComponent: 0) {
+                firstPairPicker.selectRow(secondPairPicker.selectedRow(inComponent: 0), inComponent: 0, animated: true)
+            }
+        }
     }
 }
 

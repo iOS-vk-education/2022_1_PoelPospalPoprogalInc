@@ -13,11 +13,17 @@ final class FilterTableViewCell: UITableViewCell {
     private let imageViewCalendarClock = UIImageView(image: UIImage(named: "calendarClock.png"))
     private let imageViewUniver = UIImageView(image: UIImage(named: "univer.png"))
     
-    private let studyTimes = ["8:30\n10:05", "13:50\n15:25", "15:40\n17:15",  "19:10\n20:45", "10:15\n11:50", "12:00\n13:35", "17:25\n19:00", "17:25\n19:00", "15:40\n17:15", "13:50\n15:25", "15:40\n17:15", "19:10\n20:45", "19:10\n20:45", "19:10\n20:45", "17:25\n19:00", "19:10\n20:45"]
+    private let studyTimesStart = ["8:30\n", "10:15\n", "12:00\n", "13:50\n", "15:40\n", "17:25\n", "19:10\n"]
+    private let studyTimesEnd = ["10:05", "11:50", "13:35", "15:25", "17:15", "19:00", "20:45"]
     
-    private let GZcabinets = ["240", "333ю", "426", "232", "327.1", "430", "384", "323", "427ю", "502ю", "522", "514", "504", "425ю", "390", "432", "420", "419ю", "386", "429ю", "505", "304", "424", "526", "228"]
+//    private let GZcabinets = ["240", "333ю", "426", "232", "327.1", "430", "384", "323", "427ю", "502ю", "522", "514", "504", "425ю", "390", "432", "420", "419ю", "386", "429ю", "505", "304", "424", "526", "228"]
     
     private let containerView = UIView()
+    
+//    private var pairStartInd = 0
+//    private var pairEndInd = 0
+//    private var building = ["ГЗ", "УЛК"]
+//    private var cabinet = ""
     
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -145,18 +151,18 @@ final class FilterTableViewCell: UITableViewCell {
         
         cabinetLabel.pin
             .top(14)
-            .right(20)
+            .right(5)
             .height(25)
-            .width(40)
+            .width(55)
     }
     
-    func config(with indexCell: Int) {
+    func config(pairStartInd: Int, pairEndInd: Int, buildingInd: Int, cabinet: String) {
         
-        timeLabel.text = studyTimes[indexCell]
-        cabinetLabel.text = GZcabinets[indexCell]
+        timeLabel.text = studyTimesStart[pairStartInd] + studyTimesEnd[pairEndInd]
+        cabinetLabel.text = cabinet
         
-        pairLabel.text = "1-я\n4-я"
-        GZLabel.text = "ГЗ"
+        pairLabel.text = pairStartInd != pairEndInd ? "\(pairStartInd + 1)-я\n\(pairEndInd + 1)-я" : "\(pairStartInd + 1)-я"
+        GZLabel.text = ["ГЗ", "УЛК"][buildingInd]
     }
 }
 

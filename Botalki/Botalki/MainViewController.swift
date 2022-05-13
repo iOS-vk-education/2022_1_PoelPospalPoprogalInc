@@ -3,6 +3,7 @@ import PinLayout
 import FirebaseStorage
 
 class PairsViewController: UIViewController {
+    let secondViewController: FilterViewController = FilterViewController()
 
     private let tableView = UITableView()
     private let houseImg = UIImageView(image: UIImage(named: "house"))
@@ -196,6 +197,7 @@ class PairsViewController: UIViewController {
         semesterStartFromFile = semesterStartFromFile.components(separatedBy: "\n")[0]
         let dateFormatter = ISO8601DateFormatter()
         semStartDate = dateFormatter.date(from: semesterStartFromFile)!
+        secondViewController.semStartDate = semStartDate
         semStartDate = Calendar.current.date(byAdding: .day, value: -1, to: semStartDate)!
 //        var cur = Calendar.current.date(byAdding: .day, value: -3, to: Date()) ?? Date()
 //        let formatter = DateFormatter()
@@ -243,7 +245,7 @@ class PairsViewController: UIViewController {
     
     @objc
     func goToFilterScreen() {
-        let secondViewController:FilterViewController = FilterViewController()
+        secondViewController.FreeCabinets = FreeCabinets
         self.navigationController?.pushViewController(secondViewController, animated: false)
     }
     
@@ -329,7 +331,7 @@ class PairsViewController: UIViewController {
         for indexOfDay in 0...5 {
             let dayOfWeakButton = UIButton(type: .system)
             dayOfWeakButton.backgroundColor = UIColor.systemGroupedBackground
-            dayOfWeakButton.layer.cornerRadius = 16
+//            dayOfWeakButton.layer.cornerRadius = 16
             dayOfWeakButton.layer.cornerRadius = 18
             dayOfWeakButton.layer.masksToBounds = true
             dayOfWeakButton.addTarget(self, action: #selector(changeButtonColor(_ :)), for: .touchUpInside)
