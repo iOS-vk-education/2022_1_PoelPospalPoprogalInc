@@ -82,7 +82,8 @@ final class FilterTableViewCell: UITableViewCell {
         containerView.layer.shadowOffset = .init(width: 0.5, height: 0.5)
         containerView.layer.shadowOpacity = 0.8
         containerView.layer.cornerRadius = 10
-        containerView.backgroundColor = UIColor(rgb: 0xC2A894)
+        
+//        containerView.backgroundColor = UIColor(rgb: 0xC2A894)
         
         
         [timeLabel, GZLabel, pairLabel, cabinetLabel].forEach {
@@ -156,7 +157,17 @@ final class FilterTableViewCell: UITableViewCell {
             .width(55)
     }
     
-    func config(pairStartInd: Int, pairEndInd: Int, buildingInd: Int, cabinet: String) {
+    func config(pairStartInd: Int, pairEndInd: Int, buildingInd: Int, cabinet: String, date: Date) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy/MM/dd HH:mm"
+        let cellDate = formatter.date(from: "\(Calendar.current.component(.year, from: date))/\(Calendar.current.component(.month, from: date))/\(Calendar.current.component(.day, from: date)) \(studyTimesEnd[pairEndInd])")!
+        let userDate = Date()
+        
+        if cellDate > userDate {
+            containerView.backgroundColor = UIColor(rgb: 0xC2A894)
+        } else {
+            containerView.backgroundColor = UIColor(rgb: 0x808080)
+        }
         
         timeLabel.text = studyTimesStart[pairStartInd] + studyTimesEnd[pairEndInd]
         cabinetLabel.text = cabinet

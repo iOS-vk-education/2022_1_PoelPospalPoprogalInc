@@ -1,5 +1,6 @@
 import UIKit
 import PinLayout
+import SwiftUI
 
 struct FilterCellData {
     let pairStartInd: Int
@@ -631,7 +632,7 @@ class FilterViewController: UIViewController {
         
         if cellDataArr.count != 0 {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
-            let viewController = SortedViewController(cellData: cellDataArr)
+            let viewController = SortedViewController(cellData: cellDataArr, date: datePicker.date)
             let navigationController = UINavigationController(rootViewController: viewController)
             present(navigationController, animated: true, completion: nil)
         } else {

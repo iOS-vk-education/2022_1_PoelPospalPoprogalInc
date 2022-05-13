@@ -8,6 +8,7 @@ final class SortedViewController: UIViewController {
     private let tableView = UITableView()
     private let imageDoor = UIImageView(image: UIImage(named: "doorWhite.png"))
     private var numOfSections = 0
+    private var curDate = Date()
     
     private var cellData: [FilterCellData] = []
 //    private var cellForReloadInd = -1
@@ -15,10 +16,11 @@ final class SortedViewController: UIViewController {
 //    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
 //        super.init(nibName: nil, bundle: nil)
 //    }
-    init(cellData: [FilterCellData]) {
+    init(cellData: [FilterCellData], date: Date) {
         super.init(nibName: nil, bundle: nil)
         self.numOfSections = cellData.count
         self.cellData = cellData
+        self.curDate = date
     }
     
     required init?(coder: NSCoder) {
@@ -89,7 +91,7 @@ extension SortedViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FilterTableViewCell", for: indexPath) as? FilterTableViewCell
-        cell?.config(pairStartInd: cellData[indexPath.row].pairStartInd, pairEndInd: cellData[indexPath.row].pairEndInd, buildingInd: cellData[indexPath.row].buildingInd, cabinet: cellData[indexPath.row].cabinet)
+        cell?.config(pairStartInd: cellData[indexPath.row].pairStartInd, pairEndInd: cellData[indexPath.row].pairEndInd, buildingInd: cellData[indexPath.row].buildingInd, cabinet: cellData[indexPath.row].cabinet, date: curDate)
 //        audCells.append(cell ?? .init())
         return cell ?? .init()
     }
