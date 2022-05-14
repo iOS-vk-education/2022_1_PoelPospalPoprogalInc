@@ -123,71 +123,54 @@ class FilterViewController: UIViewController {
         }
     }
     
+    private func checkDate() -> Bool {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd.MM.yyyy"
+        let calendar = Calendar.current
+        let semEnd = calendar.date(byAdding: .day, value: 7*17, to: self.semStartDate)!
+        
+        let deltaSecs = self.datePicker.date - self.semStartDate
+        curWeek = Int(deltaSecs/604800 + 1)
+        weekDay = calendar.component(.weekday, from: self.datePicker.date) - 2
+        
+        if self.weekDay == -1 {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            let alertController = UIAlertController(title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .cancel)
+            alertController.addAction(okAction)
+            datePicker.date = self.setCorrectCurrentDate()
+            present(alertController, animated: true, completion: nil)
+            return false
+        }
+        
+        if self.curWeek < 1 || self.curWeek > 17 {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            let alertController = UIAlertController(title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: self.semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .cancel)
+            alertController.addAction(okAction)
+            datePicker.date = self.setCorrectCurrentDate()
+            present(alertController, animated: true, completion: nil)
+            return false
+        }
+        return true
+    }
+    
     @objc
     private func didChooseDate() {
         DispatchQueue.global().async {
             usleep(1)
             DispatchQueue.main.async {
-                let formatter = DateFormatter()
-                formatter.dateFormat = "dd.MM.yyyy"
-                let calendar = Calendar.current
-                let semEnd = calendar.date(byAdding: .day, value: 7*17, to: self.semStartDate)!
-                
-                let deltaSecs = self.datePicker.date - self.semStartDate
-                self.curWeek = Int(deltaSecs/604800 + 1)
-                self.weekDay = calendar.component(.weekday, from: self.datePicker.date) - 2
-                
-                if self.weekDay == -1 {
-                    UINotificationFeedbackGenerator().notificationOccurred(.error)
-                    let alertController = UIAlertController(title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день", preferredStyle: .alert)
-                    let okAction = UIAlertAction(title: "OK", style: .cancel)
-                    alertController.addAction(okAction)
-                    self.datePicker.date = Date()
-                    self.present(alertController, animated: true, completion: nil)
-                    return
-                }
-                
-                if self.curWeek < 1 || self.curWeek > 17 {
-                    UINotificationFeedbackGenerator().notificationOccurred(.error)
-                    let alertController = UIAlertController(title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: self.semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок", preferredStyle: .alert)
-                    let okAction = UIAlertAction(title: "OK", style: .cancel)
-                    alertController.addAction(okAction)
-                    self.datePicker.date = Date()
-                    self.present(alertController, animated: true, completion: nil)
-                    return
-                }
+                self.checkDate()
             }
-            
+        }
+    }
+    
+    private func setCorrectCurrentDate() -> Date {
+        if Calendar.current.component(.weekday, from: Date()) - 2 == -1 {
+            return Calendar.current.date(byAdding: .day, value: 1, to: Date())!
         }
         
-//        let formatter = DateFormatter()
-//        formatter.dateFormat = "dd.MM.yyyy"
-//        let calendar = Calendar.current
-//        let semEnd = calendar.date(byAdding: .day, value: 7*17, to: semStartDate)!
-//
-//        let deltaSecs = datePicker.date - semStartDate
-//        curWeek = Int(deltaSecs/604800 + 1)
-//        weekDay = calendar.component(.weekday, from: datePicker.date) - 2
-//
-//        if weekDay == -1 {
-//            UINotificationFeedbackGenerator().notificationOccurred(.error)
-//            let alertController = UIAlertController(title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день", preferredStyle: .alert)
-//            let okAction = UIAlertAction(title: "OK", style: .cancel)
-//            alertController.addAction(okAction)
-//            datePicker.date = Date()
-//            self.present(alertController, animated: true, completion: nil)
-//            return
-//        }
-//
-//        if curWeek < 1 || curWeek > 17 {
-//            UINotificationFeedbackGenerator().notificationOccurred(.error)
-//            let alertController = UIAlertController(title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок", preferredStyle: .alert)
-//            let okAction = UIAlertAction(title: "OK", style: .cancel)
-//            alertController.addAction(okAction)
-//            datePicker.date = Date()
-//            self.present(alertController, animated: true, completion: nil)
-//            return
-//        }
+        return Date()
     }
     
     @objc
@@ -204,7 +187,7 @@ class FilterViewController: UIViewController {
     }
     
     func showDatePicker() {
-        datePicker.date = Date()
+        datePicker.date = setCorrectCurrentDate()
         datePicker.locale = .current
         datePicker.preferredDatePickerStyle = .compact
 //        datePicker.addTarget(self, action: #selector(handleDateSelection), for: .valueChanged)
@@ -567,6 +550,9 @@ class FilterViewController: UIViewController {
     @objc
     private func sortAudiences() {
         var cellDataArr: [FilterCellData] = []
+        if !checkDate() {
+            return
+        }
         
         curWeek = Int((datePicker.date - semStartDate)/604800 + 1)
         weekDay = Calendar.current.component(.weekday, from: datePicker.date) - 2
