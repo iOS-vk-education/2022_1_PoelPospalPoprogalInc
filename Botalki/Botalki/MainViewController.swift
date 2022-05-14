@@ -1,17 +1,29 @@
 import UIKit
 import PinLayout
 
-class PairsViewController: UIViewController {
+class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
+
     
     private let tableView = UITableView()
     private let houseImg = UIImageView(image: UIImage(named: "house"))
     private let magnifierImg = UIImageView(image: UIImage(named: "magnifier"))
 //    private let weekSwitcher = UIPickerView()
 //    private let viewForSwitcher = UIView()
+    
+    
+    
+    
+    private var toolBar = UIToolbar()
+    private var picker  = UIPickerView()
+    
+    private var weekTextField = UITextField()
+    private var weekButton = UIButton()
+    
+    
     private let weeks = (1...17).map {"\($0) неделя - \(["знаменатель", " числитель"][$0%2])" }
+        
     private var myCells: [PairTableViewCell] = []
     
-    private let weakButton = UIButton()
     private var cellForReloadInd = -1
     
     private var firstScreenButton = UIButton()
@@ -22,32 +34,38 @@ class PairsViewController: UIViewController {
     private let margins = CGFloat(22)
     private let screenWidth = UIScreen.main.bounds.width
     
+    private let lowerView = UIView()
 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.systemBackground
         
+        
         navigationController?.setNavigationBarHidden(true, animated: true)
-        
-        
+    
         view.addSubview(tableView)
-        view.addSubview(weakButton)
+//        view.addSubview(weekPicker)
+        view.addSubview(lowerView)
         view.addSubview(firstScreenButton)
         view.addSubview(secondScreenButton)
         view.addSubview(houseImg)
         view.addSubview(magnifierImg)
+        view.addSubview(weekButton)
         
-        weakButton.backgroundColor = UIColor(rgb: 0xC4C4C4)
-        weakButton.layer.cornerRadius = 10
-        weakButton.layer.masksToBounds = true
-        weakButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-        weakButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
-        weakButton.setTitle("11 неделя - числитель", for: .normal)
-        weakButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         
+//        weekTextField.inputView = weekPicker
+        
+        
+//        weakButton.backgroundColor = UIColor(rgb: 0xC4C4C4)
+//        weakButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
+//        weakButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
+//        weakButton.setTitle("11 неделя - числитель", for: .normal)
+//        weakButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         
         createDayButtons()
         screenSelection()
+        weekSelection()
         
         tableView.frame = view.bounds
         tableView.separatorStyle = .none
@@ -61,8 +79,45 @@ class PairsViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
         tableView.refreshControl = refreshControl
         
+        
+        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(FilterViewController.tap(_:)))
+        weekTextField.addGestureRecognizer(tapGestureReconizer)
+        
+        
+        setupLowerSubview()
         loadData()
     }
+    
+    
+    private func weekSelection() {
+        weekButton.backgroundColor = UIColor.systemGroupedBackground
+        weekButton.layer.cornerRadius = 16
+        weekButton.addTarget(self, action: #selector(pickerGo(_:)), for: .touchUpInside)
+    }
+    
+    @objc func pickerGo(_ sender: UIButton) {
+        
+        picker = UIPickerView.init()
+        picker.delegate = self
+        picker.dataSource = self
+        if self.traitCollection.userInterfaceStyle == .dark {
+            picker.setValue(UIColor.white, forKey: "textColor")
+        } else {
+            picker.setValue(UIColor.black, forKey: "textColor")
+        }
+        picker.backgroundColor =  UIColor.systemBackground.withAlphaComponent(0.9)
+        picker.autoresizingMask = .flexibleWidth
+        picker.contentMode = .center
+        picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 220, width: UIScreen.main.bounds.size.width, height: 220)
+        self.view.addSubview(picker)
+                
+        toolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 220, width: UIScreen.main.bounds.size.width, height: 50))
+//        toolBar.barStyle = .blackTranslucent
+        toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(onDoneButtonTapped))]
+        self.view.addSubview(toolBar)
+    }
+    
+    
     
     private func screenSelection() {
         firstScreenButton.backgroundColor = UIColor(rgb: 0x785A43)
@@ -82,10 +137,25 @@ class PairsViewController: UIViewController {
         secondScreenButton.addTarget(self, action: #selector(goToFilterScreen), for: .touchUpInside)
     }
     
+    private func setupLowerSubview() {
+//        lowerView.layer.shadowColor = UIColor.black.cgColor
+//        lowerView.layer.shadowRadius = 0.5
+//        lowerView.layer.shadowOffset = .init(width: 0.5, height: 0.5)
+//        lowerView.layer.shadowOpacity = 0.8
+        lowerView.layer.cornerRadius = 20
+        lowerView.backgroundColor = UIColor.systemGroupedBackground
+        lowerView.alpha = 0.8
+    }
+    
     @objc
     func goToFilterScreen() {
         let secondViewController:FilterViewController = FilterViewController()
         self.navigationController?.pushViewController(secondViewController, animated: false)
+    }
+    
+    @objc
+    func tap(_ sender: UITapGestureRecognizer) {
+        view.endEditing(true)
     }
     
     
@@ -170,20 +240,33 @@ class PairsViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+        let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
+        
+        weekButton.pin
+            .top(65)
+            .height(40)
+            .right(margins + 20)
+            .width(ButtonsWidth)
+        
         tableView.pin
             .top(200)
-            .bottom(130)
+            .bottom(0)
             .left(0)
             .right(0)
         
+        lowerView.pin
+            .top(view.frame.height - 115)
+            .bottom(0)
+            .left(0)
+            .right(0)
         
-        weakButton.pin
-            .top(75)
-            .height(CGFloat(35))
-            .left(margins)
-            .width(CGFloat(view.frame.width / 2))
+//        weekPicker.pin
+//            .top(55)
+//            .height(CGFloat(35) + 40)
+//            .right(margins)
+//            .width(CGFloat(view.frame.width / (4 / 3)))
+
         
-        let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
         firstScreenButton.pin
             .top(CGFloat(view.frame.height - 95))
             .height(45)
@@ -220,6 +303,19 @@ class PairsViewController: UIViewController {
         compl?()
     }
     
+    // следующие 3 функции для пикера
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
+        return weeks.count
+    }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return weeks[row]
+    }
+    
     @objc
     private func didPullToRefresh() {
         loadData { [weak self] in
@@ -240,6 +336,13 @@ class PairsViewController: UIViewController {
         let navigationController = UINavigationController(rootViewController: viewController)
         present(navigationController, animated: true, completion: nil)
     }
+    
+    
+    @objc func onDoneButtonTapped() {
+        toolBar.removeFromSuperview()
+        picker.removeFromSuperview()
+    }
+    
 }
 
 extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
