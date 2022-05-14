@@ -11,7 +11,7 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
 //    private let viewForSwitcher = UIView()
     
     
-    
+    private var weekLabel = UILabel()
     
     private var toolBar = UIToolbar()
     private var picker  = UIPickerView()
@@ -20,7 +20,7 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
     private var weekButton = UIButton()
     
     
-    private let weeks = (1...17).map {"\($0) неделя - \(["знаменатель", " числитель"][$0%2])" }
+    private let weeks = (1...17).map {"\($0) неделя - \(["знаменатель", "числитель"][$0%2])" }
         
     private var myCells: [PairTableViewCell] = []
     
@@ -89,9 +89,23 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
     }
     
     
+    
     private func weekSelection() {
         weekButton.backgroundColor = UIColor.systemGroupedBackground
         weekButton.layer.cornerRadius = 16
+        
+        weekLabel.text = weeks[16]
+        if self.traitCollection.userInterfaceStyle == .dark {
+            weekLabel.textColor = UIColor.white
+        } else {
+            weekLabel.textColor = UIColor.gray
+        }
+        weekLabel.font = .systemFont(ofSize: 19, weight: .bold)
+        
+        weekButton.addSubview(weekLabel)
+        weekButton.bringSubviewToFront(weekLabel)
+        
+        
         weekButton.addTarget(self, action: #selector(pickerGo(_:)), for: .touchUpInside)
     }
     
@@ -242,11 +256,17 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         
         let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
         
+        weekLabel.pin
+            .top(10)
+            .bottom(10)
+            .left(20)
+            .right(10)
+
         weekButton.pin
             .top(65)
             .height(40)
             .right(margins + 20)
-            .width(ButtonsWidth)
+            .width(ButtonsWidth * 3 / 2)
         
         tableView.pin
             .top(200)
@@ -326,7 +346,7 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
     
     @objc
     private func didTapAddButton() {
-        print("tapped week B")
+//        print("tapped week B")
         
     }
 
@@ -341,6 +361,7 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
     @objc func onDoneButtonTapped() {
         toolBar.removeFromSuperview()
         picker.removeFromSuperview()
+        weekLabel.text = String(weeks[picker.selectedRow(inComponent: 0)])
     }
     
 }
@@ -359,7 +380,7 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("touched \(indexPath.row)")
+//        print("touched \(indexPath.row)")
         if indexPath.row != cellForReloadInd {
             if cellForReloadInd != -1 {
                 myCells[cellForReloadInd].config(with: cellForReloadInd)

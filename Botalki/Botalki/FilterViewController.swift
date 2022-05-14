@@ -1,28 +1,33 @@
 import UIKit
 import PinLayout
-//import SwiftUI
 
-class FilterViewController: UIViewController {
-
+class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
     private let borderColor = UIColor(rgb: 0xC2A894)
     
     private var firstScreenButton = UIButton()
     private var secondScreenButton = UIButton()
-    private let imageCalendarBlack = UIImageView(image: UIImage(named: "calendarBlack.png"))
-    private let imageCalendarWhite = UIImageView(image: UIImage(named: "calendarWhite.png"))
+    
+    private let imageCalendar = UIImageView(image: UIImage(named: "calendarWhite.png"))
+    
     private let houseImg = UIImageView(image: UIImage(named: "house"))
     private let magnifierImg = UIImageView(image: UIImage(named: "magnifier"))
     
-    private let dateButton = UIButton()
+    private let dateField = UITextField()
     private let selectRoomButton = UIButton()
     
     private let pairSelectView = UIView()
     private let pairSwitcher = UISwitch()
-    private let firstPairTextField = UITextField()
-    private let secondPairTextField = UITextField()
     
-    private let firstPairPickerView = UIPickerView()
-    private let secondPairPickerView = UIPickerView()
+    private let datePicker = UIDatePicker()
+    
+    
+    let gradePickerValues = ["1", "2", "3", "4", "5", "6", "7"]
+    private let firstPairPicker = UIPickerView()
+    private let secondPairPicker = UIPickerView()
     
     private let buildingSelectView = UIView()
     private let buildingSegController = UISegmentedControl(items: ["ГЗ", "УЛК"])
@@ -35,6 +40,8 @@ class FilterViewController: UIViewController {
     private let margins = CGFloat(22)
     private let screenWidth = UIScreen.main.bounds.width
     
+    private let lowerView = UIView()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,14 +50,27 @@ class FilterViewController: UIViewController {
         navigationController?.setNavigationBarHidden(true, animated: true)
         navigationController?.navigationBar.prefersLargeTitles = true
 
+        if self.traitCollection.userInterfaceStyle == .dark {
+            imageCalendar.setImageColor(color: UIColor.white)
+        } else {
+            imageCalendar.setImageColor(color: UIColor.black)
+        }
+        
+        firstPairPicker.dataSource = self
+        firstPairPicker.delegate = self
+        secondPairPicker.dataSource = self
+        secondPairPicker.delegate = self
+        
+        view.addSubview(lowerView)
         view.addSubview(firstScreenButton)
         view.addSubview(secondScreenButton)
+        
         view.addSubview(houseImg)
         view.addSubview(magnifierImg)
         
-        view.addSubview(dateButton)
+        view.addSubview(dateField)
         view.addSubview(selectRoomButton)
-        
+    
         
         view.addSubview(pairSelectView)
         view.addSubview(buildingSelectView)
@@ -59,22 +79,74 @@ class FilterViewController: UIViewController {
         let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(FilterViewController.tap(_:)))
         view.addGestureRecognizer(tapGestureReconizer)
         
+        
+        // календарь
+        dateField.inputView = datePicker
+        datePicker.datePickerMode = .date
+        
 //        let tapScreen = UITapGestureRecognizer(target: self, action: "dismissKeyboard:")
 //        func dismissKeyboard(sender: UITapGestureRecognizer) {
 //            view.endEditing(true)
 //        }
         
-        createDateButton()
         createSelectRoomButton()
         createPairArea()
         createBuildingArea()
         createAudienceArea()
         
         screenSelection()
+        
+        setupLowerSubview()
+        showDatePicker()
+        view.addSubview(datePicker)
     }
+    
+    
+    func showDatePicker() {
+        datePicker.date = Date()
+        datePicker.locale = .current
+        datePicker.preferredDatePickerStyle = .compact
+//        datePicker.addTarget(self, action: #selector(handleDateSelection), for: .valueChanged)
+        
+//        datePicker.backgroundColor = UIColor.secondarySystemBackground
+//        datePicker.layer.borderWidth = 2
+//        datePicker.layer.borderColor = UIColor.secondarySystemBackground
+//
+//        datePicker.layer.cornerRadius = 16
+//        datePicker.layer.masksToBounds = true
+//        datePicker.titleLabel?.font = .systemFont(ofSize: 22, weight: .semibold)
+
+    }
+    
+    private func setupLowerSubview() {
+        lowerView.layer.cornerRadius = 20
+        lowerView.backgroundColor = UIColor.systemGroupedBackground
+        lowerView.alpha = 0.8
+    }
+    
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
+        
+        let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
+        firstScreenButton.pin
+            .top(CGFloat(view.frame.height - 95))
+            .height(45)
+            .left(margins)
+            .width(ButtonsWidth)
+        
+        secondScreenButton.pin
+            .top(CGFloat(view.frame.height - 95))
+            .height(45)
+            .right(margins)
+            .width(ButtonsWidth)
+        
+        lowerView.pin
+            .top(view.frame.height - 115)
+            .bottom(0)
+            .left(0)
+            .right(0)
         
 //        print(self.view.backgroundColor)
 //        let bgColor = self.view.backgroundColor
@@ -98,28 +170,25 @@ class FilterViewController: UIViewController {
         
         
 //        if bgColor == "<UIDynamicSystemColor: 0x600001f05ec0; name = systemBackgroundColor>" {
-        imageCalendarWhite.pin
+        imageCalendar.pin
             .top(82)
             .left(54)
             .height(45)
             .width(45)
-        view.addSubview(imageCalendarWhite)
-        view.bringSubviewToFront(imageCalendarWhite)
-//        } else {
-//            imageCalendarBlack.pin
-//                .top(82)
-//                .left(54)
-//                .height(45)
-//                .width(45)
-//            view.addSubview(imageCalendarBlack)
-//            view.bringSubviewToFront(imageCalendarBlack)
-//        }
+        view.addSubview(imageCalendar)
+        view.bringSubviewToFront(imageCalendar)
         
-        dateButton.pin
+        datePicker.pin
             .top(82)
-            .left(self.view.frame.width / 2 + 10)
+            .left(self.view.frame.width / 2 + 30)
             .height(42)
-            .width(self.view.frame.width / 3 + 20)
+            .width(self.view.frame.width / 3 - 5)
+        
+//        dateField.pin
+//            .top(82)
+//            .left(self.view.frame.width / 2 + 10)
+//            .height(42)
+//            .width(self.view.frame.width / 3 + 20)
         
         selectRoomButton.pin
             .top((self.view.frame.height / 3) * 2)
@@ -145,18 +214,6 @@ class FilterViewController: UIViewController {
             .right(40)
             .height(120)
         
-        let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
-        firstScreenButton.pin
-            .top(CGFloat(view.frame.height - 95))
-            .height(45)
-            .left(margins)
-            .width(ButtonsWidth)
-        
-        secondScreenButton.pin
-            .top(CGFloat(view.frame.height - 95))
-            .height(45)
-            .right(margins)
-            .width(ButtonsWidth)
         
         houseImg.pin
             .top(CGFloat(view.frame.height - 90))
@@ -176,32 +233,14 @@ class FilterViewController: UIViewController {
         view.endEditing(true)
     }
     
-    private func createDateButton() {
-        dateButton.backgroundColor = UIColor.systemGroupedBackground
-        dateButton.layer.borderWidth = 2
-        dateButton.layer.borderColor = borderColor.cgColor
-        
-        dateButton.layer.cornerRadius = 16
-        dateButton.layer.masksToBounds = true
-        dateButton.titleLabel?.font = .systemFont(ofSize: 22, weight: .semibold)
-        
-        let dateLabel = UILabel()
-        
-        dateLabel.font = .systemFont(ofSize: 22, weight: .bold)
-        dateLabel.numberOfLines = 1
-        dateLabel.textAlignment = .right
-        dateLabel.text = "20.04.2022"
-        
-        dateButton.addSubview(dateLabel)
-        dateButton.bringSubviewToFront(dateLabel)
-        dateButton.layoutSubviews()
-        
-        dateLabel.pin
-            .top(7)
-            .left(12)
-            .height(30)
-            .width(130)
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
+        return gradePickerValues.count
     }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return gradePickerValues[row]
+    }
+    
     
     private func createSelectRoomButton() {
         selectRoomButton.backgroundColor = UIColor(rgb: 0xC2A894)
@@ -252,52 +291,25 @@ class FilterViewController: UIViewController {
             .height(100)
             .width(100)
         
-        firstPairTextField.placeholder = "1"
-        firstPairTextField.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        
-        firstPairTextField.pin
-            .top(68)
+        firstPairPicker.pin
+            .top(54)
             .left(audienceSelectView.frame.width + 25)
-            .height(30)
-            .width(140)
+            .height(70)
+            .width(150)
         
-        firstPairTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
-//        firstPairTextField.backgroundColor = UIColor.systemBackground
-        firstPairTextField.textColor = .black
-        firstPairTextField.borderStyle = UITextField.BorderStyle.roundedRect
-//        audienceTextField.layer.borderColor = borderColor.cgColor
-        firstPairTextField.autocorrectionType = UITextAutocorrectionType.no
-        firstPairTextField.keyboardType = UIKeyboardType.numberPad
-        firstPairTextField.returnKeyType = UIReturnKeyType.done
-        firstPairTextField.clearButtonMode = UITextField.ViewMode.never
-        firstPairTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-//
-        firstPairTextField.textAlignment = .center
-        pairSelectView.addSubview(firstPairTextField)
-        pairSelectView.addSubview(firstPairTextField)
+        pairSelectView.addSubview(firstPairPicker)
+        pairSelectView.addSubview(firstPairPicker)
         
-        secondPairTextField.placeholder = "7"
-        secondPairTextField.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        
-        secondPairTextField.pin
-            .top(68)
+        secondPairPicker.pin
+            .top(54)
             .left(pairSelectView.frame.width + 180)
-            .height(30)
-            .width(140)
+            .height(70)
+            .width(150)
         
-        secondPairTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
-        secondPairTextField.textColor = .black
-        secondPairTextField.borderStyle = UITextField.BorderStyle.roundedRect
-//        audienceTextField.layer.borderColor = borderColor.cgColor
-        secondPairTextField.autocorrectionType = UITextAutocorrectionType.no
-        secondPairTextField.keyboardType = UIKeyboardType.numberPad
-        secondPairTextField.returnKeyType = UIReturnKeyType.done
-        secondPairTextField.clearButtonMode = UITextField.ViewMode.never
-        secondPairTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-        
-        secondPairTextField.textAlignment = .center
-        pairSelectView.addSubview(secondPairTextField)
-        pairSelectView.addSubview(secondPairTextField)
+//        secondPairTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
+
+        pairSelectView.addSubview(secondPairPicker)
+        pairSelectView.addSubview(secondPairPicker)
     }
     
     private func createBuildingArea() {
@@ -378,7 +390,10 @@ class FilterViewController: UIViewController {
             .height(100)
             .width(100)
         
-        audienceTextField.placeholder = "501"
+        audienceTextField.attributedPlaceholder = NSAttributedString(
+            string: "501",
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor(rgb: 0x808080)]
+        )
         audienceTextField.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         
         audienceTextField.pin
@@ -388,6 +403,8 @@ class FilterViewController: UIViewController {
             .width(295)
         
         audienceTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
+//        audienceTextField.backgroundColor = UIColor.systemGroupedBackground
+//        audienceTextField.alpha = 0.5
         audienceTextField.textColor = .black
         audienceTextField.borderStyle = UITextField.BorderStyle.roundedRect
 //        audienceTextField.layer.borderColor = borderColor.cgColor
@@ -446,4 +463,13 @@ class FilterViewController: UIViewController {
         let navigationController = UINavigationController(rootViewController: viewController)
         present(navigationController, animated: true, completion: nil)
     }
+    
+}
+
+extension UIImageView {
+  func setImageColor(color: UIColor) {
+    let templateImage = self.image?.withRenderingMode(.alwaysTemplate)
+    self.image = templateImage
+    self.tintColor = color
+  }
 }
