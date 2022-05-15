@@ -11,13 +11,13 @@ class PairsViewController: UIViewController {
 //    private let weekSwitcher = UIPickerView()
 //    private let viewForSwitcher = UIView()
     private let weeks = (1...17).map {"\($0) неделя - \(["знаменатель", " числитель"][$0%2])" }
-    private var weekLabel = UILabel()
+//    private var weekLabel = UILabel()
     
     private var toolBar = UIToolbar()
-    private var picker  = UIPickerView()
+    private var weekPicker  = UIPickerView()
     private var weekButton = UIButton()
 
-    private let weekPicker = UIPickerView()
+//    private let weekPicker = UIPickerView()
     private var myCells = [PairTableViewCell?]()
 
     private var cabinetsStringFromFile: String = ""
@@ -27,7 +27,9 @@ class PairsViewController: UIViewController {
     private var cellForReloadIndexes = [Int]()
     private var curNumOrDenom = 0
     private var curDay = 2
+    private var tapGestureReconizer = UITapGestureRecognizer()
     private var curWeek = 0
+    private var choosenWeek = 0
     private var semStartDate = Date()
     var daysOfWeak = ["Пн\n", "Вт\n", "Ср\n", "Чт\n", "Пт\n", "Сб\n"]
     
@@ -53,7 +55,7 @@ class PairsViewController: UIViewController {
     
         view.addSubview(tableView)
 
-        view.addSubview(weekPicker)
+//        view.addSubview(weekPicker)
 
         view.addSubview(lowerView)
         view.addSubview(firstScreenButton)
@@ -64,8 +66,8 @@ class PairsViewController: UIViewController {
 
         
 //        weakButton.backgroundColor = UIColor(rgb: 0xC4C4C4)
-        weekPicker.layer.cornerRadius = 10
-        weekPicker.layer.masksToBounds = true
+//        weekPicker.layer.cornerRadius = 10
+//        weekPicker.layer.masksToBounds = true
 //        weakButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
 //        weakButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
 //        weakButton.setTitle("11 неделя - числитель", for: .normal)
@@ -93,7 +95,6 @@ class PairsViewController: UIViewController {
         
         createDayButtons()
         screenSelection()
-        weekSelection()
         
         tableView.frame = view.bounds
         tableView.separatorStyle = .none
@@ -110,14 +111,12 @@ class PairsViewController: UIViewController {
         
 
         
-        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(tap))
-        view.addGestureRecognizer(tapGestureReconizer)
+        tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(tapToClosePicker))
+//        view.addGestureRecognizer(tapGestureReconizer)
         
         setupLowerSubview()
-        loadData()
-
-        setupLowerSubview()
         tableView.refreshControl?.beginRefreshing()
+        setupWeekButton()
         
 
 //        let cabinetsRef = storageRef.child("cabinets.txt")
@@ -224,61 +223,66 @@ class PairsViewController: UIViewController {
         semStartDate = Calendar.current.date(byAdding: .day, value: -1, to: semStartDate)!
         let deltaSecs = Date() - semStartDate
         curWeek = Int(deltaSecs/604800 + 1)
-        weekPicker.selectRow(curWeek-1, inComponent: 0, animated: true)
+        choosenWeek = curWeek - 1
+//        weekPicker.selectRow(curWeek-1, inComponent: 0, animated: true)
+//        weekLabel.text = weeks[curWeek-1]
+        weekButton.setTitle(weeks[curWeek-1], for: .normal)
         curNumOrDenom = (curWeek-1) % 2
         print(curWeek)
     }
     
     @objc
-    func tap() {
+    func tapToClosePicker() {
         UIView.animate(withDuration: 0.20) { [self] () -> Void in
-            picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220)
+            weekPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220)
         }
-        weekLabel.text = String(weeks[picker.selectedRow(inComponent: 0)])
-        
-        view.endEditing(true)
+        view.removeGestureRecognizer(tapGestureReconizer)
+//        weekLabel.text = weeks[weekPicker.selectedRow(inComponent: 0)]
     }
     
-    private func weekSelection() {
+    private func setupWeekButton() {
         weekButton.backgroundColor = UIColor(rgb: 0xC4C4C4)
         weekButton.layer.cornerRadius = 12
-        weekLabel.textColor = UIColor.black
-        weekLabel.text = weeks[16]
-    
-        weekLabel.font = .systemFont(ofSize: 19)
+        weekButton.setTitle(weeks[0], for: .normal)
+        weekButton.setTitleColor(UIColor.black, for: .normal)
+        weekButton.titleLabel?.font = .systemFont(ofSize: 19)
         
-        weekButton.addSubview(weekLabel)
-        weekButton.bringSubviewToFront(weekLabel)
+//        weekLabel.textColor = UIColor.black
+//        weekLabel.text = weeks[0]
+    
+//        weekLabel.font = .systemFont(ofSize: 19)
+//
+//        weekButton.addSubview(weekLabel)
+//        weekButton.bringSubviewToFront(weekLabel)
         
         weekButton.addTarget(self, action: #selector(pickerGo), for: .touchUpInside)
     }
     
     @objc func pickerGo() {
-        picker = UIPickerView.init()
-        picker.delegate = self
-        picker.dataSource = self
-        if self.traitCollection.userInterfaceStyle == .dark {
-            picker.setValue(UIColor.white, forKey: "textColor")
-        } else {
-            picker.setValue(UIColor.black, forKey: "textColor")
-        }
-        picker.backgroundColor =  UIColor.systemBackground.withAlphaComponent(0.9)
-        picker.autoresizingMask = .flexibleWidth
-        picker.contentMode = .center
-        picker.alpha = 1
-        picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220)
-        self.view.addSubview(picker)
+        view.addGestureRecognizer(tapGestureReconizer)
+        weekPicker = UIPickerView.init()
+        weekPicker.delegate = self
+        weekPicker.dataSource = self
+        
+        weekPicker.backgroundColor =  UIColor.systemBackground.withAlphaComponent(0.9)
+        weekPicker.autoresizingMask = .flexibleWidth
+        weekPicker.contentMode = .center
+        weekPicker.alpha = 1
+        weekPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220)
+        self.view.addSubview(weekPicker)
+        weekPicker.selectRow(choosenWeek, inComponent: 0, animated: true)
         
         UIView.animate(withDuration: 0.20) { [self] () -> Void in
-            picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 220, width: UIScreen.main.bounds.size.width, height: 220)
+            weekPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 220, width: UIScreen.main.bounds.size.width, height: 220)
         }
     }
     
-    @objc func onDoneButtonTapped() {
-        toolBar.removeFromSuperview()
-        picker.removeFromSuperview()
-        weekLabel.text = String(weeks[picker.selectedRow(inComponent: 0)])
-    }
+//    @objc func onDoneButtonTapped() {
+//        toolBar.removeFromSuperview()
+//        weekPicker.removeFromSuperview()
+//            weekButton.setTitle(<#T##title: String?##String?#>, for: <#T##UIControl.State#>)
+//        weekLabel.text = String(weeks[weekPicker.selectedRow(inComponent: 0)])
+//    }
     
     
     private func screenSelection() {
@@ -317,6 +321,16 @@ class PairsViewController: UIViewController {
             curNumOrDenom = 1
         } else {
             curNumOrDenom = 0
+        }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if self.traitCollection.userInterfaceStyle == .dark {
+            weekPicker.setValue(UIColor.white, forKey: "textColor")
+        } else {
+            weekPicker.setValue(UIColor.black, forKey: "textColor")
         }
     }
     
@@ -442,8 +456,8 @@ class PairsViewController: UIViewController {
         
         let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
         
-        weekLabel.pin
-            .center().sizeToFit()
+//        weekLabel.pin
+//            .center().sizeToFit()
 
         weekButton.pin
             .top(65)
@@ -463,13 +477,11 @@ class PairsViewController: UIViewController {
             .left(0)
             .right(0)
         
-        weekPicker.pin
-            .top(55)
-            .height(CGFloat(35) + 40)
-            .right(margins)
-            .width(CGFloat(view.frame.width / (4 / 3)))
-        
-        let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
+//        weekPicker.pin
+//            .top(55)
+//            .height(CGFloat(35) + 40)
+//            .right(margins)
+//            .width(CGFloat(view.frame.width / (4 / 3)))
 
         firstScreenButton.pin
             .top(CGFloat(view.frame.height - 95))
@@ -509,23 +521,9 @@ class PairsViewController: UIViewController {
         compl?()
     }
     
-
-    // следующие 3 функции для пикера
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
-        return weeks.count
-    }
-
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return weeks[row]
-    }
     
     @objc
     private func didPullToRefresh() {
-        //надо удалить старый файлик...
         loadAndParseCabinetsFileFromFirebase {
             self.initCellsAndloadTableData()
         }
@@ -533,29 +531,17 @@ class PairsViewController: UIViewController {
             self.setCurWeekDate()
             self.reloadTableData()
         }
+        updateDayButtons(with: curWeek - 1)
         
 //        reloadTableData { [weak self] in
 //            self?.tableView.refreshControl?.endRefreshing()
 //        }
     }
     
-    @objc
-    private func didTapAddButton() {
-        print("tapped week B")
-        
-    }
-    
     private func allocateCellsArr() {
         for _ in 0...6 {
             myCells.append(nil)
         }
-    }
-
-    
-    @objc private func open() {
-        let viewController = CityViewController()
-        let navigationController = UINavigationController(rootViewController: viewController)
-        present(navigationController, animated: true, completion: nil)
     }
     
 }
@@ -590,28 +576,28 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("touched \(indexPath.row)")
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
-//        if indexPath.row != cellForReloadInd {
-        if !cellForReloadIndexes.contains(indexPath.row) {
-//            if cellForReloadInd != -1 {
-//                myCells[cellForReloadInd]?.config(with: cellForReloadInd)
-//            }
-            
-//            cellForReloadInd = indexPath.row
-            cellForReloadIndexes.append(indexPath.row)
-            tableView.beginUpdates()
-            myCells[indexPath.row]?.config2(with: indexPath.row)
-            tableView.endUpdates()
+            print("touched \(indexPath.row)")
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    //        if indexPath.row != cellForReloadInd {
+            if !cellForReloadIndexes.contains(indexPath.row) {
+    //            if cellForReloadInd != -1 {
+    //                myCells[cellForReloadInd]?.config(with: cellForReloadInd)
+    //            }
+                
+    //            cellForReloadInd = indexPath.row
+                cellForReloadIndexes.append(indexPath.row)
+                tableView.beginUpdates()
+                myCells[indexPath.row]?.config2(with: indexPath.row)
+                tableView.endUpdates()
+            }
+            else {
+                cellForReloadIndexes = cellForReloadIndexes.filter{$0 != indexPath.row}
+                cellForReloadInd = -1
+                tableView.beginUpdates()
+                myCells[indexPath.row]?.config(with: indexPath.row)
+                tableView.endUpdates()
+            }
         }
-        else {
-            cellForReloadIndexes = cellForReloadIndexes.filter{$0 != indexPath.row}
-            cellForReloadInd = -1
-            tableView.beginUpdates()
-            myCells[indexPath.row]?.config(with: indexPath.row)
-            tableView.endUpdates()
-        }
-    }
     
     //высота ячейки
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -642,7 +628,9 @@ extension PairsViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         curNumOrDenom = row % 2
+        choosenWeek = weekPicker.selectedRow(inComponent: 0)
         updateDayButtons(with: row)
+        weekButton.setTitle(weeks[choosenWeek], for: .normal)
         self.reloadTableData()
     }
 }

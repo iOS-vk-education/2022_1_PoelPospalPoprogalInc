@@ -10,9 +10,6 @@ struct FilterCellData {
 }
 
 class FilterViewController: UIViewController {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
   
     var FreeCabinets = [[[[String]]]]()
     var semStartDate = Date()
@@ -89,7 +86,7 @@ class FilterViewController: UIViewController {
         view.addSubview(buildingSelectView)
         view.addSubview(audienceSelectView)
         
-        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
+        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(tap))
         view.addGestureRecognizer(tapGestureReconizer)
         
         
@@ -195,14 +192,17 @@ class FilterViewController: UIViewController {
         datePicker.date = setCorrectCurrentDate()
         datePicker.locale = .current
         datePicker.preferredDatePickerStyle = .compact
-//        datePicker.addTarget(self, action: #selector(handleDateSelection), for: .valueChanged)
-        
-        datePicker.backgroundColor = UIColor.secondarySystemBackground
-        datePicker.layer.borderWidth = 2
-        datePicker.layer.borderColor = borderColor.cgColor
-        
-        datePicker.layer.cornerRadius = 16
-        datePicker.layer.masksToBounds = true
+//        datePicker.date = setCorrectCurrentDate()
+//        datePicker.locale = .current
+//        datePicker.preferredDatePickerStyle = .compact
+////        datePicker.addTarget(self, action: #selector(handleDateSelection), for: .valueChanged)
+//
+//        datePicker.backgroundColor = UIColor.secondarySystemBackground
+////        datePicker.layer.borderWidth = 2
+////        datePicker.layer.borderColor = borderColor.cgColor
+//
+//        datePicker.layer.cornerRadius = 16
+//        datePicker.layer.masksToBounds = true
     }
     
     
@@ -317,7 +317,7 @@ class FilterViewController: UIViewController {
     }
     
     @objc
-    func tap() {
+    private func tap() {
         view.endEditing(true)
         if audienceTextField.text != "" {
             audienceSwitcher.setOn(true, animated: true)
@@ -639,6 +639,9 @@ class FilterViewController: UIViewController {
 }
 
 extension FilterViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
         return gradePickerValues.count
