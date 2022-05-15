@@ -1,6 +1,7 @@
 import UIKit
 import PinLayout
 
+
 class PairsViewController: UIViewController {
     let secondViewController: FilterViewController = FilterViewController()
 
@@ -10,12 +11,18 @@ class PairsViewController: UIViewController {
 //    private let weekSwitcher = UIPickerView()
 //    private let viewForSwitcher = UIView()
     private let weeks = (1...17).map {"\($0) неделя - \(["знаменатель", " числитель"][$0%2])" }
+    private var weekLabel = UILabel()
+    
+    private var toolBar = UIToolbar()
+    private var picker  = UIPickerView()
+    private var weekButton = UIButton()
 
     private let weekPicker = UIPickerView()
     private var myCells = [PairTableViewCell?]()
 
     private var cabinetsStringFromFile: String = ""
     private var semesterStartFromFile: String = ""
+
     private var cellForReloadInd = -1
     private var cellForReloadIndexes = [Int]()
     private var curNumOrDenom = 0
@@ -37,23 +44,24 @@ class PairsViewController: UIViewController {
     
     private let lowerView = UIView()
 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.systemBackground
         
         navigationController?.setNavigationBarHidden(true, animated: true)
-        
-        weekPicker.dataSource = self
-        weekPicker.delegate = self
-        
+    
         view.addSubview(tableView)
+
         view.addSubview(weekPicker)
+
         view.addSubview(lowerView)
         view.addSubview(firstScreenButton)
         view.addSubview(secondScreenButton)
         view.addSubview(houseImg)
         view.addSubview(magnifierImg)
-        
+        view.addSubview(weekButton)
+
         
 //        weakButton.backgroundColor = UIColor(rgb: 0xC4C4C4)
         weekPicker.layer.cornerRadius = 10
@@ -85,6 +93,7 @@ class PairsViewController: UIViewController {
         
         createDayButtons()
         screenSelection()
+        weekSelection()
         
         tableView.frame = view.bounds
         tableView.separatorStyle = .none
@@ -99,6 +108,14 @@ class PairsViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
         tableView.refreshControl = refreshControl
         
+
+        
+        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(tap))
+        view.addGestureRecognizer(tapGestureReconizer)
+        
+        setupLowerSubview()
+        loadData()
+
         setupLowerSubview()
         tableView.refreshControl?.beginRefreshing()
         
@@ -212,6 +229,58 @@ class PairsViewController: UIViewController {
         print(curWeek)
     }
     
+    @objc
+    func tap() {
+        UIView.animate(withDuration: 0.20) { [self] () -> Void in
+            picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220)
+        }
+        weekLabel.text = String(weeks[picker.selectedRow(inComponent: 0)])
+        
+        view.endEditing(true)
+    }
+    
+    private func weekSelection() {
+        weekButton.backgroundColor = UIColor(rgb: 0xC4C4C4)
+        weekButton.layer.cornerRadius = 12
+        weekLabel.textColor = UIColor.black
+        weekLabel.text = weeks[16]
+    
+        weekLabel.font = .systemFont(ofSize: 19)
+        
+        weekButton.addSubview(weekLabel)
+        weekButton.bringSubviewToFront(weekLabel)
+        
+        weekButton.addTarget(self, action: #selector(pickerGo), for: .touchUpInside)
+    }
+    
+    @objc func pickerGo() {
+        picker = UIPickerView.init()
+        picker.delegate = self
+        picker.dataSource = self
+        if self.traitCollection.userInterfaceStyle == .dark {
+            picker.setValue(UIColor.white, forKey: "textColor")
+        } else {
+            picker.setValue(UIColor.black, forKey: "textColor")
+        }
+        picker.backgroundColor =  UIColor.systemBackground.withAlphaComponent(0.9)
+        picker.autoresizingMask = .flexibleWidth
+        picker.contentMode = .center
+        picker.alpha = 1
+        picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220)
+        self.view.addSubview(picker)
+        
+        UIView.animate(withDuration: 0.20) { [self] () -> Void in
+            picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 220, width: UIScreen.main.bounds.size.width, height: 220)
+        }
+    }
+    
+    @objc func onDoneButtonTapped() {
+        toolBar.removeFromSuperview()
+        picker.removeFromSuperview()
+        weekLabel.text = String(weeks[picker.selectedRow(inComponent: 0)])
+    }
+    
+    
     private func screenSelection() {
         firstScreenButton.backgroundColor = UIColor(rgb: 0x785A43)
         firstScreenButton.layer.cornerRadius = 10
@@ -219,7 +288,6 @@ class PairsViewController: UIViewController {
         firstScreenButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
         firstScreenButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
     
-        firstScreenButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         
         secondScreenButton.backgroundColor = UIColor(rgb: 0xC2A894)
         secondScreenButton.layer.cornerRadius = 10
@@ -243,6 +311,7 @@ class PairsViewController: UIViewController {
         self.navigationController?.pushViewController(secondViewController, animated: false)
     }
     
+  
     private func changeNumOrDenom() {
         if curNumOrDenom == 0 {
             curNumOrDenom = 1
@@ -371,6 +440,16 @@ class PairsViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+        let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
+        
+        weekLabel.pin
+            .center().sizeToFit()
+
+        weekButton.pin
+            .top(65)
+            .height(40)
+            .left(margins)
+            .width(ButtonsWidth * 3 / 2)
         
         tableView.pin
             .top(200)
@@ -391,6 +470,7 @@ class PairsViewController: UIViewController {
             .width(CGFloat(view.frame.width / (4 / 3)))
         
         let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
+
         firstScreenButton.pin
             .top(CGFloat(view.frame.height - 95))
             .height(45)
@@ -429,6 +509,19 @@ class PairsViewController: UIViewController {
         compl?()
     }
     
+
+    // следующие 3 функции для пикера
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
+        return weeks.count
+    }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return weeks[row]
+    }
     
     @objc
     private func didPullToRefresh() {
@@ -445,7 +538,6 @@ class PairsViewController: UIViewController {
 //            self?.tableView.refreshControl?.endRefreshing()
 //        }
     }
-
     
     @objc
     private func didTapAddButton() {
@@ -465,6 +557,7 @@ class PairsViewController: UIViewController {
         let navigationController = UINavigationController(rootViewController: viewController)
         present(navigationController, animated: true, completion: nil)
     }
+    
 }
 
 extension PairsViewController: UITableViewDelegate, UITableViewDataSource {

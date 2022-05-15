@@ -13,6 +13,7 @@ class FilterViewController: UIViewController {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
+  
     var FreeCabinets = [[[[String]]]]()
     var semStartDate = Date()
     
@@ -69,6 +70,7 @@ class FilterViewController: UIViewController {
         firstPairPicker.delegate = self
         secondPairPicker.dataSource = self
         secondPairPicker.delegate = self
+
         buildingSegController.addTarget(self, action: #selector(didChangeBuilding(_ :)), for: .valueChanged)
         audienceSwitcher.addTarget(self, action: #selector(didSwitchAudienceTrigger), for: .valueChanged)
         
@@ -112,6 +114,7 @@ class FilterViewController: UIViewController {
         showDatePicker()
         view.addSubview(datePicker)
     }
+    
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
@@ -314,7 +317,7 @@ class FilterViewController: UIViewController {
     }
     
     @objc
-    func tap(_ sender: UITapGestureRecognizer) {
+    func tap() {
         view.endEditing(true)
         if audienceTextField.text != "" {
             audienceSwitcher.setOn(true, animated: true)
@@ -378,7 +381,6 @@ class FilterViewController: UIViewController {
             .width(150)
         
         pairSelectView.addSubview(firstPairPicker)
-//        pairSelectView.addSubview(firstPairPicker)
         
         secondPairPicker.pin
             .top(54)
@@ -389,7 +391,6 @@ class FilterViewController: UIViewController {
 //        secondPairTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
 
         pairSelectView.addSubview(secondPairPicker)
-//        pairSelectView.addSubview(secondPairPicker)
     }
     
     private func createBuildingArea() {
@@ -504,7 +505,6 @@ class FilterViewController: UIViewController {
         audienceTextField.addTarget(self, action: #selector(didStartEnterAudience), for: .editingDidBegin)
         
         audienceTextField.textAlignment = .center
-        audienceSelectView.addSubview(audienceTextField)
         audienceSelectView.addSubview(audienceTextField)
     }
     
