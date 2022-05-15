@@ -39,48 +39,13 @@ final class NetworkManager: NetworkManagerDescription {
                     DispatchQueue.main.async {
                         completion(error)
                     }
-//                    print("Uh-oh, an error occurred!")
-//                    let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-//                    let okAction = UIAlertAction(title: "OK", style: .cancel)
-//                    alertController.addAction(okAction)
-//                    self.present(alertController, animated: true, completion: nil)
-//                    self.tableView.refreshControl?.endRefreshing()
-                // Uh-oh, an error occurred!
                 } else {
-//                    print("Local file URL is returned")
                     DispatchQueue.main.async {
                         completion(nil)
                     }
-                // Local file URL for "images/island.jpg" is returned
                 }
             }
         }
     }
 }
-
-
-//downloadFile(with: "cabinets.txt") {
-//    self.allCabinetsFromFile = self.readTextFile(with: "cabinets.txt") ?? ""
-//    
-//    if self.allCabinetsFromFile == "" {
-//        print("Downloading file error...")
-//    }
-//    else {
-//        
-//        self.parseSourceFile()
-//    }
-//    
-//    var indexPath: IndexPath = IndexPath(row: 0, section: 0)
-//    for i in 0...6 {
-//        indexPath.row = i
-//        indexPath.section = 0
-//        self.myCells[i] = self.tableView.dequeueReusableCell(withIdentifier: "PairTableViewCell", for: indexPath) as? PairTableViewCell
-//    }
-//    
-//    self.tableView.refreshControl?.endRefreshing()
-//    self.tableView.delegate = self
-//    self.tableView.dataSource = self
-//    self.loadData()
-//}
-
 

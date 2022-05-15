@@ -87,7 +87,7 @@ class FilterViewController: UIViewController {
         view.addSubview(buildingSelectView)
         view.addSubview(audienceSelectView)
         
-        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(FilterViewController.tap(_:)))
+        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
         view.addGestureRecognizer(tapGestureReconizer)
         
         
@@ -136,7 +136,7 @@ class FilterViewController: UIViewController {
         if self.weekDay == -1 {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             datePicker.date = self.setCorrectCurrentDate()
-            BasicAlert.shared.showAlert(presentTo: self, title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день")
+            AlertManager.shared.showAlert(presentTo: self, title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день")
 //            let alertController = UIAlertController(title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день", preferredStyle: .alert)
 //            let okAction = UIAlertAction(title: "OK", style: .cancel)
 //            alertController.addAction(okAction)
@@ -151,7 +151,7 @@ class FilterViewController: UIViewController {
 //            alertController.addAction(okAction)
             datePicker.date = self.setCorrectCurrentDate()
 //            present(alertController, animated: true, completion: nil)
-            BasicAlert.shared.showAlert(presentTo: self, title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: self.semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок")
+            AlertManager.shared.showAlert(presentTo: self, title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: self.semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок")
             return false
         }
         return true
@@ -316,6 +316,9 @@ class FilterViewController: UIViewController {
     @objc
     func tap(_ sender: UITapGestureRecognizer) {
         view.endEditing(true)
+        if audienceTextField.text != "" {
+            audienceSwitcher.setOn(true, animated: true)
+        }
     }
     
     
@@ -629,7 +632,7 @@ class FilterViewController: UIViewController {
 //            let okAction = UIAlertAction(title: "OK", style: .cancel)
 //            alertController.addAction(okAction)
 //            self.present(alertController, animated: true, completion: nil)
-            BasicAlert.shared.showAlert(presentTo: self, title: "Не найдено ни одной подходящей аудитории...", message: "")
+            AlertManager.shared.showAlert(presentTo: self, title: "Не найдено ни одной подходящей аудитории...", message: "")
         }
         
     }

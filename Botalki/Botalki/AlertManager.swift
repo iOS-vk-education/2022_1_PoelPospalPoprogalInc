@@ -12,8 +12,8 @@ protocol BasicAlertDescription {
     func showAlert(presentTo: UIViewController, title: String?, message: String?)
 }
 
-final class BasicAlert: BasicAlertDescription {
-    static let shared: BasicAlertDescription = BasicAlert()
+final class AlertManager: BasicAlertDescription {
+    static let shared: BasicAlertDescription = AlertManager()
     
     private init() {}
     

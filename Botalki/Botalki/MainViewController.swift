@@ -106,84 +106,63 @@ class PairsViewController: UIViewController {
 //        let cabinetsRef = storageRef.child("cabinets.txt")
         allocateCellsArr()
         
-        loadDataFromFirebase() {
-            self.initCellsAndloadTableData()
-        }
-        
-//        if self.semesterStartFromFile == "" {
-//            downloadFile(with: "uuids.txt") {
-//                self.semesterStartFromFile = self.readTextFile(with: "uuids.txt") ?? ""
-//
-//                if self.semesterStartFromFile == "" {
-//                    print("Downloading file error...")
-//                }
-//                else {
-//                    self.setCurWeekDate()
-//                }
-//
-//                self.reloadTableData()
-//            }
-//        } else {
-//            self.setCurWeekDate()
-//            self.reloadTableData()
-//        }
-    }
-    
-    private func loadDataFromFirebase(completion: @escaping (() -> Void)) {
         self.cabinetsStringFromFile = MyFileManager.shared.getStringFromTextFile(with: "cabinets.txt") ?? ""
         self.semesterStartFromFile = MyFileManager.shared.getStringFromTextFile(with: "uuids.txt") ?? ""
         
-//        self.cabinetsStringFromFile = self.readTextFile(with: "cabinets.txt") ?? ""
-//        self.semesterStartFromFile = self.readTextFile(with: "uuids.txt") ?? ""
-        
-        if self.cabinetsStringFromFile == "" {
-            NetworkManager.shared.downloadFileFromFirebaseStorage(toFile: "cabinets.txt") { error in
-                if error == nil {
-                    self.cabinetsStringFromFile = MyFileManager.shared.getStringFromTextFile(with: "cabinets.txt") ?? ""
-                    
-                    if self.cabinetsStringFromFile == "" {
-                        print("Downloading file error...")
-                        BasicAlert.shared.showAlert(presentTo: self, title: "Downloading file cabinets.txt error...", message: "")
-                    } else {
-                        self.parseSourceFile()
-                    }
-                    
-                    completion()
-//                    self.initCellsAndloadTableData()
-                    
-                } else {
-                    BasicAlert.shared.showAlert(presentTo: self, title: "Error", message: error?.localizedDescription)
-                    self.tableView.refreshControl?.endRefreshing()
-                }
+        if self.cabinetsStringFromFile == "" || self.semesterStartFromFile == "" {
+            loadAndParseCabinetsFileFromFirebase {
+                self.initCellsAndloadTableData()
             }
-            
-        } else {
-            completion()
-//            initCellsAndloadTableData()
-        }
-        
-        if self.semesterStartFromFile == "" {
-            NetworkManager.shared.downloadFileFromFirebaseStorage(toFile: "uuids.txt") { error in
-                if error == nil {
-                    self.semesterStartFromFile = MyFileManager.shared.getStringFromTextFile(with: "uuids.txt") ?? ""
-                    
-                    if self.semesterStartFromFile == "" {
-                        print("Downloading file error...")
-                        BasicAlert.shared.showAlert(presentTo: self, title: "Downloading file uuids.txt error...", message: "")
-                    } else {
-                        self.setCurWeekDate()
-                    }
-                    self.reloadTableData()
-                    
-                } else {
-                    BasicAlert.shared.showAlert(presentTo: self, title: "Error", message: error?.localizedDescription)
-                    self.tableView.refreshControl?.endRefreshing()
-                }
+            loadAndSetCurWeekFromFirebase {
+                self.setCurWeekDate()
+                self.reloadTableData()
             }
-            
         } else {
+            self.initCellsAndloadTableData()
             self.setCurWeekDate()
             self.reloadTableData()
+        }
+    }
+    
+    
+    private func loadAndParseCabinetsFileFromFirebase(completion: @escaping (() -> Void)) {
+        NetworkManager.shared.downloadFileFromFirebaseStorage(toFile: "cabinets.txt") { error in
+            if error == nil {
+                self.cabinetsStringFromFile = MyFileManager.shared.getStringFromTextFile(with: "cabinets.txt") ?? ""
+                
+                if self.cabinetsStringFromFile == "" {
+                    print("Downloading file error...")
+                    AlertManager.shared.showAlert(presentTo: self, title: "Downloading file cabinets.txt error...", message: "")
+                } else {
+                    self.parseCabinetsFile()
+                }
+                completion()
+                
+            } else {
+                AlertManager.shared.showAlert(presentTo: self, title: "Error", message: error?.localizedDescription)
+                self.tableView.refreshControl?.endRefreshing()
+            }
+        }
+    }
+    
+    private func loadAndSetCurWeekFromFirebase(completion: @escaping (() -> Void)) {
+        NetworkManager.shared.downloadFileFromFirebaseStorage(toFile: "uuids.txt") { error in
+            if error == nil {
+                self.semesterStartFromFile = MyFileManager.shared.getStringFromTextFile(with: "uuids.txt") ?? ""
+                
+                if self.semesterStartFromFile == "" {
+                    print("Downloading file error...")
+                    AlertManager.shared.showAlert(presentTo: self, title: "Downloading file uuids.txt error...", message: "")
+                } else {
+                    self.setCurWeekDate()
+                }
+//                self.reloadTableData()
+                completion()
+                
+            } else {
+                AlertManager.shared.showAlert(presentTo: self, title: "Error", message: error?.localizedDescription)
+                self.tableView.refreshControl?.endRefreshing()
+            }
         }
     }
     
@@ -195,14 +174,14 @@ class PairsViewController: UIViewController {
             self.myCells[i] = self.tableView.dequeueReusableCell(withIdentifier: "PairTableViewCell", for: indexPath) as? PairTableViewCell
         }
         
-        self.parseSourceFile()
-        self.tableView.refreshControl?.endRefreshing()
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
-        self.reloadTableData()
+        parseCabinetsFile()
+        tableView.refreshControl?.endRefreshing()
+        tableView.delegate = self
+        tableView.dataSource = self
+        reloadTableData()
     }
     
-    private func parseSourceFile() {
+    private func parseCabinetsFile() {
         self.cabinetsStringFromFile.split(separator: "\n").forEach { line in
             var pairsForNumenatorOrDen = [[[String]]]()
             line.components(separatedBy: "###").forEach { day in
@@ -226,17 +205,8 @@ class PairsViewController: UIViewController {
         semStartDate = dateFormatter.date(from: semesterStartFromFile)!
         secondViewController.semStartDate = semStartDate
         semStartDate = Calendar.current.date(byAdding: .day, value: -1, to: semStartDate)!
-//        var cur = Calendar.current.date(byAdding: .day, value: -3, to: Date()) ?? Date()
-//        let formatter = DateFormatter()
-//        formatter.dateFormat = "yyyy/MM/dd HH:mm"
-//        let cur = formatter.date(from: "2022/05/8 01:00")!
-//        print("from: \(semStartDate) to \(cur)")
         let deltaSecs = Date() - semStartDate
         curWeek = Int(deltaSecs/604800 + 1)
-//        semesterStart = String(semesterStart[...semesterStart.index(semesterStart.startIndex, offsetBy: 9)])
-//        var startDate = Date(
-//        semesterStart.substring(with: Range(String.Index())
-//        print(Int(deltaWeeks + 1))
         weekPicker.selectRow(curWeek-1, inComponent: 0, animated: true)
         curNumOrDenom = (curWeek-1) % 2
         print(curWeek)
@@ -261,10 +231,6 @@ class PairsViewController: UIViewController {
     }
     
     private func setupLowerSubview() {
-//        lowerView.layer.shadowColor = UIColor.black.cgColor
-//        lowerView.layer.shadowRadius = 0.5
-//        lowerView.layer.shadowOffset = .init(width: 0.5, height: 0.5)
-//        lowerView.layer.shadowOpacity = 0.8
         lowerView.layer.cornerRadius = 20
         lowerView.backgroundColor = UIColor.systemGroupedBackground
         lowerView.alpha = 0.8
@@ -284,63 +250,6 @@ class PairsViewController: UIViewController {
             curNumOrDenom = 0
         }
     }
-    
-//    func downloadFile(with fName: String, completion: @escaping () -> Void) {
-//        guard let documentsUrl = documentDirUrl() else {
-//            print("documentsUrl Error!")
-//            return
-//        }
-//
-//        let filename: String = fName
-//
-//        let filePath = documentsUrl.appendingPathComponent(filename)
-//
-//        DispatchQueue.global(qos: .userInitiated).async {
-//            let downloadTask = self.storage.child(fName).write(toFile: filePath) { url, error in
-//              if let error = error {
-//                  print("Uh-oh, an error occurred!")
-//                  let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-//                  let okAction = UIAlertAction(title: "OK", style: .cancel)
-//                  alertController.addAction(okAction)
-//                  self.present(alertController, animated: true, completion: nil)
-//                  self.tableView.refreshControl?.endRefreshing()
-//                // Uh-oh, an error occurred!
-//              } else {
-//                  print("Local file URL is returned")
-//                  DispatchQueue.main.async {
-//                      completion()
-//                  }
-//                // Local file URL for "images/island.jpg" is returned
-//              }
-//            }
-//        }
-//    }
-//
-//    func readTextFile(with fName: String) -> String? {
-//        guard let documentsUrl = documentDirUrl() else {
-//            print("documentsUrl Error!")
-//            return nil
-//        }
-//
-//        let filename: String = fName
-//
-//        let manager = FileManager.default
-//
-//        let filePath = documentsUrl.appendingPathComponent(filename)
-//
-//        if !manager.fileExists(atPath: filePath.path) {
-//            print("File not exist!")
-//            return nil
-//        }
-//
-//        let content = (try? String(contentsOf: filePath, encoding: .utf8)) ?? ""
-//
-//        return content
-//    }
-//
-//    private func documentDirUrl() -> URL? {
-//        return try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-//    }
     
     
     private func createDayButtons() {
@@ -523,9 +432,13 @@ class PairsViewController: UIViewController {
     
     @objc
     private func didPullToRefresh() {
-        loadDataFromFirebase() {
+        //надо удалить старый файлик...
+        loadAndParseCabinetsFileFromFirebase {
             self.initCellsAndloadTableData()
-            self.tableView.refreshControl?.endRefreshing()
+        }
+        loadAndSetCurWeekFromFirebase {
+            self.setCurWeekDate()
+            self.reloadTableData()
         }
         
 //        reloadTableData { [weak self] in

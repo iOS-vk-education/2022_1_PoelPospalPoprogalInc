@@ -166,7 +166,7 @@ final class FilterTableViewCell: UITableViewCell {
         if cellDate > userDate {
             containerView.backgroundColor = UIColor(rgb: 0xC2A894)
         } else {
-            containerView.backgroundColor = UIColor(rgb: 0x808080)
+            containerView.backgroundColor = UIColor(rgb: 0xC4C4C4)
         }
         
         timeLabel.text = studyTimesStart[pairStartInd] + studyTimesEnd[pairEndInd]
