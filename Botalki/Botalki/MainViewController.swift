@@ -7,9 +7,6 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
     private let tableView = UITableView()
     private let houseImg = UIImageView(image: UIImage(named: "house"))
     private let magnifierImg = UIImageView(image: UIImage(named: "magnifier"))
-//    private let weekSwitcher = UIPickerView()
-//    private let viewForSwitcher = UIView()
-    
     
     private var weekLabel = UILabel()
     
@@ -45,7 +42,6 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         navigationController?.setNavigationBarHidden(true, animated: true)
     
         view.addSubview(tableView)
-//        view.addSubview(weekPicker)
         view.addSubview(lowerView)
         view.addSubview(firstScreenButton)
         view.addSubview(secondScreenButton)
@@ -53,15 +49,6 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         view.addSubview(magnifierImg)
         view.addSubview(weekButton)
         
-        
-//        weekTextField.inputView = weekPicker
-        
-        
-//        weakButton.backgroundColor = UIColor(rgb: 0xC4C4C4)
-//        weakButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-//        weakButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
-//        weakButton.setTitle("11 неделя - числитель", for: .normal)
-//        weakButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         
         createDayButtons()
         screenSelection()
@@ -92,9 +79,6 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         UIView.animate(withDuration: 0.20) { [self] () -> Void in
             picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220)
         }
-//        picker.isHidden = true
-//        toolBar.removeFromSuperview()
-//        picker.removeFromSuperview()
         weekLabel.text = String(weeks[picker.selectedRow(inComponent: 0)])
         
         view.endEditing(true)
@@ -133,11 +117,6 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         UIView.animate(withDuration: 0.20) { [self] () -> Void in
             picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 220, width: UIScreen.main.bounds.size.width, height: 220)
         }
-                
-//        toolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 220, width: UIScreen.main.bounds.size.width, height: 50))
-////        toolBar.barStyle = .blackTranslucent
-//        toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(onDoneButtonTapped))]
-//        self.view.addSubview(toolBar)
     }
     
     @objc func onDoneButtonTapped() {
@@ -154,7 +133,6 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         firstScreenButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
         firstScreenButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
     
-//        firstScreenButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         
         secondScreenButton.backgroundColor = UIColor(rgb: 0xC2A894)
         secondScreenButton.layer.cornerRadius = 10
@@ -166,10 +144,6 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
     }
     
     private func setupLowerSubview() {
-//        lowerView.layer.shadowColor = UIColor.black.cgColor
-//        lowerView.layer.shadowRadius = 0.5
-//        lowerView.layer.shadowOffset = .init(width: 0.5, height: 0.5)
-//        lowerView.layer.shadowOpacity = 0.8
         lowerView.layer.cornerRadius = 20
         lowerView.backgroundColor = UIColor.systemGroupedBackground
         lowerView.alpha = 0.8
@@ -284,12 +258,6 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
             .bottom(0)
             .left(0)
             .right(0)
-        
-//        weekPicker.pin
-//            .top(55)
-//            .height(CGFloat(35) + 40)
-//            .right(margins)
-//            .width(CGFloat(view.frame.width / (4 / 3)))
 
         
         firstScreenButton.pin
