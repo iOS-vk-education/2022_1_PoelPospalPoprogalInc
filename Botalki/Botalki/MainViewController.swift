@@ -3,6 +3,7 @@ import PinLayout
 
 
 class PairsViewController: UIViewController {
+    
     let secondViewController: FilterViewController = FilterViewController()
 
     private let tableView = UITableView()
@@ -18,10 +19,6 @@ class PairsViewController: UIViewController {
     private var weekButton = UIButton()
 
 //    private let weekPicker = UIPickerView()
-    private var myCells = [PairTableViewCell?]()
-
-    private var cabinetsStringFromFile: String = ""
-    private var semesterStartFromFile: String = ""
 
     private var cellForReloadInd = -1
     private var cellForReloadIndexes = [Int]()
@@ -30,10 +27,10 @@ class PairsViewController: UIViewController {
     private var tapGestureReconizer = UITapGestureRecognizer()
     private var curWeek = 0
     private var choosenWeek = 0
-    private var semStartDate = Date()
+//    private var semStartDate = Date()
     var daysOfWeak = ["Пн\n", "Вт\n", "Ср\n", "Чт\n", "Пт\n", "Сб\n"]
     
-    var FreeCabinets = [[[[String]]]]()
+//    var FreeCabinets = [[[[String]]]]()
     
     private var firstScreenButton = UIButton()
     private var secondScreenButton = UIButton()
@@ -122,72 +119,72 @@ class PairsViewController: UIViewController {
 //        let cabinetsRef = storageRef.child("cabinets.txt")
         allocateCellsArr()
         
-        self.cabinetsStringFromFile = MyFileManager.shared.getStringFromTextFile(with: "cabinets.txt") ?? ""
-        self.semesterStartFromFile = MyFileManager.shared.getStringFromTextFile(with: "uuids.txt") ?? ""
-        
-        if self.cabinetsStringFromFile == "" || self.semesterStartFromFile == "" {
-            loadAndParseCabinetsFileFromFirebase {
-                self.initCellsAndloadTableData()
-            }
-            loadAndSetCurWeekFromFirebase {
-                self.setCurWeekDate()
-                self.reloadTableData()
-            }
-        } else {
-            self.initCellsAndloadTableData()
-            self.setCurWeekDate()
-            self.reloadTableData()
-        }
-    }
-    
-    
-    private func loadAndParseCabinetsFileFromFirebase(completion: @escaping (() -> Void)) {
-        NetworkManager.shared.downloadFileFromFirebaseStorage(toFile: "cabinets.txt") { error in
-            if error == nil {
-                self.cabinetsStringFromFile = MyFileManager.shared.getStringFromTextFile(with: "cabinets.txt") ?? ""
-                
-                if self.cabinetsStringFromFile == "" {
-                    print("Downloading file error...")
-                    AlertManager.shared.showAlert(presentTo: self, title: "Downloading file cabinets.txt error...", message: "")
-                } else {
-                    self.parseCabinetsFile()
-                }
-                completion()
-                
-            } else {
-                AlertManager.shared.showAlert(presentTo: self, title: "Error", message: error?.localizedDescription)
-                self.tableView.refreshControl?.endRefreshing()
-            }
-        }
-    }
-    
-    private func loadAndSetCurWeekFromFirebase(completion: @escaping (() -> Void)) {
-        NetworkManager.shared.downloadFileFromFirebaseStorage(toFile: "uuids.txt") { error in
-            if error == nil {
-                self.semesterStartFromFile = MyFileManager.shared.getStringFromTextFile(with: "uuids.txt") ?? ""
-                
-                if self.semesterStartFromFile == "" {
-                    print("Downloading file error...")
-                    AlertManager.shared.showAlert(presentTo: self, title: "Downloading file uuids.txt error...", message: "")
-                } else {
-                    self.setCurWeekDate()
-                }
+//        self.cabinetsStringFromFile = MyFileManager.shared.getStringFromTextFile(with: "cabinets.txt") ?? ""
+//        self.semesterStartFromFile = MyFileManager.shared.getStringFromTextFile(with: "uuids.txt") ?? ""
+//        
+//        if self.cabinetsStringFromFile == "" || self.semesterStartFromFile == "" {
+//            loadAndParseCabinetsFileFromFirebase {
+//                self.initCellsAndloadTableData()
+//            }
+//            loadAndSetCurWeekFromFirebase {
+//                self.setCurWeekDate()
 //                self.reloadTableData()
-                completion()
-                
-            } else {
-                AlertManager.shared.showAlert(presentTo: self, title: "Error", message: error?.localizedDescription)
-                self.tableView.refreshControl?.endRefreshing()
-            }
-        }
+//            }
+//        } else {
+//            self.initCellsAndloadTableData()
+//            self.setCurWeekDate()
+//            self.reloadTableData()
+//        }
     }
+    
+    
+//    private func loadAndParseCabinetsFileFromFirebase(completion: @escaping (() -> Void)) {
+//        NetworkManager.shared.downloadFileFromFirebaseStorage(toFile: "cabinets.txt") { error in
+//            if error == nil {
+//                self.cabinetsStringFromFile = MyFileManager.shared.getStringFromTextFile(with: "cabinets.txt") ?? ""
+//
+//                if self.cabinetsStringFromFile == "" {
+//                    print("Downloading file error...")
+//                    AlertManager.shared.showAlert(presentTo: self, title: "Downloading file cabinets.txt error...", message: "")
+//                } else {
+//                    self.parseCabinetsFile()
+//                }
+//                completion()
+//
+//            } else {
+//                AlertManager.shared.showAlert(presentTo: self, title: "Error", message: error?.localizedDescription)
+//                self.tableView.refreshControl?.endRefreshing()
+//            }
+//        }
+//    }
+    
+//    private func loadAndSetCurWeekFromFirebase(completion: @escaping (() -> Void)) {
+//        NetworkManager.shared.downloadFileFromFirebaseStorage(toFile: "uuids.txt") { error in
+//            if error == nil {
+//                self.semesterStartFromFile = MyFileManager.shared.getStringFromTextFile(with: "uuids.txt") ?? ""
+//
+//                if self.semesterStartFromFile == "" {
+//                    print("Downloading file error...")
+//                    AlertManager.shared.showAlert(presentTo: self, title: "Downloading file uuids.txt error...", message: "")
+//                } else {
+//                    self.setCurWeekDate()
+//                }
+////                self.reloadTableData()
+//                completion()
+//
+//            } else {
+//                AlertManager.shared.showAlert(presentTo: self, title: "Error", message: error?.localizedDescription)
+//                self.tableView.refreshControl?.endRefreshing()
+//            }
+//        }
+//    }
     
     private func initCellsAndloadTableData() {
         var indexPath: IndexPath = IndexPath(row: 0, section: 0)
         for i in 0...6 {
             indexPath.row = i
             indexPath.section = 0
-            self.myCells[i] = self.tableView.dequeueReusableCell(withIdentifier: "PairTableViewCell", for: indexPath) as? PairTableViewCell
+            self.model.myCells[i] = self.tableView.dequeueReusableCell(withIdentifier: "PairTableViewCell", for: indexPath) as? PairTableViewCell
         }
         
         parseCabinetsFile()
@@ -197,39 +194,39 @@ class PairsViewController: UIViewController {
         reloadTableData()
     }
     
-    private func parseCabinetsFile() {
-        self.cabinetsStringFromFile.split(separator: "\n").forEach { line in
-            var pairsForNumenatorOrDen = [[[String]]]()
-            line.components(separatedBy: "###").forEach { day in
-                var pairsForDay = [[String]]()
-                day.components(separatedBy: "##").forEach { pair in
-                    var cabinetsForPair = [String]()
-                    pair.components(separatedBy: "#").forEach { cabinet in
-                        cabinetsForPair.append(cabinet.trimmingCharacters(in: CharacterSet(charactersIn: "кк ")))
-                    }
-                    pairsForDay.append(cabinetsForPair)
-                }
-                pairsForNumenatorOrDen.append(pairsForDay)
-            }
-            self.FreeCabinets.append(pairsForNumenatorOrDen)
-        }
-    }
+//    private func parseCabinetsFile() {
+//        self.cabinetsStringFromFile.split(separator: "\n").forEach { line in
+//            var pairsForNumenatorOrDen = [[[String]]]()
+//            line.components(separatedBy: "###").forEach { day in
+//                var pairsForDay = [[String]]()
+//                day.components(separatedBy: "##").forEach { pair in
+//                    var cabinetsForPair = [String]()
+//                    pair.components(separatedBy: "#").forEach { cabinet in
+//                        cabinetsForPair.append(cabinet.trimmingCharacters(in: CharacterSet(charactersIn: "кк ")))
+//                    }
+//                    pairsForDay.append(cabinetsForPair)
+//                }
+//                pairsForNumenatorOrDen.append(pairsForDay)
+//            }
+//            self.FreeCabinets.append(pairsForNumenatorOrDen)
+//        }
+//    }
     
-    private func setCurWeekDate() {
-        semesterStartFromFile = semesterStartFromFile.components(separatedBy: "\n")[0]
-        let dateFormatter = ISO8601DateFormatter()
-        semStartDate = dateFormatter.date(from: semesterStartFromFile)!
-        secondViewController.semStartDate = semStartDate
-        semStartDate = Calendar.current.date(byAdding: .day, value: -1, to: semStartDate)!
-        let deltaSecs = Date() - semStartDate
-        curWeek = Int(deltaSecs/604800 + 1)
-        choosenWeek = curWeek - 1
-//        weekPicker.selectRow(curWeek-1, inComponent: 0, animated: true)
-//        weekLabel.text = weeks[curWeek-1]
-        weekButton.setTitle(weeks[curWeek-1], for: .normal)
-        curNumOrDenom = (curWeek-1) % 2
-        print(curWeek)
-    }
+//    private func setCurWeekDate() {
+//        semesterStartFromFile = semesterStartFromFile.components(separatedBy: "\n")[0]
+//        let dateFormatter = ISO8601DateFormatter()
+//        semStartDate = dateFormatter.date(from: semesterStartFromFile)!
+//        secondViewController.semStartDate = semStartDate
+//        semStartDate = Calendar.current.date(byAdding: .day, value: -1, to: semStartDate)!
+//        let deltaSecs = Date() - semStartDate
+//        curWeek = Int(deltaSecs/604800 + 1)
+//        choosenWeek = curWeek - 1
+////        weekPicker.selectRow(curWeek-1, inComponent: 0, animated: true)
+////        weekLabel.text = weeks[curWeek-1]
+//        weekButton.setTitle(weeks[curWeek-1], for: .normal)
+//        curNumOrDenom = (curWeek-1) % 2
+////        print(curWeek)
+//    }
     
     @objc
     func tapToClosePicker() {
@@ -448,7 +445,7 @@ class PairsViewController: UIViewController {
     }
     
     private func unconfigCells() {
-        myCells.forEach {$0?.wasConfiguredFlag = 0}
+        model.myCells.forEach {$0?.wasConfiguredFlag = 0}
     }
     
     override func viewDidLayoutSubviews() {
@@ -540,7 +537,7 @@ class PairsViewController: UIViewController {
     
     private func allocateCellsArr() {
         for _ in 0...6 {
-            myCells.append(nil)
+            model.myCells.append(nil)
         }
     }
     
@@ -555,7 +552,7 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
             return tableView.dequeueReusableCell(withIdentifier: "basicStyle", for: indexPath)
         }
         
-        let cell = myCells[indexPath.row]
+        let cell = model.myCells[indexPath.row]
         
 //        let cell = PairTableViewCell?(style: UITableView.Cel, reuseIdentifier: "PairTableViewCell")
 //        if cell?.wasConfiguredFlag == 0 {
@@ -587,14 +584,14 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     //            cellForReloadInd = indexPath.row
                 cellForReloadIndexes.append(indexPath.row)
                 tableView.beginUpdates()
-                myCells[indexPath.row]?.config2(with: indexPath.row)
+                model.myCells[indexPath.row]?.config2(with: indexPath.row)
                 tableView.endUpdates()
             }
             else {
                 cellForReloadIndexes = cellForReloadIndexes.filter{$0 != indexPath.row}
                 cellForReloadInd = -1
                 tableView.beginUpdates()
-                myCells[indexPath.row]?.config(with: indexPath.row)
+                model.myCells[indexPath.row]?.config(with: indexPath.row)
                 tableView.endUpdates()
             }
         }
@@ -603,7 +600,7 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if cellForReloadIndexes.contains(indexPath.row) {
 //        if indexPath.row == cellForReloadInd {
-            return CGFloat(myCells[indexPath.row]?.fullCellSz ?? 95)
+            return CGFloat(model.myCells[indexPath.row]?.fullCellSz ?? 95)
         }
         else {
             return 95

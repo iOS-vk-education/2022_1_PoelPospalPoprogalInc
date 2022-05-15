@@ -136,39 +136,6 @@ final class PairTableViewCell: UITableViewCell {
             }
         }
         
-        
-//        var GZLines = Int(GZcabinets.count/numberOfCabinetsInLine)
-//        if GZcabinets.count % numberOfCabinetsInLine == 0 {
-//            GZLines -= 1
-//        }
-//
-//        var ULKLines = Int(ULKcabinets.count/numberOfCabinetsInLine)
-//        if ULKcabinets.count % numberOfCabinetsInLine == 0 {
-//            ULKLines -= 1
-//        }
-//        let ULKLines = Int(ULKcabinets.count/numberOfCabinetsInLine) + (ULKcabinets.count/numberOfCabinetsInLine % 2)) != 0) ? 1 : 0
-        
-//        for j in 0..<GZLines {
-//            for i in 0..<numberOfCabinetsInLine {
-//                if j*numberOfCabinetsInLine + i < GZcabinets.count {
-//                    GZcabinetsFullString += (GZcabinets[j*numberOfCabinetsInLine + i] + ((j == GZLines-1 && i == numberOfCabinetsInLine-1) ? "" : ", "))
-//                }
-//            }
-//            if j != GZLines {
-//                GZcabinetsFullString += "\n"
-//            }
-//        }
-//        for j in 0..<ULKLines {
-//            for i in 0..<numberOfCabinetsInLine {
-//                if j*numberOfCabinetsInLine + i < ULKcabinets.count {
-//                ULKcabinetsFullString += (ULKcabinets[j*numberOfCabinetsInLine + i] + ((j == ULKLines-1 && i == numberOfCabinetsInLine-1) ? "" : ", "))
-//                }
-//            }
-//            if j != ULKLines {
-//                ULKcabinetsFullString += "\n"
-//            }
-//        }
-        
         fullCellSz = 45 + (GZLines + ULKLines) * 21
     }
     

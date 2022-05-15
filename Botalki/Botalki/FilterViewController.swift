@@ -10,7 +10,7 @@ struct FilterCellData {
 }
 
 class FilterViewController: UIViewController {
-  
+    
     var FreeCabinets = [[[[String]]]]()
     var semStartDate = Date()
     
@@ -628,10 +628,6 @@ class FilterViewController: UIViewController {
             present(navigationController, animated: true, completion: nil)
         } else {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
-//            let alertController = UIAlertController(title: "Не найдено ни одной подходящей аудитории...", message: "", preferredStyle: .alert)
-//            let okAction = UIAlertAction(title: "OK", style: .cancel)
-//            alertController.addAction(okAction)
-//            self.present(alertController, animated: true, completion: nil)
             AlertManager.shared.showAlert(presentTo: self, title: "Не найдено ни одной подходящей аудитории...", message: "")
         }
         
