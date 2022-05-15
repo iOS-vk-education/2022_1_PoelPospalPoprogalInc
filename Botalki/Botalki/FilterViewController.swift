@@ -1,10 +1,21 @@
 import UIKit
 import PinLayout
+import SwiftUI
 
-class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
+struct FilterCellData {
+    let pairStartInd: Int
+    let pairEndInd: Int
+    let buildingInd: Int
+    let cabinet: String
+}
+
+class FilterViewController: UIViewController {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
+  
+    var FreeCabinets = [[[[String]]]]()
+    var semStartDate = Date()
     
     private let borderColor = UIColor(rgb: 0xC2A894)
     
@@ -24,17 +35,21 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     
     private let datePicker = UIDatePicker()
     
-    
     let gradePickerValues = ["1", "2", "3", "4", "5", "6", "7"]
     private let firstPairPicker = UIPickerView()
     private let secondPairPicker = UIPickerView()
+    private var pickersDict: [UIPickerView: Int] = [:]
     
     private let buildingSelectView = UIView()
+    private let buildingSwitcher = UISwitch()
     private let buildingSegController = UISegmentedControl(items: ["ГЗ", "УЛК"])
     
     private let audienceSelectView = UIView()
     private let audienceSwitcher = UISwitch()
     private let audienceTextField = UITextField()
+    
+    private var curWeek = 0
+    private var weekDay = 0
     
     
     private let margins = CGFloat(22)
@@ -50,16 +65,14 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         navigationController?.setNavigationBarHidden(true, animated: true)
         navigationController?.navigationBar.prefersLargeTitles = true
 
-        if self.traitCollection.userInterfaceStyle == .dark {
-            imageCalendar.setImageColor(color: UIColor.white)
-        } else {
-            imageCalendar.setImageColor(color: UIColor.black)
-        }
-        
+        pickersDict = [firstPairPicker: 0, secondPairPicker: 1]
         firstPairPicker.dataSource = self
         firstPairPicker.delegate = self
         secondPairPicker.dataSource = self
         secondPairPicker.delegate = self
+
+        buildingSegController.addTarget(self, action: #selector(didChangeBuilding(_ :)), for: .valueChanged)
+        audienceSwitcher.addTarget(self, action: #selector(didSwitchAudienceTrigger), for: .valueChanged)
         
         view.addSubview(lowerView)
         view.addSubview(firstScreenButton)
@@ -76,13 +89,14 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         view.addSubview(buildingSelectView)
         view.addSubview(audienceSelectView)
         
-        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(FilterViewController.tap))
+        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
         view.addGestureRecognizer(tapGestureReconizer)
         
         
         // календарь
         dateField.inputView = datePicker
         datePicker.datePickerMode = .date
+        datePicker.addTarget(self, action: #selector(didChooseDate), for: .editingDidEnd)
         
 //        let tapScreen = UITapGestureRecognizer(target: self, action: "dismissKeyboard:")
 //        func dismissKeyboard(sender: UITapGestureRecognizer) {
@@ -102,21 +116,95 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     }
     
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if self.traitCollection.userInterfaceStyle == .dark {
+            imageCalendar.setImageColor(color: UIColor.white)
+        } else {
+            imageCalendar.setImageColor(color: UIColor.black)
+        }
+    }
+    
+    private func checkDate() -> Bool {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd.MM.yyyy"
+        let calendar = Calendar.current
+        let semEnd = calendar.date(byAdding: .day, value: 7*17, to: self.semStartDate)!
+        
+        let deltaSecs = self.datePicker.date - self.semStartDate
+        curWeek = Int(deltaSecs/604800 + 1)
+        weekDay = calendar.component(.weekday, from: self.datePicker.date) - 2
+        
+        if self.weekDay == -1 {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            datePicker.date = self.setCorrectCurrentDate()
+            AlertManager.shared.showAlert(presentTo: self, title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день")
+//            let alertController = UIAlertController(title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день", preferredStyle: .alert)
+//            let okAction = UIAlertAction(title: "OK", style: .cancel)
+//            alertController.addAction(okAction)
+//            present(alertController, animated: true, completion: nil)
+            return false
+        }
+        
+        if self.curWeek < 1 || self.curWeek > 17 {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+//            let alertController = UIAlertController(title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: self.semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок", preferredStyle: .alert)
+//            let okAction = UIAlertAction(title: "OK", style: .cancel)
+//            alertController.addAction(okAction)
+            datePicker.date = self.setCorrectCurrentDate()
+//            present(alertController, animated: true, completion: nil)
+            AlertManager.shared.showAlert(presentTo: self, title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: self.semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок")
+            return false
+        }
+        return true
+    }
+    
+    @objc
+    private func didChooseDate() {
+        DispatchQueue.global().async {
+            usleep(1)
+            DispatchQueue.main.async {
+                self.checkDate()
+            }
+        }
+    }
+    
+    private func setCorrectCurrentDate() -> Date {
+        if Calendar.current.component(.weekday, from: Date()) - 2 == -1 {
+            return Calendar.current.date(byAdding: .day, value: 1, to: Date())!
+        }
+        
+        return Date()
+    }
+    
+    @objc
+    private func didChangeBuilding(_ sender: UISegmentedControl) {
+        buildingSwitcher.setOn(true, animated: true)
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    }
+    
+    @objc
+    private func didSwitchAudienceTrigger() {
+        if !audienceSwitcher.isOn {
+            audienceTextField.layer.borderWidth = 0
+        }
+    }
+    
     func showDatePicker() {
-        datePicker.date = Date()
+        datePicker.date = setCorrectCurrentDate()
         datePicker.locale = .current
         datePicker.preferredDatePickerStyle = .compact
 //        datePicker.addTarget(self, action: #selector(handleDateSelection), for: .valueChanged)
         
-//        datePicker.backgroundColor = UIColor.secondarySystemBackground
-//        datePicker.layer.borderWidth = 2
-//        datePicker.layer.borderColor = UIColor.secondarySystemBackground
-//
-//        datePicker.layer.cornerRadius = 16
-//        datePicker.layer.masksToBounds = true
-//        datePicker.titleLabel?.font = .systemFont(ofSize: 22, weight: .semibold)
-
+        datePicker.backgroundColor = UIColor.secondarySystemBackground
+        datePicker.layer.borderWidth = 2
+        datePicker.layer.borderColor = borderColor.cgColor
+        
+        datePicker.layer.cornerRadius = 16
+        datePicker.layer.masksToBounds = true
     }
+    
     
     private func setupLowerSubview() {
         lowerView.layer.cornerRadius = 20
@@ -231,14 +319,9 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     @objc
     func tap() {
         view.endEditing(true)
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
-        return gradePickerValues.count
-    }
-
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return gradePickerValues[row]
+        if audienceTextField.text != "" {
+            audienceSwitcher.setOn(true, animated: true)
+        }
     }
     
     
@@ -284,7 +367,7 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         pairSelectView.layoutSubviews()
         
         pairSelectView.addSubview(pairSwitcher)
-        pairSelectView.addSubview(pairSwitcher)
+//        pairSelectView.addSubview(pairSwitcher)
         pairSwitcher.pin
             .top(20)
             .left(pairSelectView.frame.width + 270)
@@ -298,7 +381,6 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
             .width(150)
         
         pairSelectView.addSubview(firstPairPicker)
-        pairSelectView.addSubview(firstPairPicker)
         
         secondPairPicker.pin
             .top(54)
@@ -308,7 +390,6 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         
 //        secondPairTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
 
-        pairSelectView.addSubview(secondPairPicker)
         pairSelectView.addSubview(secondPairPicker)
     }
     
@@ -344,7 +425,7 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
 
         buildingSegController.pin
             .top(18)
-            .left(buildingSelectView.frame.width + 230)
+            .left(buildingSelectView.frame.width + 145)
             .height(34)
             .width(90)
         // Add target action method
@@ -352,6 +433,12 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
 
         // Add this custom Segmented Control to our view
         buildingSelectView.addSubview(buildingSegController)
+        buildingSelectView.addSubview(buildingSwitcher)
+        buildingSwitcher.pin
+            .top(18)
+            .left(buildingSelectView.frame.width + 270)
+            .height(34)
+            .width(90)
         buildingSelectView.bringSubviewToFront(buildingSegController)
     
     }
@@ -413,9 +500,17 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         audienceTextField.returnKeyType = UIReturnKeyType.done
         audienceTextField.clearButtonMode = UITextField.ViewMode.never
         audienceTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        audienceTextField.layer.cornerRadius = 5
+        audienceTextField.layer.borderColor = UIColor.red.cgColor
+        audienceTextField.addTarget(self, action: #selector(didStartEnterAudience), for: .editingDidBegin)
         
         audienceTextField.textAlignment = .center
         audienceSelectView.addSubview(audienceTextField)
+    }
+    
+    @objc
+    func didStartEnterAudience() {
+        audienceTextField.layer.borderWidth = 0
     }
     
     private func screenSelection() {
@@ -438,6 +533,7 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     func goToFirstScreen() {
 //        let firstViewController: PairsViewController = PairsViewController()
 //        self.navigationController?.pushViewController(firstViewController, animated: false)
+        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         self.navigationController?.popViewController(animated: false)
     }
   
@@ -458,11 +554,112 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     
     @objc
     private func sortAudiences() {
-        let viewController = SortedViewController()
-        let navigationController = UINavigationController(rootViewController: viewController)
-        present(navigationController, animated: true, completion: nil)
+        var cellDataArr: [FilterCellData] = []
+        if !checkDate() {
+            return
+        }
+        
+        curWeek = Int((datePicker.date - semStartDate)/604800 + 1)
+        weekDay = Calendar.current.component(.weekday, from: datePicker.date) - 2
+        
+        let cabsForDay = FreeCabinets[(curWeek - 1) % 2][weekDay]
+        var cabFreePairsDict: [String: [Int]] = [:]
+        
+        for (i, pare) in cabsForDay.enumerated() {
+            for cab in pare {
+                if (cabFreePairsDict[cab] != nil) {
+                    cabFreePairsDict[cab]?.append(i)
+                } else {
+                    cabFreePairsDict[cab] = []
+                }
+            }
+        }
+        
+        var errorFlag = 0
+        if errorFlag == 1 && audienceTextField.text != "" || !audienceSwitcher.isOn {
+            audienceTextField.layer.borderWidth = 0
+        }
+        if audienceSwitcher.isOn && audienceTextField.text == "" {
+            audienceTextField.layer.borderWidth = 2
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            errorFlag = 1
+            return
+        }
+        
+        for cab in cabFreePairsDict.keys {
+            
+            let pairsArr = cabFreePairsDict[cab]!
+            var startInd = 0
+            var stopInd = 0
+//            var prevP = -1
+            for (i, pare) in pairsArr.enumerated() {
+                if i == 0 {
+                    startInd = pare
+                    continue
+                }
+                if pare != pairsArr[i-1] + 1 {
+                    stopInd = pairsArr[i-1]
+                    cellDataArr.append(FilterCellData(pairStartInd: startInd, pairEndInd: stopInd, buildingInd: cab.contains("л") ? 1 : 0, cabinet: cab))
+                    startInd = pare
+                }
+            }
+            cellDataArr.append(FilterCellData(pairStartInd: startInd, pairEndInd: startInd, buildingInd: cab.contains("л") ? 1 : 0, cabinet: cab))
+        }
+        
+        if pairSwitcher.isOn {
+            let beg = firstPairPicker.selectedRow(inComponent: 0)
+            let end = secondPairPicker.selectedRow(inComponent: 0)
+            
+            cellDataArr = cellDataArr.filter{$0.pairStartInd <= beg && $0.pairEndInd >= end}
+        }
+        
+        if buildingSwitcher.isOn {
+            cellDataArr = cellDataArr.filter{$0.buildingInd == buildingSegController.selectedSegmentIndex}
+        }
+        
+        if audienceSwitcher.isOn {
+            cellDataArr = cellDataArr.filter{$0.cabinet == audienceTextField.text || $0.cabinet == audienceTextField.text! + "л"}
+        }
+        
+        if cellDataArr.count != 0 {
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            let viewController = SortedViewController(cellData: cellDataArr, date: datePicker.date)
+            let navigationController = UINavigationController(rootViewController: viewController)
+            present(navigationController, animated: true, completion: nil)
+        } else {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+//            let alertController = UIAlertController(title: "Не найдено ни одной подходящей аудитории...", message: "", preferredStyle: .alert)
+//            let okAction = UIAlertAction(title: "OK", style: .cancel)
+//            alertController.addAction(okAction)
+//            self.present(alertController, animated: true, completion: nil)
+            AlertManager.shared.showAlert(presentTo: self, title: "Не найдено ни одной подходящей аудитории...", message: "")
+        }
+        
+    }
+}
+
+extension FilterViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
+        return gradePickerValues.count
+    }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return gradePickerValues[row]
     }
     
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        pairSwitcher.setOn(true, animated: true)
+        if pickersDict[pickerView] == 0 {
+            if firstPairPicker.selectedRow(inComponent: 0) > secondPairPicker.selectedRow(inComponent: 0) {
+                secondPairPicker.selectRow(firstPairPicker.selectedRow(inComponent: 0), inComponent: 0, animated: true)
+            }
+        } else {
+            if firstPairPicker.selectedRow(inComponent: 0) > secondPairPicker.selectedRow(inComponent: 0) {
+                firstPairPicker.selectRow(secondPairPicker.selectedRow(inComponent: 0), inComponent: 0, animated: true)
+            }
+        }
+    }
 }
 
 extension UIImageView {
