@@ -33,6 +33,9 @@
 		B3055FB128255FD800B185E0 /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B3055FB028255FD800B185E0 /* FirebaseDatabaseSwift */; };
 		B3055FB328255FD800B185E0 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = B3055FB228255FD800B185E0 /* FirebaseStorage */; };
 		B3055FB5282560C700B185E0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B3055FB4282560C700B185E0 /* GoogleService-Info.plist */; };
+		B3055FF728306B8100B185E0 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3055FF628306B8000B185E0 /* NetworkManager.swift */; };
+		B3055FF928306D6500B185E0 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3055FF828306D6500B185E0 /* FileManager.swift */; };
+		B3055FFB2830775B00B185E0 /* BasicAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3055FFA2830775B00B185E0 /* BasicAlert.swift */; };
 		B305A23C280EF0A700289466 /* PairTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B305A23B280EF0A700289466 /* PairTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -60,6 +63,9 @@
 		4A9D00A8280F598B00A7A778 /* calendarClock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calendarClock.png; sourceTree = "<group>"; };
 		4A9D00AA280F5B4C00A7A778 /* univer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = univer.png; sourceTree = "<group>"; };
 		B3055FB4282560C700B185E0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		B3055FF628306B8000B185E0 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		B3055FF828306D6500B185E0 /* FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
+		B3055FFA2830775B00B185E0 /* BasicAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicAlert.swift; sourceTree = "<group>"; };
 		B305A23B280EF0A700289466 /* PairTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PairTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -113,6 +119,9 @@
 				4A0612D22809D0BF001AE9CB /* Assets.xcassets */,
 				4A0612D42809D0BF001AE9CB /* LaunchScreen.storyboard */,
 				4A0612D72809D0BF001AE9CB /* Info.plist */,
+				B3055FF628306B8000B185E0 /* NetworkManager.swift */,
+				B3055FF828306D6500B185E0 /* FileManager.swift */,
+				B3055FFA2830775B00B185E0 /* BasicAlert.swift */,
 			);
 			path = Botalki;
 			sourceTree = "<group>";
@@ -227,12 +236,15 @@
 			files = (
 				4A9D00A7280F255000A7A778 /* FilterTableViewCell.swift in Sources */,
 				4A9D0097280D6F7200A7A778 /* FilterViewController.swift in Sources */,
+				B3055FF728306B8100B185E0 /* NetworkManager.swift in Sources */,
 				4A0612E22809D2BD001AE9CB /* PairFullCell.swift in Sources */,
 				4A0612E52809D2BD001AE9CB /* MainViewController.swift in Sources */,
 				4A0612CA2809D0BB001AE9CB /* AppDelegate.swift in Sources */,
 				4A0612CC2809D0BB001AE9CB /* SceneDelegate.swift in Sources */,
+				B3055FF928306D6500B185E0 /* FileManager.swift in Sources */,
 				4A9D00A1280F10D300A7A778 /* SortedViewController.swift in Sources */,
 				B305A23C280EF0A700289466 /* PairTableViewCell.swift in Sources */,
+				B3055FFB2830775B00B185E0 /* BasicAlert.swift in Sources */,
 				4A0612EC2809D7F8001AE9CB /* City.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

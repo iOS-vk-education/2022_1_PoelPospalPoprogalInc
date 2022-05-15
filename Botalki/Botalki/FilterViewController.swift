@@ -135,21 +135,23 @@ class FilterViewController: UIViewController {
         
         if self.weekDay == -1 {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
-            let alertController = UIAlertController(title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день", preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "OK", style: .cancel)
-            alertController.addAction(okAction)
             datePicker.date = self.setCorrectCurrentDate()
-            present(alertController, animated: true, completion: nil)
+            BasicAlert.shared.showAlert(presentTo: self, title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день")
+//            let alertController = UIAlertController(title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день", preferredStyle: .alert)
+//            let okAction = UIAlertAction(title: "OK", style: .cancel)
+//            alertController.addAction(okAction)
+//            present(alertController, animated: true, completion: nil)
             return false
         }
         
         if self.curWeek < 1 || self.curWeek > 17 {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
-            let alertController = UIAlertController(title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: self.semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок", preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "OK", style: .cancel)
-            alertController.addAction(okAction)
+//            let alertController = UIAlertController(title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: self.semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок", preferredStyle: .alert)
+//            let okAction = UIAlertAction(title: "OK", style: .cancel)
+//            alertController.addAction(okAction)
             datePicker.date = self.setCorrectCurrentDate()
-            present(alertController, animated: true, completion: nil)
+//            present(alertController, animated: true, completion: nil)
+            BasicAlert.shared.showAlert(presentTo: self, title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: self.semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок")
             return false
         }
         return true
@@ -623,10 +625,11 @@ class FilterViewController: UIViewController {
             present(navigationController, animated: true, completion: nil)
         } else {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
-            let alertController = UIAlertController(title: "Не найдено ни одной подходящей аудитории...", message: "", preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "OK", style: .cancel)
-            alertController.addAction(okAction)
-            self.present(alertController, animated: true, completion: nil)
+//            let alertController = UIAlertController(title: "Не найдено ни одной подходящей аудитории...", message: "", preferredStyle: .alert)
+//            let okAction = UIAlertAction(title: "OK", style: .cancel)
+//            alertController.addAction(okAction)
+//            self.present(alertController, animated: true, completion: nil)
+            BasicAlert.shared.showAlert(presentTo: self, title: "Не найдено ни одной подходящей аудитории...", message: "")
         }
         
     }
