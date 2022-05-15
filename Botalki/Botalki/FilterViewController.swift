@@ -76,7 +76,7 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         view.addSubview(buildingSelectView)
         view.addSubview(audienceSelectView)
         
-        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(FilterViewController.tap(_:)))
+        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(FilterViewController.tap))
         view.addGestureRecognizer(tapGestureReconizer)
         
         
@@ -229,7 +229,7 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     }
     
     @objc
-    func tap(_ sender: UITapGestureRecognizer) {
+    func tap() {
         view.endEditing(true)
     }
     
@@ -415,7 +415,6 @@ class FilterViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         audienceTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
         
         audienceTextField.textAlignment = .center
-        audienceSelectView.addSubview(audienceTextField)
         audienceSelectView.addSubview(audienceTextField)
     }
     

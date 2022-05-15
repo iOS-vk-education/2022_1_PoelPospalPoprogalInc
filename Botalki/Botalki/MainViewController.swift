@@ -80,37 +80,41 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         tableView.refreshControl = refreshControl
         
         
-        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(FilterViewController.tap(_:)))
-        weekTextField.addGestureRecognizer(tapGestureReconizer)
-        
+        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(tap))
+        view.addGestureRecognizer(tapGestureReconizer)
         
         setupLowerSubview()
         loadData()
     }
     
-    
+    @objc
+    func tap() {
+        UIView.animate(withDuration: 0.20) { [self] () -> Void in
+            picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220)
+        }
+//        picker.isHidden = true
+//        toolBar.removeFromSuperview()
+//        picker.removeFromSuperview()
+        weekLabel.text = String(weeks[picker.selectedRow(inComponent: 0)])
+        
+        view.endEditing(true)
+    }
     
     private func weekSelection() {
-        weekButton.backgroundColor = UIColor.systemGroupedBackground
-        weekButton.layer.cornerRadius = 16
-        
+        weekButton.backgroundColor = UIColor(rgb: 0xC4C4C4)
+        weekButton.layer.cornerRadius = 12
+        weekLabel.textColor = UIColor.black
         weekLabel.text = weeks[16]
-        if self.traitCollection.userInterfaceStyle == .dark {
-            weekLabel.textColor = UIColor.white
-        } else {
-            weekLabel.textColor = UIColor.gray
-        }
-        weekLabel.font = .systemFont(ofSize: 19, weight: .bold)
+    
+        weekLabel.font = .systemFont(ofSize: 19)
         
         weekButton.addSubview(weekLabel)
         weekButton.bringSubviewToFront(weekLabel)
         
-        
-        weekButton.addTarget(self, action: #selector(pickerGo(_:)), for: .touchUpInside)
+        weekButton.addTarget(self, action: #selector(pickerGo), for: .touchUpInside)
     }
     
-    @objc func pickerGo(_ sender: UIButton) {
-        
+    @objc func pickerGo() {
         picker = UIPickerView.init()
         picker.delegate = self
         picker.dataSource = self
@@ -122,15 +126,25 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         picker.backgroundColor =  UIColor.systemBackground.withAlphaComponent(0.9)
         picker.autoresizingMask = .flexibleWidth
         picker.contentMode = .center
-        picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 220, width: UIScreen.main.bounds.size.width, height: 220)
+        picker.alpha = 1
+        picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220)
         self.view.addSubview(picker)
+        
+        UIView.animate(withDuration: 0.20) { [self] () -> Void in
+            picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 220, width: UIScreen.main.bounds.size.width, height: 220)
+        }
                 
-        toolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 220, width: UIScreen.main.bounds.size.width, height: 50))
-//        toolBar.barStyle = .blackTranslucent
-        toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(onDoneButtonTapped))]
-        self.view.addSubview(toolBar)
+//        toolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 220, width: UIScreen.main.bounds.size.width, height: 50))
+////        toolBar.barStyle = .blackTranslucent
+//        toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(onDoneButtonTapped))]
+//        self.view.addSubview(toolBar)
     }
     
+    @objc func onDoneButtonTapped() {
+        toolBar.removeFromSuperview()
+        picker.removeFromSuperview()
+        weekLabel.text = String(weeks[picker.selectedRow(inComponent: 0)])
+    }
     
     
     private func screenSelection() {
@@ -140,7 +154,7 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         firstScreenButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
         firstScreenButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
     
-        firstScreenButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
+//        firstScreenButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         
         secondScreenButton.backgroundColor = UIColor(rgb: 0xC2A894)
         secondScreenButton.layer.cornerRadius = 10
@@ -166,12 +180,6 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         let secondViewController:FilterViewController = FilterViewController()
         self.navigationController?.pushViewController(secondViewController, animated: false)
     }
-    
-    @objc
-    func tap(_ sender: UITapGestureRecognizer) {
-        view.endEditing(true)
-    }
-    
     
     private func createDayButtons() {
         let dayOfWeak = ["Пн\n18", "Вт\n19", "Ср\n20", "Чт\n21", "Пт\n22", "Сб\n23"]
@@ -257,15 +265,12 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
         
         weekLabel.pin
-            .top(10)
-            .bottom(10)
-            .left(20)
-            .right(10)
+            .center().sizeToFit()
 
         weekButton.pin
             .top(65)
             .height(40)
-            .right(margins + 20)
+            .left(margins)
             .width(ButtonsWidth * 3 / 2)
         
         tableView.pin
@@ -342,26 +347,13 @@ class PairsViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
             self?.tableView.refreshControl?.endRefreshing()
         }
     }
-
     
-    @objc
-    private func didTapAddButton() {
-//        print("tapped week B")
-        
-    }
 
     
     @objc private func open() {
         let viewController = CityViewController()
         let navigationController = UINavigationController(rootViewController: viewController)
         present(navigationController, animated: true, completion: nil)
-    }
-    
-    
-    @objc func onDoneButtonTapped() {
-        toolBar.removeFromSuperview()
-        picker.removeFromSuperview()
-        weekLabel.text = String(weeks[picker.selectedRow(inComponent: 0)])
     }
     
 }
