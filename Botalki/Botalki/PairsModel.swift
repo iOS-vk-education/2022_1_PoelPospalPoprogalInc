@@ -16,24 +16,30 @@ final class PairsModel {
     private let networkManager = NetworkManager.shared
     private let fileManager = MyFileManager.shared
     weak var presenter: PairsPresenter?
-    private var semStartDate = Date()
-    private var FreeCabinets = [[[[String]]]]()
+    var cabinetsStringFromFile: String = ""
+    var semesterStartFromFile: String = ""
+    var semStartDate = Date()
+    var curWeek = 0
+    var FreeCabinets = [[[[String]]]]()
     
     var myCells = [PairTableViewCell?]()
     
+    init() {
+        allocateCellsArr()
+    }
+    
     func loadAndParseCabinetsFileFromFirebase(completion: @escaping ((Result<Any, Error>) -> Void)) {
-        NetworkManager.shared.downloadFileFromFirebaseStorage(toFile: "cabinets.txt") { error in
+        networkManager.downloadFileFromFirebaseStorage(toFile: "cabinets.txt") { error in
             if error == nil {
-                self.presenter?.cabinetsStringFromFile = MyFileManager.shared.getStringFromTextFile(with: "cabinets.txt") ?? ""
+                self.cabinetsStringFromFile = self.fileManager.getStringFromTextFile(with: "cabinets.txt") ?? ""
                 
-                if self.presenter?.cabinetsStringFromFile == "" {
+                if self.cabinetsStringFromFile == "" {
                     print("Downloading file error...")
                     completion(.failure(error!))
 //                    AlertManager.shared.showAlert(presentTo: self, title: "Downloading file cabinets.txt error...", message: "")
                 } else {
-                    self.parseCabinetsFile()
+                    completion(.success((Any).self))
                 }
-                completion(.success((Any).self))
                 
             } else {
                 completion(.failure(error!))
@@ -44,29 +50,32 @@ final class PairsModel {
     }
     
     
-    func loadAndSetCurWeekFromFirebase(completion: @escaping (() -> Void)) {
-        NetworkManager.shared.downloadFileFromFirebaseStorage(toFile: "uuids.txt") { error in
+    func loadAndSetCurWeekFromFirebase(completion: @escaping ((Result<Any, Error>) -> Void)) {
+        networkManager.downloadFileFromFirebaseStorage(toFile: "uuids.txt") { error in
             if error == nil {
-                self.presenter?.semesterStartFromFile = MyFileManager.shared.getStringFromTextFile(with: "uuids.txt") ?? ""
+                self.semesterStartFromFile = self.fileManager.getStringFromTextFile(with: "uuids.txt") ?? ""
                 
-                if self.presenter?.semesterStartFromFile == "" {
+                if self.semesterStartFromFile == "" {
                     print("Downloading file error...")
-                    AlertManager.shared.showAlert(presentTo: self, title: "Downloading file uuids.txt error...", message: "")
-                } else {
-                    self.setCurWeekDate()
+                    completion(.failure(error!))
+//                    AlertManager.shared.showAlert(presentTo: self, title: "Downloading file uuids.txt error...", message: "")
                 }
+//                else {
+//                    self.setCurWeekDate()
+//                }
 //                self.reloadTableData()
-                completion()
+                completion(.success((Any).self))
                 
             } else {
-                AlertManager.shared.showAlert(presentTo: self, title: "Error", message: error?.localizedDescription)
-                self.tableView.refreshControl?.endRefreshing()
+                completion(.failure(error!))
+//                AlertManager.shared.showAlert(presentTo: self, title: "Error", message: error?.localizedDescription)
+//                self.tableView.refreshControl?.endRefreshing()
             }
         }
     }
     
-    private func parseCabinetsFile() {
-        self.presenter?.cabinetsStringFromFile.split(separator: "\n").forEach { line in
+    func parseCabinetsFile() {
+        self.cabinetsStringFromFile.split(separator: "\n").forEach { line in
             var pairsForNumenatorOrDen = [[[String]]]()
             line.components(separatedBy: "###").forEach { day in
                 var pairsForDay = [[String]]()
@@ -83,19 +92,25 @@ final class PairsModel {
         }
     }
     
-    private func setCurWeekDate() {
-        self.presenter?.semesterStartFromFile = semesterStartFromFile.components(separatedBy: "\n")[0]
+    func calculateCurWeek() {
+        semesterStartFromFile = semesterStartFromFile.components(separatedBy: "\n")[0]
         let dateFormatter = ISO8601DateFormatter()
-        semStartDate = dateFormatter.date(from: self.presenter?.semesterStartFromFile)!
-        secondViewController.semStartDate = semStartDate
+        semStartDate = dateFormatter.date(from: semesterStartFromFile)!
+//        secondViewController.semStartDate = semStartDate
         semStartDate = Calendar.current.date(byAdding: .day, value: -1, to: semStartDate)!
         let deltaSecs = Date() - semStartDate
         curWeek = Int(deltaSecs/604800 + 1)
-        choosenWeek = curWeek - 1
+//        choosenWeek = curWeek - 1
 //        weekPicker.selectRow(curWeek-1, inComponent: 0, animated: true)
 //        weekLabel.text = weeks[curWeek-1]
-        weekButton.setTitle(weeks[curWeek-1], for: .normal)
-        curNumOrDenom = (curWeek-1) % 2
+//        weekButton.setTitle(weeks[curWeek-1], for: .normal)
+//        curNumOrDenom = (curWeek-1) % 2
 //        print(curWeek)
+    }
+    
+    private func allocateCellsArr() {
+        for _ in 0...6 {
+            myCells.append(nil)
+        }
     }
 }

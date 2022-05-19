@@ -3,57 +3,60 @@ import PinLayout
 
 
 class PairsViewController: UIViewController {
+    private let presenter = PairsPresenter()
+    private let alertManager = AlertManager.shared
+    private let secondViewController: FilterViewController = FilterViewController()
     
-    let secondViewController: FilterViewController = FilterViewController()
-
-    private let tableView = UITableView()
-    private let houseImg = UIImageView(image: UIImage(named: "house"))
-    private let magnifierImg = UIImageView(image: UIImage(named: "magnifier"))
-//    private let weekSwitcher = UIPickerView()
-//    private let viewForSwitcher = UIView()
-    private let weeks = (1...17).map {"\($0) неделя - \(["знаменатель", " числитель"][$0%2])" }
-//    private var weekLabel = UILabel()
-    
-    private var toolBar = UIToolbar()
+    let tableView = UITableView()
     private var weekPicker  = UIPickerView()
     private var weekButton = UIButton()
+    private var firstScreenButton = UIButton()
+    private var secondScreenButton = UIButton()
 
-//    private let weekPicker = UIPickerView()
-
+    private let houseImg = UIImageView(image: UIImage(named: "house"))
+    private let magnifierImg = UIImageView(image: UIImage(named: "magnifier"))
+    private let lowerView = UIView()
+    
+    private let weeks = (1...17).map {"\($0) неделя - \(["знаменатель", " числитель"][$0%2])" }
     private var cellForReloadInd = -1
     private var cellForReloadIndexes = [Int]()
     private var curNumOrDenom = 0
     private var curDay = 2
     private var tapGestureReconizer = UITapGestureRecognizer()
-    private var curWeek = 0
     private var choosenWeek = 0
-//    private var semStartDate = Date()
-    var daysOfWeak = ["Пн\n", "Вт\n", "Ср\n", "Чт\n", "Пт\n", "Сб\n"]
-    
-//    var FreeCabinets = [[[[String]]]]()
-    
-    private var firstScreenButton = UIButton()
-    private var secondScreenButton = UIButton()
-    
-    var daysOfWeakButton: [UIButton:Int] = [:]
-    var labelsOfWeakButton: [UILabel] = []
-    
+    private var daysOfWeak = ["Пн\n", "Вт\n", "Ср\n", "Чт\n", "Пт\n", "Сб\n"]
+    private var daysOfWeakButton: [UIButton:Int] = [:]
+    private var labelsOfWeakButton: [UILabel] = []
     private let margins = CGFloat(22)
     private let screenWidth = UIScreen.main.bounds.width
-    
-    private let lowerView = UIView()
+    private var selectedDate = Date()
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.systemBackground
         
+        setup()
+        
+        presenter.didLoadView { result in
+            switch result {
+            case .success(_):
+                self.loadTableData()
+                self.setCurWeekDate()
+                break
+                
+            case .failure(let error):
+                self.alertManager.showAlert(presentTo: self, title: "Error", message: error.localizedDescription)
+                self.tableView.refreshControl?.endRefreshing()
+                break
+            }
+        }
+    }
+    
+    private func setup() {
+        self.view.backgroundColor = UIColor.systemBackground
         navigationController?.setNavigationBarHidden(true, animated: true)
     
         view.addSubview(tableView)
-
-//        view.addSubview(weekPicker)
-
         view.addSubview(lowerView)
         view.addSubview(firstScreenButton)
         view.addSubview(secondScreenButton)
@@ -61,44 +64,16 @@ class PairsViewController: UIViewController {
         view.addSubview(magnifierImg)
         view.addSubview(weekButton)
 
+        presenter.mainViewController = self
+        presenter.secondViewController = secondViewController
         
-//        weakButton.backgroundColor = UIColor(rgb: 0xC4C4C4)
-//        weekPicker.layer.cornerRadius = 10
-//        weekPicker.layer.masksToBounds = true
-//        weakButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-//        weakButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
-//        weakButton.setTitle("11 неделя - числитель", for: .normal)
-//        weakButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
-        var date = Date()
-        let calendar = Calendar.current
-//        print(calendar.component(.day, from: date))
-        curDay = calendar.component(.weekday, from: date) - 2
-//        curNumOrDenom = weekPicker.hashValue
-        
-        //Обработка воскресенья
-        if curDay == -1 {
-            curDay = 0
-            date = calendar.date(byAdding: .day, value: 1, to: date) ?? date
-            changeNumOrDenom()
-            // + в кнопке включить некст неделю
-        }
-        
-//        var startDay = calendar.component(.day, from: date)
-        var i = 0
-        for delta in -curDay...(5 - curDay) {
-            daysOfWeak[i] += String(calendar.component(.day, from: calendar.date(byAdding: .day, value: delta, to: date) ?? date))
-            i += 1
-        }
-        
+        setCurDay()
+        formDaysOfWeakStrings()
         createDayButtons()
         screenSelection()
         
         tableView.frame = view.bounds
         tableView.separatorStyle = .none
-        
-//        for day in 0...5 {
-//            tableView.register(PairTableViewCell.self, forCellReuseIdentifier: "PairTableViewCell\(day)")
-//        }
         tableView.register(PairTableViewCell.self, forCellReuseIdentifier: "PairTableViewCell")
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "basicStyle")
         
@@ -106,135 +81,105 @@ class PairsViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
         tableView.refreshControl = refreshControl
         
-
         
         tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(tapToClosePicker))
-//        view.addGestureRecognizer(tapGestureReconizer)
         
         setupLowerSubview()
         tableView.refreshControl?.beginRefreshing()
         setupWeekButton()
-        
-
-//        let cabinetsRef = storageRef.child("cabinets.txt")
-        allocateCellsArr()
-        
-//        self.cabinetsStringFromFile = MyFileManager.shared.getStringFromTextFile(with: "cabinets.txt") ?? ""
-//        self.semesterStartFromFile = MyFileManager.shared.getStringFromTextFile(with: "uuids.txt") ?? ""
-//        
-//        if self.cabinetsStringFromFile == "" || self.semesterStartFromFile == "" {
-//            loadAndParseCabinetsFileFromFirebase {
-//                self.initCellsAndloadTableData()
-//            }
-//            loadAndSetCurWeekFromFirebase {
-//                self.setCurWeekDate()
-//                self.reloadTableData()
-//            }
-//        } else {
-//            self.initCellsAndloadTableData()
-//            self.setCurWeekDate()
-//            self.reloadTableData()
-//        }
     }
     
-    
-//    private func loadAndParseCabinetsFileFromFirebase(completion: @escaping (() -> Void)) {
-//        NetworkManager.shared.downloadFileFromFirebaseStorage(toFile: "cabinets.txt") { error in
-//            if error == nil {
-//                self.cabinetsStringFromFile = MyFileManager.shared.getStringFromTextFile(with: "cabinets.txt") ?? ""
-//
-//                if self.cabinetsStringFromFile == "" {
-//                    print("Downloading file error...")
-//                    AlertManager.shared.showAlert(presentTo: self, title: "Downloading file cabinets.txt error...", message: "")
-//                } else {
-//                    self.parseCabinetsFile()
-//                }
-//                completion()
-//
-//            } else {
-//                AlertManager.shared.showAlert(presentTo: self, title: "Error", message: error?.localizedDescription)
-//                self.tableView.refreshControl?.endRefreshing()
-//            }
-//        }
-//    }
-    
-//    private func loadAndSetCurWeekFromFirebase(completion: @escaping (() -> Void)) {
-//        NetworkManager.shared.downloadFileFromFirebaseStorage(toFile: "uuids.txt") { error in
-//            if error == nil {
-//                self.semesterStartFromFile = MyFileManager.shared.getStringFromTextFile(with: "uuids.txt") ?? ""
-//
-//                if self.semesterStartFromFile == "" {
-//                    print("Downloading file error...")
-//                    AlertManager.shared.showAlert(presentTo: self, title: "Downloading file uuids.txt error...", message: "")
-//                } else {
-//                    self.setCurWeekDate()
-//                }
-////                self.reloadTableData()
-//                completion()
-//
-//            } else {
-//                AlertManager.shared.showAlert(presentTo: self, title: "Error", message: error?.localizedDescription)
-//                self.tableView.refreshControl?.endRefreshing()
-//            }
-//        }
-//    }
-    
-    private func initCellsAndloadTableData() {
-        var indexPath: IndexPath = IndexPath(row: 0, section: 0)
-        for i in 0...6 {
-            indexPath.row = i
-            indexPath.section = 0
-            self.model.myCells[i] = self.tableView.dequeueReusableCell(withIdentifier: "PairTableViewCell", for: indexPath) as? PairTableViewCell
-        }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         
-        parseCabinetsFile()
+        let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
+
+        weekButton.pin
+            .top(65)
+            .height(40)
+            .left(margins)
+            .width(ButtonsWidth * 3 / 2)
+        
+        tableView.pin
+            .top(200)
+            .bottom(0)
+            .left(0)
+            .right(0)
+        
+        lowerView.pin
+            .top(view.frame.height - 115)
+            .bottom(0)
+            .left(0)
+            .right(0)
+
+        firstScreenButton.pin
+            .top(CGFloat(view.frame.height - 95))
+            .height(45)
+            .left(margins)
+            .width(ButtonsWidth)
+        
+        secondScreenButton.pin
+            .top(CGFloat(view.frame.height - 95))
+            .height(45)
+            .right(margins)
+            .width(ButtonsWidth)
+        
+        houseImg.pin
+            .top(CGFloat(view.frame.height - 90))
+            .left(ButtonsWidth/2 + margins - 35/2)
+            .height(35)
+            .width(35)
+        
+        magnifierImg.pin
+            .top(CGFloat(view.frame.height - 90))
+            .right(ButtonsWidth/2 + margins - 35/2)
+            .height(35)
+            .width(35)
+    }
+    
+    private func setCurDay() {
+        selectedDate = Date()
+        let calendar = Calendar.current
+        curDay = calendar.component(.weekday, from: selectedDate) - 2
+        
+        //Обработка воскресенья
+        if curDay == -1 {
+            curDay = 0
+            selectedDate = calendar.date(byAdding: .day, value: 1, to: selectedDate) ?? selectedDate
+            changeNumOrDenom()
+        }
+    }
+    
+    private func formDaysOfWeakStrings() {
+        var i = 0
+        for delta in -curDay...(5 - curDay) {
+            daysOfWeak[i] += String(Calendar.current.component(.day, from: Calendar.current.date(byAdding: .day, value: delta, to: selectedDate) ?? selectedDate))
+            i += 1
+        }
+    }
+    
+    private func loadTableData() {
         tableView.refreshControl?.endRefreshing()
         tableView.delegate = self
         tableView.dataSource = self
         reloadTableData()
     }
     
-//    private func parseCabinetsFile() {
-//        self.cabinetsStringFromFile.split(separator: "\n").forEach { line in
-//            var pairsForNumenatorOrDen = [[[String]]]()
-//            line.components(separatedBy: "###").forEach { day in
-//                var pairsForDay = [[String]]()
-//                day.components(separatedBy: "##").forEach { pair in
-//                    var cabinetsForPair = [String]()
-//                    pair.components(separatedBy: "#").forEach { cabinet in
-//                        cabinetsForPair.append(cabinet.trimmingCharacters(in: CharacterSet(charactersIn: "кк ")))
-//                    }
-//                    pairsForDay.append(cabinetsForPair)
-//                }
-//                pairsForNumenatorOrDen.append(pairsForDay)
-//            }
-//            self.FreeCabinets.append(pairsForNumenatorOrDen)
-//        }
-//    }
-    
-//    private func setCurWeekDate() {
-//        semesterStartFromFile = semesterStartFromFile.components(separatedBy: "\n")[0]
-//        let dateFormatter = ISO8601DateFormatter()
-//        semStartDate = dateFormatter.date(from: semesterStartFromFile)!
-//        secondViewController.semStartDate = semStartDate
-//        semStartDate = Calendar.current.date(byAdding: .day, value: -1, to: semStartDate)!
-//        let deltaSecs = Date() - semStartDate
-//        curWeek = Int(deltaSecs/604800 + 1)
-//        choosenWeek = curWeek - 1
-////        weekPicker.selectRow(curWeek-1, inComponent: 0, animated: true)
-////        weekLabel.text = weeks[curWeek-1]
-//        weekButton.setTitle(weeks[curWeek-1], for: .normal)
-//        curNumOrDenom = (curWeek-1) % 2
-////        print(curWeek)
-//    }
+    private func setCurWeekDate() {
+        let curWeek = presenter.curWeek
+        secondViewController.semStartDate = presenter.semStartDate
+        choosenWeek = curWeek - 1
+        weekButton.setTitle(weeks[curWeek - 1], for: .normal)
+        curNumOrDenom = (curWeek-1) % 2
+    }
     
     @objc
     func tapToClosePicker() {
         UIView.animate(withDuration: 0.20) { [self] () -> Void in
             weekPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220)
         }
+        pickerFlag = 0
         view.removeGestureRecognizer(tapGestureReconizer)
-//        weekLabel.text = weeks[weekPicker.selectedRow(inComponent: 0)]
     }
     
     private func setupWeekButton() {
@@ -243,20 +188,19 @@ class PairsViewController: UIViewController {
         weekButton.setTitle(weeks[0], for: .normal)
         weekButton.setTitleColor(UIColor.black, for: .normal)
         weekButton.titleLabel?.font = .systemFont(ofSize: 19)
-        
-//        weekLabel.textColor = UIColor.black
-//        weekLabel.text = weeks[0]
-    
-//        weekLabel.font = .systemFont(ofSize: 19)
-//
-//        weekButton.addSubview(weekLabel)
-//        weekButton.bringSubviewToFront(weekLabel)
-        
-        weekButton.addTarget(self, action: #selector(pickerGo), for: .touchUpInside)
+        weekButton.addTarget(self, action: #selector(didTapWeekButton), for: .touchUpInside)
     }
     
-    @objc func pickerGo() {
+    var pickerFlag = 0
+    @objc func didTapWeekButton() {
+        if pickerFlag == 1 {
+            return
+        }
+        
         view.addGestureRecognizer(tapGestureReconizer)
+        
+        pickerFlag = 1
+        
         weekPicker = UIPickerView.init()
         weekPicker.delegate = self
         weekPicker.dataSource = self
@@ -273,14 +217,6 @@ class PairsViewController: UIViewController {
             weekPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 220, width: UIScreen.main.bounds.size.width, height: 220)
         }
     }
-    
-//    @objc func onDoneButtonTapped() {
-//        toolBar.removeFromSuperview()
-//        weekPicker.removeFromSuperview()
-//            weekButton.setTitle(<#T##title: String?##String?#>, for: <#T##UIControl.State#>)
-//        weekLabel.text = String(weeks[weekPicker.selectedRow(inComponent: 0)])
-//    }
-    
     
     private func screenSelection() {
         firstScreenButton.backgroundColor = UIColor(rgb: 0x785A43)
@@ -307,7 +243,7 @@ class PairsViewController: UIViewController {
     
     @objc
     func goToFilterScreen() {
-        secondViewController.FreeCabinets = FreeCabinets
+        presenter.didLoadSecondController()
         UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         self.navigationController?.pushViewController(secondViewController, animated: false)
     }
@@ -344,7 +280,6 @@ class PairsViewController: UIViewController {
         for indexOfDay in 0...5 {
             let dayOfWeakButton = UIButton(type: .system)
             dayOfWeakButton.backgroundColor = UIColor.systemGroupedBackground
-//            dayOfWeakButton.layer.cornerRadius = 16
             dayOfWeakButton.layer.cornerRadius = 18
             dayOfWeakButton.layer.masksToBounds = true
             dayOfWeakButton.addTarget(self, action: #selector(changeButtonColor(_ :)), for: .touchUpInside)
@@ -403,10 +338,6 @@ class PairsViewController: UIViewController {
                 button.backgroundColor = .systemGroupedBackground
                 button.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
             }
-//            for indexOfDay in 0...5 {
-//                daysOfWeakButton[indexOfDay]?.backgroundColor = .systemGroupedBackground
-//                daysOfWeakButton[indexOfDay]?.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
-//            }
             
             buttonSubView.backgroundColor = UIColor(rgb: 0xEA7500)
             buttonSubView.layer.borderColor = UIColor(rgb: 0xEA7500).cgColor
@@ -414,14 +345,13 @@ class PairsViewController: UIViewController {
         }
     }
     
-    private func updateDayButtons(with ind: Int) {
+    private func updateDayButtons(with ind: Int, _ reloadFlag: Int? = nil) {
         let calendar = Calendar.current
-        let buttonsStartDate = calendar.date(byAdding: .day, value: ind * 7 + 1, to: semStartDate)!
+        let buttonsStartDate = calendar.date(byAdding: .day, value: ind * 7 + 1, to: presenter.semStartDate)!
         
-        curDay = 0
         daysOfWeak = ["Пн\n", "Вт\n", "Ср\n", "Чт\n", "Пт\n", "Сб\n"]
         var i = 0
-        for delta in -curDay...(5 - curDay) {
+        for delta in 0...5 {
             daysOfWeak[i] += String(calendar.component(.day, from: calendar.date(byAdding: .day, value: delta, to: buttonsStartDate) ?? buttonsStartDate))
             i += 1
         }
@@ -430,90 +360,24 @@ class PairsViewController: UIViewController {
             label.text = daysOfWeak[i]
         }
         
+        if reloadFlag == nil {
+            curDay = 0
+        }
+        
         var monButton = UIButton()
         
         for button in daysOfWeakButton.keys {
-            if daysOfWeakButton[button] == 0 {
+            if daysOfWeakButton[button] == curDay {
                 monButton = button
             }
         }
-        
-//        let dayButtons = [UIButton](daysOfWeakButton.keys)
         changeButtonColor(monButton)
-        
-//        loadData()
     }
     
-    private func unconfigCells() {
-        model.myCells.forEach {$0?.wasConfiguredFlag = 0}
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
-        
-//        weekLabel.pin
-//            .center().sizeToFit()
-
-        weekButton.pin
-            .top(65)
-            .height(40)
-            .left(margins)
-            .width(ButtonsWidth * 3 / 2)
-        
-        tableView.pin
-            .top(200)
-            .bottom(0)
-            .left(0)
-            .right(0)
-        
-        lowerView.pin
-            .top(view.frame.height - 115)
-            .bottom(0)
-            .left(0)
-            .right(0)
-        
-//        weekPicker.pin
-//            .top(55)
-//            .height(CGFloat(35) + 40)
-//            .right(margins)
-//            .width(CGFloat(view.frame.width / (4 / 3)))
-
-        firstScreenButton.pin
-            .top(CGFloat(view.frame.height - 95))
-            .height(45)
-            .left(margins)
-            .width(ButtonsWidth)
-        
-        secondScreenButton.pin
-            .top(CGFloat(view.frame.height - 95))
-            .height(45)
-            .right(margins)
-            .width(ButtonsWidth)
-        
-        houseImg.pin
-            .top(CGFloat(view.frame.height - 90))
-            .left(ButtonsWidth/2 + margins - 35/2)
-            .height(35)
-            .width(35)
-        
-        magnifierImg.pin
-            .top(CGFloat(view.frame.height - 90))
-            .right(ButtonsWidth/2 + margins - 35/2)
-            .height(35)
-            .width(35)
-    }
-    
-    
-    
-    
-    //тут completion нужен чтобы знать когда остановить анимацию
     private func reloadTableData(compl: (() -> Void)? = nil) {
-//        allocateCellsArr()
         cellForReloadIndexes = []
         cellForReloadInd = -1
-        unconfigCells()
+        presenter.unconfigCells()
         tableView.reloadData()
         compl?()
     }
@@ -521,23 +385,20 @@ class PairsViewController: UIViewController {
     
     @objc
     private func didPullToRefresh() {
-        loadAndParseCabinetsFileFromFirebase {
-            self.initCellsAndloadTableData()
-        }
-        loadAndSetCurWeekFromFirebase {
-            self.setCurWeekDate()
-            self.reloadTableData()
-        }
-        updateDayButtons(with: curWeek - 1)
-        
-//        reloadTableData { [weak self] in
-//            self?.tableView.refreshControl?.endRefreshing()
-//        }
-    }
-    
-    private func allocateCellsArr() {
-        for _ in 0...6 {
-            model.myCells.append(nil)
+        presenter.loadAllData { result in
+            switch result {
+                case .success(_):
+                    self.setCurDay()
+                    self.updateDayButtons(with: self.presenter.curWeek - 1, 1)
+                    self.loadTableData()
+                    self.setCurWeekDate()
+                    break
+                    
+                case .failure(let error):
+                    self.alertManager.showAlert(presentTo: self, title: "Error", message: error.localizedDescription)
+                    self.tableView.refreshControl?.endRefreshing()
+                    break
+            }
         }
     }
     
@@ -545,25 +406,16 @@ class PairsViewController: UIViewController {
 
 extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "PairTableViewCell", for: indexPath) as? PairTableViewCell
-        
         if indexPath.row == 7 {
             return tableView.dequeueReusableCell(withIdentifier: "basicStyle", for: indexPath)
         }
         
-        let cell = model.myCells[indexPath.row]
+        let cell = presenter.myCells[indexPath.row]
         
-//        let cell = PairTableViewCell?(style: UITableView.Cel, reuseIdentifier: "PairTableViewCell")
-//        if cell?.wasConfiguredFlag == 0 {
-            
         if cell?.wasConfiguredFlag == 0 { //когда день поменяется, надо будет сюда войти!
-            cell?.loadCabinets(Cabinets: FreeCabinets[curNumOrDenom][curDay][indexPath.row])
+            cell?.loadCabinets(Cabinets: presenter.FreeCabinets[curNumOrDenom][curDay][indexPath.row])
             cell?.config(with: indexPath.row)
         }
-//            myCells[indexPath.row] = cell ?? .init()
-//        }
-//        }
         
         return cell ?? .init()
     }
@@ -575,23 +427,16 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
             print("touched \(indexPath.row)")
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
-    //        if indexPath.row != cellForReloadInd {
             if !cellForReloadIndexes.contains(indexPath.row) {
-    //            if cellForReloadInd != -1 {
-    //                myCells[cellForReloadInd]?.config(with: cellForReloadInd)
-    //            }
-                
-    //            cellForReloadInd = indexPath.row
                 cellForReloadIndexes.append(indexPath.row)
                 tableView.beginUpdates()
-                model.myCells[indexPath.row]?.config2(with: indexPath.row)
+                presenter.myCells[indexPath.row]?.config2(with: indexPath.row)
                 tableView.endUpdates()
-            }
-            else {
+            } else {
                 cellForReloadIndexes = cellForReloadIndexes.filter{$0 != indexPath.row}
                 cellForReloadInd = -1
                 tableView.beginUpdates()
-                model.myCells[indexPath.row]?.config(with: indexPath.row)
+                presenter.myCells[indexPath.row]?.config(with: indexPath.row)
                 tableView.endUpdates()
             }
         }
@@ -599,10 +444,8 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     //высота ячейки
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if cellForReloadIndexes.contains(indexPath.row) {
-//        if indexPath.row == cellForReloadInd {
-            return CGFloat(model.myCells[indexPath.row]?.fullCellSz ?? 95)
-        }
-        else {
+            return CGFloat(presenter.myCells[indexPath.row]?.fullCellSz ?? 95)
+        } else {
             return 95
         }
     }
@@ -610,7 +453,6 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
 
 
 extension PairsViewController: UIPickerViewDelegate, UIPickerViewDataSource {
-    // следующие 3 функции для пикера
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         1
     }
@@ -634,7 +476,6 @@ extension PairsViewController: UIPickerViewDelegate, UIPickerViewDataSource {
 
 
 extension Date {
-
     static func - (lhs: Date, rhs: Date) -> TimeInterval {
         return lhs.timeIntervalSinceReferenceDate - rhs.timeIntervalSinceReferenceDate
     }

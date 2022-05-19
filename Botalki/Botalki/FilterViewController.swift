@@ -36,6 +36,7 @@ class FilterViewController: UIViewController {
     private let firstPairPicker = UIPickerView()
     private let secondPairPicker = UIPickerView()
     private var pickersDict: [UIPickerView: Int] = [:]
+    private let dash = UILabel()
     
     private let buildingSelectView = UIView()
     private let buildingSwitcher = UISwitch()
@@ -47,7 +48,6 @@ class FilterViewController: UIViewController {
     
     private var curWeek = 0
     private var weekDay = 0
-    
     
     private let margins = CGFloat(22)
     private let screenWidth = UIScreen.main.bounds.width
@@ -71,6 +71,7 @@ class FilterViewController: UIViewController {
         buildingSegController.addTarget(self, action: #selector(didChangeBuilding(_ :)), for: .valueChanged)
         audienceSwitcher.addTarget(self, action: #selector(didSwitchAudienceTrigger), for: .valueChanged)
         
+        
         view.addSubview(lowerView)
         view.addSubview(firstScreenButton)
         view.addSubview(secondScreenButton)
@@ -85,6 +86,7 @@ class FilterViewController: UIViewController {
         view.addSubview(pairSelectView)
         view.addSubview(buildingSelectView)
         view.addSubview(audienceSelectView)
+        view.addSubview(dash)
         
         let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(tap))
         view.addGestureRecognizer(tapGestureReconizer)
@@ -94,11 +96,6 @@ class FilterViewController: UIViewController {
         dateField.inputView = datePicker
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(didChooseDate), for: .editingDidEnd)
-        
-//        let tapScreen = UITapGestureRecognizer(target: self, action: "dismissKeyboard:")
-//        func dismissKeyboard(sender: UITapGestureRecognizer) {
-//            view.endEditing(true)
-//        }
         
         createSelectRoomButton()
         createPairArea()
@@ -137,20 +134,12 @@ class FilterViewController: UIViewController {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             datePicker.date = self.setCorrectCurrentDate()
             AlertManager.shared.showAlert(presentTo: self, title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день")
-//            let alertController = UIAlertController(title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день", preferredStyle: .alert)
-//            let okAction = UIAlertAction(title: "OK", style: .cancel)
-//            alertController.addAction(okAction)
-//            present(alertController, animated: true, completion: nil)
             return false
         }
         
         if self.curWeek < 1 || self.curWeek > 17 {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
-//            let alertController = UIAlertController(title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: self.semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок", preferredStyle: .alert)
-//            let okAction = UIAlertAction(title: "OK", style: .cancel)
-//            alertController.addAction(okAction)
             datePicker.date = self.setCorrectCurrentDate()
-//            present(alertController, animated: true, completion: nil)
             AlertManager.shared.showAlert(presentTo: self, title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: self.semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок")
             return false
         }
@@ -192,17 +181,6 @@ class FilterViewController: UIViewController {
         datePicker.date = setCorrectCurrentDate()
         datePicker.locale = .current
         datePicker.preferredDatePickerStyle = .compact
-//        datePicker.date = setCorrectCurrentDate()
-//        datePicker.locale = .current
-//        datePicker.preferredDatePickerStyle = .compact
-////        datePicker.addTarget(self, action: #selector(handleDateSelection), for: .valueChanged)
-//
-//        datePicker.backgroundColor = UIColor.secondarySystemBackground
-////        datePicker.layer.borderWidth = 2
-////        datePicker.layer.borderColor = borderColor.cgColor
-//
-//        datePicker.layer.cornerRadius = 16
-//        datePicker.layer.masksToBounds = true
     }
     
     
@@ -215,7 +193,6 @@ class FilterViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
         
         let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
         firstScreenButton.pin
@@ -236,28 +213,6 @@ class FilterViewController: UIViewController {
             .left(0)
             .right(0)
         
-//        print(self.view.backgroundColor)
-//        let bgColor = self.view.backgroundColor
-//        let aColor = UIColor(named: "systemBackgroundColor")
-//        print(aColor)
-//
-//        let color = UIColor(dynamicProvider:
-//            case .dark:
-//                return UIColor.yellow
-//            case .light:
-//                return UIColor.blue
-//            case .unspecified:
-//                return UIColor.clear
-//        var myControlBackground: UIColor {
-//            return UIColor { (traits) -> UIColor in
-//                return traits.userInterfaceStyle == .dark ?
-//                    UIColor(red: 0.5, green: 0.4, blue: 0.3, alpha: 1) :
-//                    UIColor(red: 0.3, green: 0.4, blue: 0.5, alpha: 1)
-//            }
-//        }
-        
-        
-//        if bgColor == "<UIDynamicSystemColor: 0x600001f05ec0; name = systemBackgroundColor>" {
         imageCalendar.pin
             .top(82)
             .left(54)
@@ -272,36 +227,29 @@ class FilterViewController: UIViewController {
             .height(42)
             .width(self.view.frame.width / 3 - 5)
         
-//        dateField.pin
-//            .top(82)
-//            .left(self.view.frame.width / 2 + 10)
-//            .height(42)
-//            .width(self.view.frame.width / 3 + 20)
-        
         selectRoomButton.pin
             .top((self.view.frame.height / 3) * 2)
-            .left(45)
+            .left(40)
             .right(40)
             .height(50)
         
         pairSelectView.pin
             .top(160)
-            .left(45)
+            .left(40)
             .right(40)
             .height(120)
         
         buildingSelectView.pin
             .top(self.view.frame.height / 3)
-            .left(45)
+            .left(40)
             .right(40)
             .height(70)
         
         audienceSelectView.pin
             .top(self.view.frame.height / 2 - 50)
-            .left(45)
+            .left(40)
             .right(40)
             .height(120)
-        
         
         houseImg.pin
             .top(CGFloat(view.frame.height - 90))
@@ -314,6 +262,26 @@ class FilterViewController: UIViewController {
             .right(ButtonsWidth/2 + margins - 35/2)
             .height(35)
             .width(35)
+        
+        let pickerWidth = CGFloat(Float(Int(screenWidth - 80) / 2) - 1.5*Float(margins))
+        
+        firstPairPicker.pin
+            .top(65)
+            .height(45)
+            .left(margins)
+            .width(pickerWidth)
+        
+        secondPairPicker.pin
+            .top(65)
+            .height(45)
+            .right(margins)
+            .width(pickerWidth)
+        
+        dash.pin
+            .after(of: firstPairPicker, aligned: .bottom)
+            .before(of: secondPairPicker, aligned: .top)
+        
+        
     }
     
     @objc
@@ -347,13 +315,17 @@ class FilterViewController: UIViewController {
         pairSelectView.layer.masksToBounds = true
         pairSelectView.layoutSubviews()
         
-        
         let pairLabel = UILabel()
         
         pairLabel.font = .systemFont(ofSize: 24, weight: .bold)
         pairLabel.numberOfLines = 1
         pairLabel.textAlignment = .right
         pairLabel.text = "Пара"
+        
+        dash.font = .systemFont(ofSize: 24, weight: .bold)
+        dash.numberOfLines = 1
+        dash.textAlignment = .center
+        dash.text = "-"
         
         pairSelectView.addSubview(pairLabel)
         pairSelectView.bringSubviewToFront(pairLabel)
@@ -367,29 +339,13 @@ class FilterViewController: UIViewController {
         pairSelectView.layoutSubviews()
         
         pairSelectView.addSubview(pairSwitcher)
-//        pairSelectView.addSubview(pairSwitcher)
         pairSwitcher.pin
             .top(20)
             .left(pairSelectView.frame.width + 270)
             .height(100)
             .width(100)
         
-        firstPairPicker.pin
-            .top(54)
-            .left(audienceSelectView.frame.width + 25)
-            .height(70)
-            .width(150)
-        
         pairSelectView.addSubview(firstPairPicker)
-        
-        secondPairPicker.pin
-            .top(54)
-            .left(pairSelectView.frame.width + 180)
-            .height(70)
-            .width(150)
-        
-//        secondPairTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
-
         pairSelectView.addSubview(secondPairPicker)
     }
     
@@ -404,7 +360,6 @@ class FilterViewController: UIViewController {
         let buildingLabel = UILabel()
         
         buildingLabel.font = .systemFont(ofSize: 24, weight: .bold)
-//        buildingLabel.textColor = .black
         buildingLabel.numberOfLines = 1
         buildingLabel.textAlignment = .right
         buildingLabel.text = "Корпус"
@@ -428,10 +383,7 @@ class FilterViewController: UIViewController {
             .left(buildingSelectView.frame.width + 145)
             .height(34)
             .width(90)
-        // Add target action method
-//        buildingSegController.addTarget(self, action: "changeColor:", forControlEvents: .ValueChanged)
-
-        // Add this custom Segmented Control to our view
+        
         buildingSelectView.addSubview(buildingSegController)
         buildingSelectView.addSubview(buildingSwitcher)
         buildingSwitcher.pin
@@ -454,7 +406,6 @@ class FilterViewController: UIViewController {
         let audienceLabel = UILabel()
         
         audienceLabel.font = .systemFont(ofSize: 24, weight: .bold)
-//        audienceLabel.textColor = .black
         audienceLabel.numberOfLines = 1
         audienceLabel.textAlignment = .right
         audienceLabel.text = "Аудитория"
@@ -490,11 +441,8 @@ class FilterViewController: UIViewController {
             .width(295)
         
         audienceTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
-//        audienceTextField.backgroundColor = UIColor.systemGroupedBackground
-//        audienceTextField.alpha = 0.5
         audienceTextField.textColor = .black
         audienceTextField.borderStyle = UITextField.BorderStyle.roundedRect
-//        audienceTextField.layer.borderColor = borderColor.cgColor
         audienceTextField.autocorrectionType = UITextAutocorrectionType.no
         audienceTextField.keyboardType = UIKeyboardType.numberPad
         audienceTextField.returnKeyType = UIReturnKeyType.done
@@ -531,8 +479,6 @@ class FilterViewController: UIViewController {
     
     @objc
     func goToFirstScreen() {
-//        let firstViewController: PairsViewController = PairsViewController()
-//        self.navigationController?.pushViewController(firstViewController, animated: false)
         UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         self.navigationController?.popViewController(animated: false)
     }
@@ -591,7 +537,6 @@ class FilterViewController: UIViewController {
             let pairsArr = cabFreePairsDict[cab]!
             var startInd = 0
             var stopInd = 0
-//            var prevP = -1
             for (i, pare) in pairsArr.enumerated() {
                 if i == 0 {
                     startInd = pare
