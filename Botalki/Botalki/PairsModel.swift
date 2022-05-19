@@ -7,10 +7,6 @@
 
 import Foundation
 
-//enum NetworkError: Error {
-//    case invalidUrl
-//    case emptyData
-//}
 
 final class PairsModel {
     private let networkManager = NetworkManager.shared
@@ -24,6 +20,7 @@ final class PairsModel {
     
     var myCells = [PairTableViewCell?]()
     
+    
     init() {
         allocateCellsArr()
     }
@@ -36,19 +33,15 @@ final class PairsModel {
                 if self.cabinetsStringFromFile == "" {
                     print("Downloading file error...")
                     completion(.failure(error!))
-//                    AlertManager.shared.showAlert(presentTo: self, title: "Downloading file cabinets.txt error...", message: "")
                 } else {
                     completion(.success((Any).self))
                 }
                 
             } else {
                 completion(.failure(error!))
-//                AlertManager.shared.showAlert(presentTo: self, title: "Error", message: error?.localizedDescription)
-//                self.tableView.refreshControl?.endRefreshing()
             }
         }
     }
-    
     
     func loadAndSetCurWeekFromFirebase(completion: @escaping ((Result<Any, Error>) -> Void)) {
         networkManager.downloadFileFromFirebaseStorage(toFile: "uuids.txt") { error in
@@ -58,18 +51,11 @@ final class PairsModel {
                 if self.semesterStartFromFile == "" {
                     print("Downloading file error...")
                     completion(.failure(error!))
-//                    AlertManager.shared.showAlert(presentTo: self, title: "Downloading file uuids.txt error...", message: "")
                 }
-//                else {
-//                    self.setCurWeekDate()
-//                }
-//                self.reloadTableData()
                 completion(.success((Any).self))
                 
             } else {
                 completion(.failure(error!))
-//                AlertManager.shared.showAlert(presentTo: self, title: "Error", message: error?.localizedDescription)
-//                self.tableView.refreshControl?.endRefreshing()
             }
         }
     }
@@ -100,12 +86,6 @@ final class PairsModel {
         semStartDate = Calendar.current.date(byAdding: .day, value: -1, to: semStartDate)!
         let deltaSecs = Date() - semStartDate
         curWeek = Int(deltaSecs/604800 + 1)
-//        choosenWeek = curWeek - 1
-//        weekPicker.selectRow(curWeek-1, inComponent: 0, animated: true)
-//        weekLabel.text = weeks[curWeek-1]
-//        weekButton.setTitle(weeks[curWeek-1], for: .normal)
-//        curNumOrDenom = (curWeek-1) % 2
-//        print(curWeek)
     }
     
     private func allocateCellsArr() {

@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 import PinLayout
-//import Kingfisher
 
 
 final class PairTableViewCell: UITableViewCell {
@@ -15,41 +14,23 @@ final class PairTableViewCell: UITableViewCell {
     private var dor2FullPos = CGFloat(45)
     private var ULKListFullPos = CGFloat(47)
     private var ListWidth = CGFloat(UIScreen.main.bounds.width - 220)
-//    private var ULKTextFullPos: UIEdgeInsets = UIEdgeInsets(top: 47, left: 0, bottom: 0, right: 0)
-
+    
     private let imageViewClock = UIImageView(image: UIImage(named: "clock.png"))
     private let imageViewDor = UIImageView(image: UIImage(named: "door.png"))
     private var imageViewDor2 = UIImageView(image: UIImage(named: "door.png"))
-//    private var imageViewDor2Full = UIImageView(image: UIImage(named: "dor.png"))
     
-//    var GZcabinets = ["240", "333ю", "426", "232", "327.1", "430", "384", "323", "427ю", "502ю", "522", "514", "504", "425ю", "390", "432", "420", "419ю", "386", "429ю", "505", "304", "424", "526", "228"]
-//
-//    var ULKcabinets = ["218л", "829л", "1108л", "224л", "529л", "732л", "615л", "711л", "189.4", "708л", "520л", "836л", "437л", "533л", "908л", "141л", "818л", "225л", "523л", "114л", "259л", "1022л", "531л", "1019л", "822л", "522л", "619л", "530л", "1035л", "145л", "518л", "189.5", "243л", "212л", "532л", "544л", "253л", "222л", "915л", "534л", "1013л", "744л", "1139л", "834л", "536л", "820л", "1017л", "503", "727л", "210", "739л", "1120л", "255л", "725л", "831л"]
-//
+    private let containerView = UIView()
+    
     var GZcabinets: [String] = []
-
     var ULKcabinets: [String] = []
-    
-    
-//    var GZcabinets: [[[String]]]
-//
-//    var ULKcabinets: [[[String]]]
-    
     private var GZcabinetsShortString: String = ""
     private var ULKcabinetsShortString: String = ""
-    
     private var GZcabinetsFullString: String = ""
     private var ULKcabinetsFullString: String = ""
-    
     private var numberOfCabinetsInLine: Int = 0
     var fullCellSz: Int = 95
     var wasConfiguredFlag = 0
     
-//    private let timeLabel = UILabel()
-    
-//    private let images: [String] = ["personalhotspot", "person", "asterisk"]
-    
-    private let containerView = UIView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -67,79 +48,6 @@ final class PairTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func initCabinetsFields() {
-        GZcabinetsShortString = ""
-        ULKcabinetsShortString = ""
-        GZcabinetsFullString = ""
-        ULKcabinetsFullString = ""
-        
-        numberOfCabinetsInLine = Int((UIScreen.main.bounds.width - 220)/47) - 1
-//        print(UIScreen.main.bounds.width, numberOfCabinetsInLine)
-        
-        for i in 0..<numberOfCabinetsInLine {
-            if i < GZcabinets.count {
-                GZcabinetsShortString += (GZcabinets[i] + ((i != numberOfCabinetsInLine-1) ? ", " : "..."))
-            }
-            if i < ULKcabinets.count {
-                ULKcabinetsShortString += (ULKcabinets[i] + ((i != numberOfCabinetsInLine-1) ? ", " : "..."))
-            }
-        }
-        
-        var GZLines = 1
-        var ULKLines = 1
-        
-        var i = 0
-        for (j, cab) in GZcabinets.enumerated() {
-            if (i + 1) % numberOfCabinetsInLine == 0 {
-                if j != GZcabinets.count - 1 && cab[String.Index(encodedOffset: 0)] != GZcabinets[j+1][String.Index(encodedOffset: 0)] {
-                    GZcabinetsFullString += "\(cab);\n"
-                    i = 0
-                    GZLines += 1
-                } else if j != GZcabinets.count - 1 {
-                    GZcabinetsFullString += "\(cab),\n"
-                    GZLines += 1
-                    i = 0
-                } else {
-                    GZcabinetsFullString += "\(cab)"
-                }
-            } else if j != GZcabinets.count - 1 && cab[String.Index(encodedOffset: 0)] != GZcabinets[j+1][String.Index(encodedOffset: 0)] {
-                GZcabinetsFullString += "\(cab);\n"
-                i = 0
-                GZLines += 1
-            } else {
-                i += 1
-                GZcabinetsFullString += "\(cab)" + ((j != GZcabinets.count - 1) ? ", " : "")
-            }
-        }
-        
-        i = 0
-        for (j, cab) in ULKcabinets.enumerated() {
-            if (i + 1) % numberOfCabinetsInLine == 0 {
-                if j != ULKcabinets.count - 1 && cab[String.Index(encodedOffset: 0)] != ULKcabinets[j+1][String.Index(encodedOffset: 0)] {
-                    ULKcabinetsFullString += "\(cab);\n"
-                    i = 0
-                    ULKLines += 1
-                } else if j != ULKcabinets.count - 1 {
-                    ULKcabinetsFullString += "\(cab),\n"
-                    ULKLines += 1
-                    i = 0
-                } else {
-                    ULKcabinetsFullString += "\(cab)"
-                }
-            } else if j != ULKcabinets.count - 1 && cab[String.Index(encodedOffset: 0)] != ULKcabinets[j+1][String.Index(encodedOffset: 0)] {
-                ULKcabinetsFullString += "\(cab);\n"
-                i = 0
-                ULKLines += 1
-            } else {
-                i += 1
-                ULKcabinetsFullString += "\(cab)" + ((j != ULKcabinets.count - 1) ? ", " : "")
-            }
-        }
-        
-        fullCellSz = 45 + (GZLines + ULKLines) * 21
-    }
-    
-    
     private func setup() {
         containerView.addSubview(imageViewClock)
         containerView.bringSubviewToFront(imageViewClock)
@@ -149,12 +57,6 @@ final class PairTableViewCell: UITableViewCell {
         
         containerView.addSubview(imageViewDor2)
         containerView.bringSubviewToFront(imageViewDor2)
-//
-//        let imageDor = UIImage(named: "dor.png")
-//        let imageViewDor = UIImageView(image: imageDor!)
-//        imageViewDor.frame = CGRect(x: 70, y: 20, width: 20, height: 20)
-//        containerView.addSubview(imageViewDor)
-//        containerView.bringSubviewToFront(imageViewDor)
         
         selectionStyle = .none
         
@@ -206,8 +108,6 @@ final class PairTableViewCell: UITableViewCell {
             .vertically(6)
         
         timeText.pin
-//            .vCenter()
-//            .bottom(8)
             .top(11)
             .left(52)
             .height(60)
@@ -215,7 +115,6 @@ final class PairTableViewCell: UITableViewCell {
             .sizeToFit(.height)
         
         GZText.pin
-//            .vCenter(-15)
             .top(15)
             .right(21)
             .height(30)
@@ -244,12 +143,10 @@ final class PairTableViewCell: UITableViewCell {
             .sizeToFit(.width)
         
         imageViewClock.pin
-//            .vCenter()
             .top(28)
             .left(15)
             .height(25)
             .width(25)
-//            .sizeToFit(.height)
         
         imageViewDor.pin
             .top(11)
@@ -257,9 +154,6 @@ final class PairTableViewCell: UITableViewCell {
             .height(25)
             .width(25)
         
-//        if let coords = ULKListText.superview?.convert(ULKListText.frame, to: nil) {
-//        print(ULKListText.frame)
-//        }
         imageViewDor2.pin
             .top(dor2FullPos)
             .left(110)
@@ -267,25 +161,90 @@ final class PairTableViewCell: UITableViewCell {
             .width(25)
     }
     
+    private func initCabinetsFields() {
+        GZcabinetsShortString = ""
+        ULKcabinetsShortString = ""
+        GZcabinetsFullString = ""
+        ULKcabinetsFullString = ""
+        
+        numberOfCabinetsInLine = Int((UIScreen.main.bounds.width - 220)/48) - 1
+        
+        for i in 0..<numberOfCabinetsInLine {
+            if i < GZcabinets.count {
+                GZcabinetsShortString += (GZcabinets[i] + ((i != numberOfCabinetsInLine-1) ? ", " : "..."))
+            }
+            if i < ULKcabinets.count {
+                ULKcabinetsShortString += (ULKcabinets[i] + ((i != numberOfCabinetsInLine-1) ? ", " : "..."))
+            }
+        }
+        
+        var GZLines = 1
+        var ULKLines = 1
+        
+        var i = 0
+        for (j, cab) in GZcabinets.enumerated() {
+            if (i + 1) % numberOfCabinetsInLine == 0 {
+                if j != GZcabinets.count - 1 && cab[0] != GZcabinets[j+1][0] {
+                    GZcabinetsFullString += "\(cab);\n"
+                    i = 0
+                    GZLines += 1
+                } else if j != GZcabinets.count - 1 {
+                    GZcabinetsFullString += "\(cab),\n"
+                    GZLines += 1
+                    i = 0
+                } else {
+                    GZcabinetsFullString += "\(cab)"
+                }
+            } else if j != GZcabinets.count - 1 && cab[0] != GZcabinets[j+1][0] {
+                GZcabinetsFullString += "\(cab);\n"
+                i = 0
+                GZLines += 1
+            } else {
+                i += 1
+                GZcabinetsFullString += "\(cab)" + ((j != GZcabinets.count - 1) ? ", " : "")
+            }
+        }
+        
+        i = 0
+        for (j, cab) in ULKcabinets.enumerated() {
+            if (i + 1) % numberOfCabinetsInLine == 0 {
+                if j != ULKcabinets.count - 1 && cab[0] != ULKcabinets[j+1][0] {
+                    ULKcabinetsFullString += "\(cab);\n"
+                    i = 0
+                    ULKLines += 1
+                } else if j != ULKcabinets.count - 1 {
+                    ULKcabinetsFullString += "\(cab),\n"
+                    ULKLines += 1
+                    i = 0
+                } else {
+                    ULKcabinetsFullString += "\(cab)"
+                }
+            } else if j != ULKcabinets.count - 1 && cab[0] != ULKcabinets[j+1][0] {
+                ULKcabinetsFullString += "\(cab);\n"
+                i = 0
+                ULKLines += 1
+            } else {
+                i += 1
+                ULKcabinetsFullString += "\(cab)" + ((j != ULKcabinets.count - 1) ? ", " : "")
+            }
+        }
+        
+        fullCellSz = 45 + (GZLines + ULKLines) * 21
+    }
+    
     func loadCabinets(Cabinets CabinetsForCell: [String]) {
         ULKcabinets = []
         GZcabinets = []
-//        if ULKcabinets.count != 0 {
-//
-//        }
-            for cab in CabinetsForCell {
-                if cab.contains("л") {
-                    ULKcabinets.append(cab)
-                } else {
-                    GZcabinets.append(cab)
-                }
+        
+        for cab in CabinetsForCell {
+            if cab.contains("л") {
+                ULKcabinets.append(cab)
+            } else {
+                GZcabinets.append(cab)
             }
-//            if wasConfiguredFlag == 0 {
-//            } else {
-//                wasConfiguredFlag = 0
-//            }
-            initCabinetsFields()
-//        }
+        }
+    
+        initCabinetsFields()
     }
     
     func config(with indexCell: Int) {
@@ -297,8 +256,6 @@ final class PairTableViewCell: UITableViewCell {
         let studyTimes = ["8:30\n10:05", "10:15\n11:50", "12:00\n13:35", "13:50\n15:25", "15:40\n17:15", "17:25\n19:00", "19:10\n20:45"]
         
         let timee: String
-//        let gzString: String = ""
-//        let ulkString: String = ""
         
         timee = studyTimes[indexCell]
         
@@ -308,8 +265,6 @@ final class PairTableViewCell: UITableViewCell {
         
         GZListText.text = GZcabinetsShortString
         ULKListText.text = ULKcabinetsShortString
-//        print(ULKListText.frame.height)
-
     }
     
     func config2(with indexCell: Int) {
@@ -317,20 +272,8 @@ final class PairTableViewCell: UITableViewCell {
         let ulkStrings = ULKcabinetsFullString.split(separator: "\n").count
         let gzStrings = GZcabinetsFullString.split(separator: "\n").count
         
-//        for cab in CabinetsForCell {
-//            if cab.contains("л") {
-//                ULKcabinets.append(cab)
-//            } else {
-//                GZcabinets.append(cab)
-//            }
-//        }
-        
-//        initCabinetsFields()
-        
         dor2FullPos += CGFloat((gzStrings-1) * 21)
         ULKListFullPos += CGFloat((gzStrings-1) * 21)
-//        dor2FullPos.top = GZListText.frame.height
-//        ULKListFullPos.top += ULKListText.frame.height
         
         GZListText.numberOfLines = gzStrings
         ULKListText.numberOfLines = ulkStrings
@@ -358,4 +301,32 @@ extension UIColor {
            blue: rgb & 0xFF
        )
    }
+}
+
+
+extension String {
+
+    var length: Int {
+        return count
+    }
+
+    subscript (i: Int) -> String {
+        return self[i ..< i + 1]
+    }
+
+    func substring(fromIndex: Int) -> String {
+        return self[min(fromIndex, length) ..< length]
+    }
+
+    func substring(toIndex: Int) -> String {
+        return self[0 ..< max(0, toIndex)]
+    }
+
+    subscript (r: Range<Int>) -> String {
+        let range = Range(uncheckedBounds: (lower: max(0, min(length, r.lowerBound)),
+                                            upper: min(length, max(0, r.upperBound))))
+        let start = index(startIndex, offsetBy: range.lowerBound)
+        let end = index(start, offsetBy: range.upperBound - range.lowerBound)
+        return String(self[start ..< end])
+    }
 }

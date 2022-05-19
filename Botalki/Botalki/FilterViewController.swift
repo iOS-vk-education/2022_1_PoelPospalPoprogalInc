@@ -10,48 +10,47 @@ struct FilterCellData {
 }
 
 class FilterViewController: UIViewController {
-    
-    var FreeCabinets = [[[[String]]]]()
-    var semStartDate = Date()
+    private let alertManager = AlertManager.shared
     
     private let borderColor = UIColor(rgb: 0xC2A894)
     
     private var firstScreenButton = UIButton()
     private var secondScreenButton = UIButton()
+    private let selectRoomButton = UIButton()
     
     private let imageCalendar = UIImageView(image: UIImage(named: "calendarWhite.png"))
-    
     private let houseImg = UIImageView(image: UIImage(named: "house"))
     private let magnifierImg = UIImageView(image: UIImage(named: "magnifier"))
     
-    private let dateField = UITextField()
-    private let selectRoomButton = UIButton()
-    
     private let pairSelectView = UIView()
+    private let buildingSelectView = UIView()
+    private let audienceSelectView = UIView()
+    
     private let pairSwitcher = UISwitch()
+    private let audienceSwitcher = UISwitch()
+    private let buildingSwitcher = UISwitch()
     
     private let datePicker = UIDatePicker()
     
-    let gradePickerValues = ["1", "2", "3", "4", "5", "6", "7"]
     private let firstPairPicker = UIPickerView()
     private let secondPairPicker = UIPickerView()
-    private var pickersDict: [UIPickerView: Int] = [:]
-    private let dash = UILabel()
     
-    private let buildingSelectView = UIView()
-    private let buildingSwitcher = UISwitch()
     private let buildingSegController = UISegmentedControl(items: ["ГЗ", "УЛК"])
     
-    private let audienceSelectView = UIView()
-    private let audienceSwitcher = UISwitch()
-    private let audienceTextField = UITextField()
+    private let dash = UILabel()
     
+    private let audienceTextField = UITextField()
+    private let dateField = UITextField()
+    
+    
+    var FreeCabinets = [[[[String]]]]()
+    var semStartDate = Date()
+    let gradePickerValues = ["1", "2", "3", "4", "5", "6", "7"]
+    private var pickersDict: [UIPickerView: Int] = [:]
     private var curWeek = 0
     private var weekDay = 0
-    
     private let margins = CGFloat(22)
     private let screenWidth = UIScreen.main.bounds.width
-    
     private let lowerView = UIView()
     
     
@@ -109,7 +108,6 @@ class FilterViewController: UIViewController {
         view.addSubview(datePicker)
     }
     
-    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
@@ -133,14 +131,14 @@ class FilterViewController: UIViewController {
         if self.weekDay == -1 {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             datePicker.date = self.setCorrectCurrentDate()
-            AlertManager.shared.showAlert(presentTo: self, title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день")
+            alertManager.showAlert(presentTo: self, title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день")
             return false
         }
         
         if self.curWeek < 1 || self.curWeek > 17 {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             datePicker.date = self.setCorrectCurrentDate()
-            AlertManager.shared.showAlert(presentTo: self, title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: self.semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок")
+            alertManager.showAlert(presentTo: self, title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: self.semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок")
             return false
         }
         return true
@@ -151,7 +149,7 @@ class FilterViewController: UIViewController {
         DispatchQueue.global().async {
             usleep(1)
             DispatchQueue.main.async {
-                self.checkDate()
+                _ = self.checkDate()
             }
         }
     }
@@ -194,7 +192,11 @@ class FilterViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+        view.addSubview(imageCalendar)
+        view.bringSubviewToFront(imageCalendar)
         let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
+        let pickerWidth = CGFloat(Float(Int(screenWidth - 80) / 2) - 1.5*Float(margins))
+        
         firstScreenButton.pin
             .top(CGFloat(view.frame.height - 95))
             .height(45)
@@ -218,8 +220,6 @@ class FilterViewController: UIViewController {
             .left(54)
             .height(45)
             .width(45)
-        view.addSubview(imageCalendar)
-        view.bringSubviewToFront(imageCalendar)
         
         datePicker.pin
             .top(82)
@@ -263,8 +263,6 @@ class FilterViewController: UIViewController {
             .height(35)
             .width(35)
         
-        let pickerWidth = CGFloat(Float(Int(screenWidth - 80) / 2) - 1.5*Float(margins))
-        
         firstPairPicker.pin
             .top(65)
             .height(45)
@@ -280,8 +278,6 @@ class FilterViewController: UIViewController {
         dash.pin
             .after(of: firstPairPicker, aligned: .bottom)
             .before(of: secondPairPicker, aligned: .top)
-        
-        
     }
     
     @objc
@@ -292,16 +288,12 @@ class FilterViewController: UIViewController {
         }
     }
     
-    
     private func createSelectRoomButton() {
         selectRoomButton.backgroundColor = UIColor(rgb: 0xC2A894)
-        
         selectRoomButton.layer.cornerRadius = 12
         selectRoomButton.layer.masksToBounds = true
         selectRoomButton.titleLabel?.font = .systemFont(ofSize: 22, weight: .semibold)
         selectRoomButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
-
-        
         selectRoomButton.setTitle("Подобрать", for: .normal)
         selectRoomButton.addTarget(self, action: #selector(sortAudiences), for: .touchUpInside)
     }
@@ -573,9 +565,8 @@ class FilterViewController: UIViewController {
             present(navigationController, animated: true, completion: nil)
         } else {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
-            AlertManager.shared.showAlert(presentTo: self, title: "Не найдено ни одной подходящей аудитории...", message: "")
+            alertManager.showAlert(presentTo: self, title: "Не найдено ни одной подходящей аудитории...", message: "")
         }
-        
     }
 }
 

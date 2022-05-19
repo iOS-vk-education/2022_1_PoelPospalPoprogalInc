@@ -28,6 +28,7 @@ final class PairsPresenter {
         return model.FreeCabinets
     }
     
+    
     func didLoadView(completion: @escaping ((Result<Any, Error>) -> Void)) {
         model.cabinetsStringFromFile = MyFileManager.shared.getStringFromTextFile(with: "cabinets.txt") ?? ""
         model.semesterStartFromFile = MyFileManager.shared.getStringFromTextFile(with: "uuids.txt") ?? ""
@@ -52,8 +53,6 @@ final class PairsPresenter {
             self.initCells()
             completion(.success((Any).self))
         }
-        
-        
     }
     
     func loadAllData(completion: @escaping ((Result<Any, Error>) -> Void)) {
@@ -99,5 +98,4 @@ final class PairsPresenter {
     func didLoadSecondController() {
         secondViewController!.FreeCabinets = FreeCabinets
     }
-    
 }
