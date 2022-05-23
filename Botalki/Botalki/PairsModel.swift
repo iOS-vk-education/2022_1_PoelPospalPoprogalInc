@@ -16,7 +16,13 @@ final class PairsModel {
     var semesterStartFromFile: String = ""
     var semStartDate = Date()
     var curWeek = 0
+    var daysOfWeak = ["Пн\n", "Вт\n", "Ср\n", "Чт\n", "Пт\n", "Сб\n"]
     var FreeCabinets = [[[[String]]]]()
+    var curDay = 2
+    var selectedDate = Date()
+    var curNumOrDenom = 0
+    var choosenWeek = 0
+    var cellForReloadIndexes = [Int]()
     
     var myCells = [PairTableViewCell?]()
     
@@ -78,6 +84,11 @@ final class PairsModel {
         }
     }
     
+    func setup() {
+        formDaysOfWeakStrings()
+        setCurDay()
+    }
+    
     func calculateCurWeek() {
         semesterStartFromFile = semesterStartFromFile.components(separatedBy: "\n")[0]
         let dateFormatter = ISO8601DateFormatter()
@@ -91,6 +102,35 @@ final class PairsModel {
     private func allocateCellsArr() {
         for _ in 0...6 {
             myCells.append(nil)
+        }
+    }
+    
+    private func formDaysOfWeakStrings() {
+        var i = 0
+        for delta in -curDay...(5 - curDay) {
+            daysOfWeak[i] += String(Calendar.current.component(.day, from: Calendar.current.date(byAdding: .day, value: delta, to: selectedDate) ?? selectedDate))
+            i += 1
+        }
+    }
+    
+    func setCurDay() {
+        selectedDate = Date()
+        let calendar = Calendar.current
+        curDay = calendar.component(.weekday, from: selectedDate) - 2
+        
+        //Обработка воскресенья
+        if curDay == -1 {
+            curDay = 0
+            selectedDate = calendar.date(byAdding: .day, value: 1, to: selectedDate) ?? selectedDate
+            changeNumOrDenom()
+        }
+    }
+    
+    private func changeNumOrDenom() {
+        if curNumOrDenom == 0 {
+            curNumOrDenom = 1
+        } else {
+            curNumOrDenom = 0
         }
     }
 }

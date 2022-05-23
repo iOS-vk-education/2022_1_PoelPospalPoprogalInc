@@ -8,7 +8,7 @@ class PairsViewController: UIViewController {
     private let secondViewController: FilterViewController = FilterViewController()
     
     let tableView = UITableView()
-    private var weekPicker  = UIPickerView()
+    var weekPicker  = UIPickerView()
     private var weekButton = UIButton()
     private var firstScreenButton = UIButton()
     private var secondScreenButton = UIButton()
@@ -18,18 +18,11 @@ class PairsViewController: UIViewController {
     private let lowerView = UIView()
     
     private let weeks = (1...17).map {"\($0) неделя - \(["знаменатель", " числитель"][$0%2])" }
-    private var cellForReloadInd = -1
-    private var cellForReloadIndexes = [Int]()
-    private var curNumOrDenom = 0
-    private var curDay = 2
     private var tapGestureReconizer = UITapGestureRecognizer()
-    private var choosenWeek = 0
-    private var daysOfWeak = ["Пн\n", "Вт\n", "Ср\n", "Чт\n", "Пт\n", "Сб\n"]
     private var daysOfWeakButton: [UIButton:Int] = [:]
     private var labelsOfWeakButton: [UILabel] = []
     private let margins = CGFloat(22)
     private let screenWidth = UIScreen.main.bounds.width
-    private var selectedDate = Date()
 
     
     override func viewDidLoad() {
@@ -40,8 +33,7 @@ class PairsViewController: UIViewController {
         presenter.didLoadView { result in
             switch result {
             case .success(_):
-                self.loadTableData()
-                self.setCurWeekDate()
+                self.presenter.didSuccessfullyLoadData()
                 break
                 
             case .failure(let error):
@@ -66,11 +58,10 @@ class PairsViewController: UIViewController {
 
         presenter.mainViewController = self
         presenter.secondViewController = secondViewController
+        presenter.setup()
         
-        setCurDay()
-        formDaysOfWeakStrings()
         createDayButtons()
-        screenSelection()
+        setupScreenSelection()
         
         tableView.frame = view.bounds
         tableView.separatorStyle = .none
@@ -137,49 +128,26 @@ class PairsViewController: UIViewController {
             .width(35)
     }
     
-    private func setCurDay() {
-        selectedDate = Date()
-        let calendar = Calendar.current
-        curDay = calendar.component(.weekday, from: selectedDate) - 2
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
         
-        //Обработка воскресенья
-        if curDay == -1 {
-            curDay = 0
-            selectedDate = calendar.date(byAdding: .day, value: 1, to: selectedDate) ?? selectedDate
-            changeNumOrDenom()
+        if self.traitCollection.userInterfaceStyle == .dark {
+            weekPicker.setValue(UIColor.white, forKey: "textColor")
+        } else {
+            weekPicker.setValue(UIColor.black, forKey: "textColor")
         }
     }
     
-    private func formDaysOfWeakStrings() {
-        var i = 0
-        for delta in -curDay...(5 - curDay) {
-            daysOfWeak[i] += String(Calendar.current.component(.day, from: Calendar.current.date(byAdding: .day, value: delta, to: selectedDate) ?? selectedDate))
-            i += 1
-        }
-    }
-    
-    private func loadTableData() {
+    func loadTableData() {
         tableView.refreshControl?.endRefreshing()
         tableView.delegate = self
         tableView.dataSource = self
         reloadTableData()
     }
     
-    private func setCurWeekDate() {
-        let curWeek = presenter.curWeek
-        secondViewController.semStartDate = presenter.semStartDate
-        choosenWeek = curWeek - 1
-        weekButton.setTitle(weeks[curWeek - 1], for: .normal)
-        curNumOrDenom = (curWeek-1) % 2
-    }
-    
-    @objc
-    func tapToClosePicker() {
-        UIView.animate(withDuration: 0.20) { [self] () -> Void in
-            weekPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220)
-        }
-        pickerFlag = 0
-        view.removeGestureRecognizer(tapGestureReconizer)
+    func setWeekOnWeekButton() {
+        presenter.didChangeWeek()
+        weekButton.setTitle(weeks[presenter.curWeek - 1], for: .normal)
     }
     
     private func setupWeekButton() {
@@ -188,37 +156,10 @@ class PairsViewController: UIViewController {
         weekButton.setTitle(weeks[0], for: .normal)
         weekButton.setTitleColor(UIColor.black, for: .normal)
         weekButton.titleLabel?.font = .systemFont(ofSize: 19)
-        weekButton.addTarget(self, action: #selector(didTapWeekButton), for: .touchUpInside)
+        weekButton.addTarget(self, action: #selector(didTapOnWeekButton), for: .touchUpInside)
     }
     
-    var pickerFlag = 0
-    @objc func didTapWeekButton() {
-        if pickerFlag == 1 {
-            return
-        }
-        
-        view.addGestureRecognizer(tapGestureReconizer)
-        
-        pickerFlag = 1
-        
-        weekPicker = UIPickerView.init()
-        weekPicker.delegate = self
-        weekPicker.dataSource = self
-        
-        weekPicker.backgroundColor =  UIColor.systemBackground.withAlphaComponent(0.9)
-        weekPicker.autoresizingMask = .flexibleWidth
-        weekPicker.contentMode = .center
-        weekPicker.alpha = 1
-        weekPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220)
-        self.view.addSubview(weekPicker)
-        weekPicker.selectRow(choosenWeek, inComponent: 0, animated: true)
-        
-        UIView.animate(withDuration: 0.20) { [self] () -> Void in
-            weekPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 220, width: UIScreen.main.bounds.size.width, height: 220)
-        }
-    }
-    
-    private func screenSelection() {
+    private func setupScreenSelection() {
         firstScreenButton.backgroundColor = UIColor(rgb: 0x785A43)
         firstScreenButton.layer.cornerRadius = 10
         firstScreenButton.layer.masksToBounds = true
@@ -241,33 +182,6 @@ class PairsViewController: UIViewController {
         lowerView.alpha = 0.8
     }
     
-    @objc
-    func goToFilterScreen() {
-        presenter.didLoadSecondController()
-        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
-        self.navigationController?.pushViewController(secondViewController, animated: false)
-    }
-    
-  
-    private func changeNumOrDenom() {
-        if curNumOrDenom == 0 {
-            curNumOrDenom = 1
-        } else {
-            curNumOrDenom = 0
-        }
-    }
-    
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        
-        if self.traitCollection.userInterfaceStyle == .dark {
-            weekPicker.setValue(UIColor.white, forKey: "textColor")
-        } else {
-            weekPicker.setValue(UIColor.black, forKey: "textColor")
-        }
-    }
-    
-    
     private func createDayButtons() {
         let sizeOfButton = 55
         var x = Int(margins)
@@ -282,7 +196,7 @@ class PairsViewController: UIViewController {
             dayOfWeakButton.backgroundColor = UIColor.systemGroupedBackground
             dayOfWeakButton.layer.cornerRadius = 18
             dayOfWeakButton.layer.masksToBounds = true
-            dayOfWeakButton.addTarget(self, action: #selector(changeButtonColor(_ :)), for: .touchUpInside)
+            dayOfWeakButton.addTarget(self, action: #selector(didChooseDay(_ :)), for: .touchUpInside)
             
             dayOfWeakButton.pin
                 .top(130)
@@ -294,19 +208,19 @@ class PairsViewController: UIViewController {
             dayOfWeakButton.layer.borderWidth = 2
             dayOfWeakButton.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
             
-            if indexOfDay == curDay {
+            if indexOfDay == presenter.curDay {
                 dayOfWeakButton.backgroundColor = UIColor(rgb: 0xEA7500)
                 dayOfWeakButton.layer.borderColor = UIColor(rgb: 0xEA7500).cgColor
             }
             
-            dayOfWeakButton.addTarget(self, action: #selector(changeButtonColor(_ :)), for: .touchUpInside)
+            dayOfWeakButton.addTarget(self, action: #selector(didChooseDay(_ :)), for: .touchUpInside)
             
             let dayLabel = UILabel()
             dayLabel.font = .systemFont(ofSize: 18, weight: .bold)
             dayLabel.numberOfLines = 2
             dayLabel.textAlignment = .center
             dayLabel.numberOfLines = 2
-            dayLabel.text = daysOfWeak[indexOfDay]
+            dayLabel.text = presenter.daysOfWeak[indexOfDay]
             
             dayOfWeakButton.addSubview(dayLabel)
             dayOfWeakButton.bringSubviewToFront(dayLabel)
@@ -327,11 +241,71 @@ class PairsViewController: UIViewController {
         }
     }
     
+    func didChooseAnotherWeek(with ind: Int, _ reloadFlag: Int? = nil) {
+        presenter.didChooseAnotherWeek(with: ind, reloadFlag)
+        
+        for (i, label) in labelsOfWeakButton.enumerated() {
+            label.text = presenter.daysOfWeak[i]
+        }
+        
+        var dayToSelect = UIButton()
+        
+        for button in daysOfWeakButton.keys {
+            if daysOfWeakButton[button] == presenter.curDay {
+                dayToSelect = button
+            }
+        }
+        
+        didChooseDay(dayToSelect)
+    }
+    
+    func reloadTableData(compl: (() -> Void)? = nil) {
+        presenter.didReloadTableData()
+        tableView.reloadData()
+        compl?()
+    }
+    
+    var pickerFlag = 0
+    @objc func didTapOnWeekButton() {
+        if pickerFlag == 1 {
+            return
+        }
+        
+        view.addGestureRecognizer(tapGestureReconizer)
+        
+        pickerFlag = 1
+        
+        weekPicker = UIPickerView.init()
+        weekPicker.delegate = self
+        weekPicker.dataSource = self
+        
+        weekPicker.backgroundColor =  UIColor.systemBackground.withAlphaComponent(0.9)
+        weekPicker.autoresizingMask = .flexibleWidth
+        weekPicker.contentMode = .center
+        weekPicker.alpha = 1
+        weekPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220)
+        self.view.addSubview(weekPicker)
+        weekPicker.selectRow(presenter.choosenWeek, inComponent: 0, animated: true)
+        
+        UIView.animate(withDuration: 0.20) { [self] () -> Void in
+            weekPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 220, width: UIScreen.main.bounds.size.width, height: 220)
+        }
+    }
+    
     @objc
-    func changeButtonColor(_ buttonSubView: UIButton) {
+    func tapToClosePicker() {
+        UIView.animate(withDuration: 0.20) { [self] () -> Void in
+            weekPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220)
+        }
+        pickerFlag = 0
+        view.removeGestureRecognizer(tapGestureReconizer)
+    }
+    
+    @objc
+    func didChooseDay(_ buttonSubView: UIButton) {
+        presenter.didChooseDay(dayChoosed: daysOfWeakButton[buttonSubView])
+        
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        curDay = daysOfWeakButton[buttonSubView] ?? 0
-        reloadTableData()
         
         if buttonSubView.backgroundColor == .systemGroupedBackground {
             for button in daysOfWeakButton.keys {
@@ -341,57 +315,15 @@ class PairsViewController: UIViewController {
             
             buttonSubView.backgroundColor = UIColor(rgb: 0xEA7500)
             buttonSubView.layer.borderColor = UIColor(rgb: 0xEA7500).cgColor
-            
         }
     }
-    
-    private func updateDayButtons(with ind: Int, _ reloadFlag: Int? = nil) {
-        let calendar = Calendar.current
-        let buttonsStartDate = calendar.date(byAdding: .day, value: ind * 7 + 1, to: presenter.semStartDate)!
-        
-        daysOfWeak = ["Пн\n", "Вт\n", "Ср\n", "Чт\n", "Пт\n", "Сб\n"]
-        var i = 0
-        for delta in 0...5 {
-            daysOfWeak[i] += String(calendar.component(.day, from: calendar.date(byAdding: .day, value: delta, to: buttonsStartDate) ?? buttonsStartDate))
-            i += 1
-        }
-        
-        for (i, label) in labelsOfWeakButton.enumerated() {
-            label.text = daysOfWeak[i]
-        }
-        
-        if reloadFlag == nil {
-            curDay = 0
-        }
-        
-        var monButton = UIButton()
-        
-        for button in daysOfWeakButton.keys {
-            if daysOfWeakButton[button] == curDay {
-                monButton = button
-            }
-        }
-        changeButtonColor(monButton)
-    }
-    
-    private func reloadTableData(compl: (() -> Void)? = nil) {
-        cellForReloadIndexes = []
-        cellForReloadInd = -1
-        presenter.unconfigCells()
-        tableView.reloadData()
-        compl?()
-    }
-    
     
     @objc
     private func didPullToRefresh() {
         presenter.loadAllData { result in
             switch result {
                 case .success(_):
-                    self.setCurDay()
-                    self.updateDayButtons(with: self.presenter.curWeek - 1, 1)
-                    self.loadTableData()
-                    self.setCurWeekDate()
+                    self.presenter.didSuccessfullyLoadData()
                     break
                     
                 case .failure(let error):
@@ -402,6 +334,12 @@ class PairsViewController: UIViewController {
         }
     }
     
+    @objc
+    func goToFilterScreen() {
+        presenter.loadSecondController()
+        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+        self.navigationController?.pushViewController(secondViewController, animated: false)
+    }
 }
 
 extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
@@ -410,14 +348,9 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
             return tableView.dequeueReusableCell(withIdentifier: "basicStyle", for: indexPath)
         }
         
-        let cell = presenter.myCells[indexPath.row]
+        presenter.configCellForRow(with: indexPath)
         
-        if cell?.wasConfiguredFlag == 0 { //когда день поменяется, надо будет сюда войти!
-            cell?.loadCabinets(Cabinets: presenter.FreeCabinets[curNumOrDenom][curDay][indexPath.row])
-            cell?.config(with: indexPath.row)
-        }
-        
-        return cell ?? .init()
+        return presenter.myCells[indexPath.row] ?? .init()
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -425,25 +358,13 @@ extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            print("touched \(indexPath.row)")
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-            if !cellForReloadIndexes.contains(indexPath.row) {
-                cellForReloadIndexes.append(indexPath.row)
-                tableView.beginUpdates()
-                presenter.myCells[indexPath.row]?.config2(with: indexPath.row)
-                tableView.endUpdates()
-            } else {
-                cellForReloadIndexes = cellForReloadIndexes.filter{$0 != indexPath.row}
-                cellForReloadInd = -1
-                tableView.beginUpdates()
-                presenter.myCells[indexPath.row]?.config(with: indexPath.row)
-                tableView.endUpdates()
-            }
-        }
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        presenter.didTapOnCell(with: indexPath)
+    }
     
     //высота ячейки
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if cellForReloadIndexes.contains(indexPath.row) {
+        if presenter.cellForReloadIndexes.contains(indexPath.row) {
             return CGFloat(presenter.myCells[indexPath.row]?.fullCellSz ?? 95)
         } else {
             return 95
@@ -466,10 +387,8 @@ extension PairsViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        curNumOrDenom = row % 2
-        choosenWeek = weekPicker.selectedRow(inComponent: 0)
-        updateDayButtons(with: row)
-        weekButton.setTitle(weeks[choosenWeek], for: .normal)
+        presenter.didSelectWeekByPicker(at: row)
+        weekButton.setTitle(weeks[presenter.choosenWeek], for: .normal)
         self.reloadTableData()
     }
 }
