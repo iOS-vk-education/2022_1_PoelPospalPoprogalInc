@@ -86,7 +86,7 @@ class FilterViewController: UIViewController {
         view.addSubview(audienceSelectView)
         view.addSubview(dash)
         
-        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(tapOnAudienceTextField))
+        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(closeKeyboard))
         view.addGestureRecognizer(tapGestureReconizer)
         
         // календарь
@@ -456,16 +456,23 @@ class FilterViewController: UIViewController {
     }
     
     @objc
-    private func tapOnAudienceTextField() {
+    private func closeKeyboard() {
+        if editingFlag == 0 {
+            return
+        }
+        
         view.endEditing(true)
         if audienceTextField.text != "" {
             audienceSwitcher.setOn(true, animated: true)
         }
+        editingFlag = 0
     }
     
+    var editingFlag = 0
     @objc
     func didStartEnterAudience() {
         audienceTextField.layer.borderWidth = 0
+        editingFlag = 1
     }
     
     @objc

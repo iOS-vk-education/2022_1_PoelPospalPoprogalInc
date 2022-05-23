@@ -48,58 +48,6 @@ final class PairTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setup() {
-        containerView.addSubview(imageViewClock)
-        containerView.bringSubviewToFront(imageViewClock)
-        
-        containerView.addSubview(imageViewDor)
-        containerView.bringSubviewToFront(imageViewDor)
-        
-        containerView.addSubview(imageViewDor2)
-        containerView.bringSubviewToFront(imageViewDor2)
-        
-        selectionStyle = .none
-        
-        timeText.font = .systemFont(ofSize: 17, weight: .semibold)
-        timeText.textColor = .black
-        timeText.numberOfLines = 2
-        timeText.textAlignment = .right
-        
-        GZText.font = .systemFont(ofSize: 17, weight: .bold)
-        GZText.textColor = .black
-        GZText.numberOfLines = 1
-        GZText.textAlignment = .left
-        
-        ULKText.font = .systemFont(ofSize: 17, weight: .bold)
-        ULKText.textColor = .black
-        ULKText.numberOfLines = 1
-        ULKText.textAlignment = .left
-        
-        GZListText.font = .systemFont(ofSize: 17, weight: .medium)
-        GZListText.textColor = .black
-        GZListText.numberOfLines = 1
-        GZListText.textAlignment = .left
-        
-        ULKListText.font = .systemFont(ofSize: 17, weight: .medium)
-        ULKListText.textColor = .black
-        ULKListText.numberOfLines = 1
-        ULKListText.textAlignment = .left
-        
-        containerView.layer.shadowColor = UIColor.black.cgColor
-        containerView.layer.shadowRadius = 0.5
-        containerView.layer.shadowOffset = .init(width: 0.5, height: 0.5)
-        containerView.layer.shadowOpacity = 0.8
-        containerView.layer.cornerRadius = 16
-        containerView.backgroundColor = UIColor(rgb: 0xC4C4C4)
-        
-        
-        [timeText, GZText, ULKText, GZListText, ULKListText].forEach {
-            containerView.addSubview($0)
-        }
-        
-        contentView.addSubview(containerView)
-    }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -159,6 +107,58 @@ final class PairTableViewCell: UITableViewCell {
             .left(110)
             .height(25)
             .width(25)
+    }
+    
+    private func setup() {
+        containerView.addSubview(imageViewClock)
+        containerView.bringSubviewToFront(imageViewClock)
+        
+        containerView.addSubview(imageViewDor)
+        containerView.bringSubviewToFront(imageViewDor)
+        
+        containerView.addSubview(imageViewDor2)
+        containerView.bringSubviewToFront(imageViewDor2)
+        
+        selectionStyle = .none
+        
+        timeText.font = .systemFont(ofSize: 17, weight: .semibold)
+        timeText.textColor = .black
+        timeText.numberOfLines = 2
+        timeText.textAlignment = .right
+        
+        GZText.font = .systemFont(ofSize: 17, weight: .bold)
+        GZText.textColor = .black
+        GZText.numberOfLines = 1
+        GZText.textAlignment = .left
+        
+        ULKText.font = .systemFont(ofSize: 17, weight: .bold)
+        ULKText.textColor = .black
+        ULKText.numberOfLines = 1
+        ULKText.textAlignment = .left
+        
+        GZListText.font = .systemFont(ofSize: 17, weight: .medium)
+        GZListText.textColor = .black
+        GZListText.numberOfLines = 1
+        GZListText.textAlignment = .left
+        
+        ULKListText.font = .systemFont(ofSize: 17, weight: .medium)
+        ULKListText.textColor = .black
+        ULKListText.numberOfLines = 1
+        ULKListText.textAlignment = .left
+        
+        containerView.layer.shadowColor = UIColor.black.cgColor
+        containerView.layer.shadowRadius = 0.5
+        containerView.layer.shadowOffset = .init(width: 0.5, height: 0.5)
+        containerView.layer.shadowOpacity = 0.8
+        containerView.layer.cornerRadius = 16
+        containerView.backgroundColor = UIColor(rgb: 0xC4C4C4)
+        
+        
+        [timeText, GZText, ULKText, GZListText, ULKListText].forEach {
+            containerView.addSubview($0)
+        }
+        
+        contentView.addSubview(containerView)
     }
     
     private func initCabinetsFields() {
@@ -248,7 +248,6 @@ final class PairTableViewCell: UITableViewCell {
     }
     
     func config(with indexCell: Int) {
-        
         wasConfiguredFlag = 1
         dor2FullPos = 45
         ULKListFullPos = 47
@@ -268,7 +267,6 @@ final class PairTableViewCell: UITableViewCell {
     }
     
     func config2(with indexCell: Int) {
-        
         let ulkStrings = ULKcabinetsFullString.split(separator: "\n").count
         let gzStrings = GZcabinetsFullString.split(separator: "\n").count
         
@@ -284,28 +282,7 @@ final class PairTableViewCell: UITableViewCell {
     }
 }
 
-
-extension UIColor {
-   convenience init(red: Int, green: Int, blue: Int) {
-       assert(red >= 0 && red <= 255, "Invalid red component")
-       assert(green >= 0 && green <= 255, "Invalid green component")
-       assert(blue >= 0 && blue <= 255, "Invalid blue component")
-
-       self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
-   }
-
-   convenience init(rgb: Int) {
-       self.init(
-           red: (rgb >> 16) & 0xFF,
-           green: (rgb >> 8) & 0xFF,
-           blue: rgb & 0xFF
-       )
-   }
-}
-
-
 extension String {
-
     var length: Int {
         return count
     }
@@ -328,5 +305,10 @@ extension String {
         let start = index(startIndex, offsetBy: range.lowerBound)
         let end = index(start, offsetBy: range.upperBound - range.lowerBound)
         return String(self[start ..< end])
+    }
+    
+    func strip(by str: String) -> String {
+        let cs = CharacterSet.init(charactersIn: str)
+        return self.trimmingCharacters(in: cs)
     }
 }

@@ -81,7 +81,6 @@ final class PairsPresenter {
     
 
     private func initCells() {
-        
         var indexPath: IndexPath = IndexPath(row: 0, section: 0)
         for i in 0...6 {
             indexPath.row = i

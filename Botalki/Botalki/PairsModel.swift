@@ -96,7 +96,6 @@ final class PairsModel {
         semesterStartFromFile = semesterStartFromFile.components(separatedBy: "\n")[0]
         let dateFormatter = ISO8601DateFormatter()
         semStartDate = dateFormatter.date(from: semesterStartFromFile)!
-//        secondViewController.semStartDate = semStartDate
         semStartDate = Calendar.current.date(byAdding: .day, value: -1, to: semStartDate)!
         let deltaSecs = Date() - semStartDate
         curWeek = Int(deltaSecs/604800 + 1)
