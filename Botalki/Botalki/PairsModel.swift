@@ -15,13 +15,16 @@ final class PairsModel {
     var cabinetsStringFromFile: String = ""
     var semesterStartFromFile: String = ""
     var semStartDate = Date()
+    var semEndDate = Date()
     var curWeek = 0
+    var curWeekInFilter = 0
+    var curWeekDayInFilter = 0
     var daysOfWeak = ["Пн\n", "Вт\n", "Ср\n", "Чт\n", "Пт\n", "Сб\n"]
     var FreeCabinets = [[[[String]]]]()
     var curDay = 2
     var selectedDate = Date()
     var curNumOrDenom = 0
-    var choosenWeek = 0
+    var curWeekInMain = 0
     var cellForReloadIndexes = [Int]()
     
     var myCells = [PairTableViewCell?]()

@@ -16,33 +16,16 @@ final class PairsPresenter {
         return model.myCells
     }
     
-    var curWeek: Int {
-        return model.curWeek
-    }
-    
-    var semStartDate: Date {
-        return model.semStartDate
-    }
-    
-    var FreeCabinets: [[[[String]]]] {
-        return model.FreeCabinets
-    }
-    
-    var curDay: Int {
-        return model.curDay
-    }
-    
-    var daysOfWeak: [String] {
-        return model.daysOfWeak
-    }
-    
-    var choosenWeek: Int {
-        return model.choosenWeek
-    }
-    
-    var cellForReloadIndexes: [Int] {
-        return model.cellForReloadIndexes
-    }
+    var curWeek: Int { model.curWeek }
+    var semStartDate: Date { model.semStartDate }
+    var semEndDate: Date { model.semEndDate }
+    var FreeCabinets: [[[[String]]]] { model.FreeCabinets }
+    var curDay: Int { model.curDay }
+    var daysOfWeak: [String] { model.daysOfWeak }
+    var curWeekInMain: Int { model.curWeekInMain }
+    var cellForReloadIndexes: [Int] { model.cellForReloadIndexes }
+    var curWeekInFilter: Int { model.curWeekInFilter }
+    var curWeekDayInFilter: Int { model.curWeekDayInFilter }
     
     
     func didLoadView(completion: @escaping ((Result<Any, Error>) -> Void)) {
@@ -112,8 +95,7 @@ final class PairsPresenter {
     }
     
     func loadSecondController() {
-        secondViewController!.FreeCabinets = FreeCabinets
-        secondViewController!.semStartDate = semStartDate
+        secondViewController!.presenter = self
     }
     
     func setup() {
@@ -121,7 +103,7 @@ final class PairsPresenter {
     }
     
     func didChangeWeek() {
-        model.choosenWeek = curWeek - 1
+        model.curWeekInMain = curWeek - 1
         model.curNumOrDenom = (curWeek-1) % 2
     }
     
@@ -183,7 +165,64 @@ final class PairsPresenter {
     
     func didSelectWeekByPicker(at row: Int) {
         model.curNumOrDenom = row % 2
-        model.choosenWeek = mainViewController!.weekPicker.selectedRow(inComponent: 0)
+        model.curWeekInMain = mainViewController!.weekPicker.selectedRow(inComponent: 0)
         mainViewController!.didChooseAnotherWeek(with: row)
+    }
+    
+    func setCorrectCurrentDate() -> Date {
+        if Calendar.current.component(.weekday, from: Date()) - 2 == -1 {
+            return Calendar.current.date(byAdding: .day, value: 1, to: Date())!
+        }
+        
+        return Date()
+    }
+    
+    func didCheckDate(dateToCheck: Date) {
+        let calendar = Calendar.current
+        model.semEndDate = calendar.date(byAdding: .day, value: 7*17, to: semStartDate)!
+        
+        let deltaSecs = dateToCheck - self.semStartDate
+        model.curWeekInFilter = Int(deltaSecs/604800 + 1)
+        model.curWeekDayInFilter = calendar.component(.weekday, from: dateToCheck) - 2
+    }
+    
+    func didSortAudiences(with curDate: Date) -> [FilterCellData] {
+        var cellDataArr: [FilterCellData] = []
+        
+        model.curWeekInFilter = Int((curDate - semStartDate)/604800 + 1)
+        model.curWeekDayInFilter = Calendar.current.component(.weekday, from: curDate) - 2
+        
+        let cabsForDay = FreeCabinets[(curWeekInFilter - 1) % 2][curWeekDayInFilter]
+        var cabFreePairsDict: [String: [Int]] = [:]
+        
+        for (i, pare) in cabsForDay.enumerated() {
+            for cab in pare {
+                if (cabFreePairsDict[cab] != nil) {
+                    cabFreePairsDict[cab]?.append(i)
+                } else {
+                    cabFreePairsDict[cab] = []
+                }
+            }
+        }
+        
+        for cab in cabFreePairsDict.keys {
+            let pairsArr = cabFreePairsDict[cab]!
+            var startInd = 0
+            var stopInd = 0
+            for (i, pare) in pairsArr.enumerated() {
+                if i == 0 {
+                    startInd = pare
+                    continue
+                }
+                if pare != pairsArr[i-1] + 1 {
+                    stopInd = pairsArr[i-1]
+                    cellDataArr.append(FilterCellData(pairStartInd: startInd, pairEndInd: stopInd, buildingInd: cab.contains("л") ? 1 : 0, cabinet: cab))
+                    startInd = pare
+                }
+            }
+            cellDataArr.append(FilterCellData(pairStartInd: startInd, pairEndInd: startInd, buildingInd: cab.contains("л") ? 1 : 0, cabinet: cab))
+        }
+        
+        return cellDataArr
     }
 }

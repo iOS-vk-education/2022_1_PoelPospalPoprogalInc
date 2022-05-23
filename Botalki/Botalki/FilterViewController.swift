@@ -2,6 +2,7 @@ import UIKit
 import PinLayout
 import SwiftUI
 
+
 struct FilterCellData {
     let pairStartInd: Int
     let pairEndInd: Int
@@ -9,7 +10,9 @@ struct FilterCellData {
     let cabinet: String
 }
 
+
 class FilterViewController: UIViewController {
+    var presenter: PairsPresenter?
     private let alertManager = AlertManager.shared
     
     private let borderColor = UIColor(rgb: 0xC2A894)
@@ -43,12 +46,8 @@ class FilterViewController: UIViewController {
     private let dateField = UITextField()
     
     
-    var FreeCabinets = [[[[String]]]]()
-    var semStartDate = Date()
     let gradePickerValues = ["1", "2", "3", "4", "5", "6", "7"]
     private var pickersDict: [UIPickerView: Int] = [:]
-    private var curWeek = 0
-    private var weekDay = 0
     private let margins = CGFloat(22)
     private let screenWidth = UIScreen.main.bounds.width
     private let lowerView = UIView()
@@ -87,9 +86,8 @@ class FilterViewController: UIViewController {
         view.addSubview(audienceSelectView)
         view.addSubview(dash)
         
-        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(tap))
+        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(tapOnAudienceTextField))
         view.addGestureRecognizer(tapGestureReconizer)
-        
         
         // календарь
         dateField.inputView = datePicker
@@ -104,90 +102,9 @@ class FilterViewController: UIViewController {
         screenSelection()
         
         setupLowerSubview()
-        showDatePicker()
+        setupDatePicker()
         view.addSubview(datePicker)
     }
-    
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        
-        if self.traitCollection.userInterfaceStyle == .dark {
-            imageCalendar.setImageColor(color: UIColor.white)
-        } else {
-            imageCalendar.setImageColor(color: UIColor.black)
-        }
-    }
-    
-    private func checkDate() -> Bool {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd.MM.yyyy"
-        let calendar = Calendar.current
-        let semEnd = calendar.date(byAdding: .day, value: 7*17, to: self.semStartDate)!
-        
-        let deltaSecs = self.datePicker.date - self.semStartDate
-        curWeek = Int(deltaSecs/604800 + 1)
-        weekDay = calendar.component(.weekday, from: self.datePicker.date) - 2
-        
-        if self.weekDay == -1 {
-            UINotificationFeedbackGenerator().notificationOccurred(.error)
-            datePicker.date = self.setCorrectCurrentDate()
-            alertManager.showAlert(presentTo: self, title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день")
-            return false
-        }
-        
-        if self.curWeek < 1 || self.curWeek > 17 {
-            UINotificationFeedbackGenerator().notificationOccurred(.error)
-            datePicker.date = self.setCorrectCurrentDate()
-            alertManager.showAlert(presentTo: self, title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: self.semStartDate)) и закончится \(formatter.string(from: semEnd)).\nВыбери дату из этих рамок")
-            return false
-        }
-        return true
-    }
-    
-    @objc
-    private func didChooseDate() {
-        DispatchQueue.global().async {
-            usleep(1)
-            DispatchQueue.main.async {
-                _ = self.checkDate()
-            }
-        }
-    }
-    
-    private func setCorrectCurrentDate() -> Date {
-        if Calendar.current.component(.weekday, from: Date()) - 2 == -1 {
-            return Calendar.current.date(byAdding: .day, value: 1, to: Date())!
-        }
-        
-        return Date()
-    }
-    
-    @objc
-    private func didChangeBuilding(_ sender: UISegmentedControl) {
-        buildingSwitcher.setOn(true, animated: true)
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
-    }
-    
-    @objc
-    private func didSwitchAudienceTrigger() {
-        if !audienceSwitcher.isOn {
-            audienceTextField.layer.borderWidth = 0
-        }
-    }
-    
-    func showDatePicker() {
-        datePicker.date = setCorrectCurrentDate()
-        datePicker.locale = .current
-        datePicker.preferredDatePickerStyle = .compact
-    }
-    
-    
-    private func setupLowerSubview() {
-        lowerView.layer.cornerRadius = 20
-        lowerView.backgroundColor = UIColor.systemGroupedBackground
-        lowerView.alpha = 0.8
-    }
-    
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -280,12 +197,48 @@ class FilterViewController: UIViewController {
             .before(of: secondPairPicker, aligned: .top)
     }
     
-    @objc
-    private func tap() {
-        view.endEditing(true)
-        if audienceTextField.text != "" {
-            audienceSwitcher.setOn(true, animated: true)
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if self.traitCollection.userInterfaceStyle == .dark {
+            imageCalendar.setImageColor(color: UIColor.white)
+        } else {
+            imageCalendar.setImageColor(color: UIColor.black)
         }
+    }
+    
+    private func checkDate() -> Bool {
+        presenter?.didCheckDate(dateToCheck: datePicker.date)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd.MM.yyyy"
+        
+        if presenter?.curWeekDayInFilter == -1 {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            datePicker.date = presenter!.setCorrectCurrentDate()
+            alertManager.showAlert(presentTo: self, title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день")
+            return false
+        }
+        
+        if presenter!.curWeekInFilter < 1 || presenter!.curWeekInFilter > 17 {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            datePicker.date = presenter!.setCorrectCurrentDate()
+            alertManager.showAlert(presentTo: self, title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: presenter!.semStartDate)) и закончится \(formatter.string(from: presenter!.semEndDate)).\nВыбери дату из этих рамок")
+            return false
+        }
+        return true
+    }
+    
+    private func setupDatePicker() {
+        datePicker.date = presenter!.setCorrectCurrentDate()
+        datePicker.locale = .current
+        datePicker.preferredDatePickerStyle = .compact
+    }
+    
+    
+    private func setupLowerSubview() {
+        lowerView.layer.cornerRadius = 20
+        lowerView.backgroundColor = UIColor.systemGroupedBackground
+        lowerView.alpha = 0.8
     }
     
     private func createSelectRoomButton() {
@@ -448,11 +401,6 @@ class FilterViewController: UIViewController {
         audienceSelectView.addSubview(audienceTextField)
     }
     
-    @objc
-    func didStartEnterAudience() {
-        audienceTextField.layer.borderWidth = 0
-    }
-    
     private func screenSelection() {
         firstScreenButton.backgroundColor = UIColor(rgb: 0xC2A894)
         firstScreenButton.layer.cornerRadius = 10
@@ -467,12 +415,6 @@ class FilterViewController: UIViewController {
         secondScreenButton.layer.masksToBounds = true
         secondScreenButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
         secondScreenButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
-    }
-    
-    @objc
-    func goToFirstScreen() {
-        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
-        self.navigationController?.popViewController(animated: false)
     }
   
     private func layoutScreenButtonsSubviews(buttonSubView: UIButton, iconNameOfButton: String) {
@@ -491,57 +433,56 @@ class FilterViewController: UIViewController {
     }
     
     @objc
-    private func sortAudiences() {
-        var cellDataArr: [FilterCellData] = []
-        if !checkDate() {
-            return
-        }
-        
-        curWeek = Int((datePicker.date - semStartDate)/604800 + 1)
-        weekDay = Calendar.current.component(.weekday, from: datePicker.date) - 2
-        
-        let cabsForDay = FreeCabinets[(curWeek - 1) % 2][weekDay]
-        var cabFreePairsDict: [String: [Int]] = [:]
-        
-        for (i, pare) in cabsForDay.enumerated() {
-            for cab in pare {
-                if (cabFreePairsDict[cab] != nil) {
-                    cabFreePairsDict[cab]?.append(i)
-                } else {
-                    cabFreePairsDict[cab] = []
-                }
+    private func didChooseDate() {
+        DispatchQueue.global().async {
+            usleep(1)
+            DispatchQueue.main.async {
+                _ = self.checkDate()
             }
         }
-        
-        var errorFlag = 0
-        if errorFlag == 1 && audienceTextField.text != "" || !audienceSwitcher.isOn {
+    }
+    
+    @objc
+    private func didChangeBuilding(_ sender: UISegmentedControl) {
+        buildingSwitcher.setOn(true, animated: true)
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    }
+    
+    @objc
+    private func didSwitchAudienceTrigger() {
+        if !audienceSwitcher.isOn {
             audienceTextField.layer.borderWidth = 0
         }
-        if audienceSwitcher.isOn && audienceTextField.text == "" {
+    }
+    
+    @objc
+    private func tapOnAudienceTextField() {
+        view.endEditing(true)
+        if audienceTextField.text != "" {
+            audienceSwitcher.setOn(true, animated: true)
+        }
+    }
+    
+    @objc
+    func didStartEnterAudience() {
+        audienceTextField.layer.borderWidth = 0
+    }
+    
+    @objc
+    func goToFirstScreen() {
+        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+        self.navigationController?.popViewController(animated: false)
+    }
+    
+    @objc
+    private func sortAudiences() {
+        if audienceSwitcher.isOn && audienceTextField.text == "" || !checkDate() {
             audienceTextField.layer.borderWidth = 2
             UINotificationFeedbackGenerator().notificationOccurred(.error)
-            errorFlag = 1
             return
         }
         
-        for cab in cabFreePairsDict.keys {
-            
-            let pairsArr = cabFreePairsDict[cab]!
-            var startInd = 0
-            var stopInd = 0
-            for (i, pare) in pairsArr.enumerated() {
-                if i == 0 {
-                    startInd = pare
-                    continue
-                }
-                if pare != pairsArr[i-1] + 1 {
-                    stopInd = pairsArr[i-1]
-                    cellDataArr.append(FilterCellData(pairStartInd: startInd, pairEndInd: stopInd, buildingInd: cab.contains("л") ? 1 : 0, cabinet: cab))
-                    startInd = pare
-                }
-            }
-            cellDataArr.append(FilterCellData(pairStartInd: startInd, pairEndInd: startInd, buildingInd: cab.contains("л") ? 1 : 0, cabinet: cab))
-        }
+        var cellDataArr = presenter!.didSortAudiences(with: datePicker.date)
         
         if pairSwitcher.isOn {
             let beg = firstPairPicker.selectedRow(inComponent: 0)
@@ -560,8 +501,8 @@ class FilterViewController: UIViewController {
         
         if cellDataArr.count != 0 {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
-            let viewController = SortedViewController(cellData: cellDataArr, date: datePicker.date)
-            let navigationController = UINavigationController(rootViewController: viewController)
+            let sortedViewController = SortedViewController(cellData: cellDataArr, date: datePicker.date)
+            let navigationController = UINavigationController(rootViewController: sortedViewController)
             present(navigationController, animated: true, completion: nil)
         } else {
             UINotificationFeedbackGenerator().notificationOccurred(.error)

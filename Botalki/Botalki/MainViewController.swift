@@ -285,7 +285,7 @@ class PairsViewController: UIViewController {
         weekPicker.alpha = 1
         weekPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220)
         self.view.addSubview(weekPicker)
-        weekPicker.selectRow(presenter.choosenWeek, inComponent: 0, animated: true)
+        weekPicker.selectRow(presenter.curWeekInMain, inComponent: 0, animated: true)
         
         UIView.animate(withDuration: 0.20) { [self] () -> Void in
             weekPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 220, width: UIScreen.main.bounds.size.width, height: 220)
@@ -388,7 +388,7 @@ extension PairsViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         presenter.didSelectWeekByPicker(at: row)
-        weekButton.setTitle(weeks[presenter.choosenWeek], for: .normal)
+        weekButton.setTitle(weeks[presenter.curWeekInMain], for: .normal)
         self.reloadTableData()
     }
 }
