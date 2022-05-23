@@ -464,6 +464,8 @@ class FilterViewController: UIViewController {
         view.endEditing(true)
         if audienceTextField.text != "" {
             audienceSwitcher.setOn(true, animated: true)
+        } else {
+            audienceSwitcher.setOn(false, animated: true)
         }
         editingFlag = 0
     }
@@ -503,7 +505,7 @@ class FilterViewController: UIViewController {
         }
         
         if audienceSwitcher.isOn {
-            cellDataArr = cellDataArr.filter{$0.cabinet == audienceTextField.text || $0.cabinet == audienceTextField.text! + "л"}
+            cellDataArr = cellDataArr.filter{ $0.cabinet.contains(audienceTextField.text!) }
         }
         
         if cellDataArr.count != 0 {
