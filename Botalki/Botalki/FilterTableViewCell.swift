@@ -25,16 +25,20 @@ final class FilterTableViewCell: UITableViewCell {
     var buildingInd: Int = 0
     var cabinet: String = ""
     
+    private var screenWidth = UIScreen.main.bounds.width
+    
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.alpha = 0
-        self.layer.transform = CATransform3DMakeScale(0.5, 0.5, 0.5)
-        UIView.animate(withDuration: 0.5) {
-            self.alpha = 1
-            self.layer.transform = CATransform3DScale(CATransform3DIdentity, 1, 1, 1)
-        }
-        
+//        self.alpha = 0
+//        self.layer.transform = CATransform3DMakeScale(0.5, 0.5, 0.5)
+//        UIView.animate(withDuration: 0.5) {
+//            self.alpha = 1
+//            self.layer.transform = CATransform3DScale(CATransform3DIdentity, 1, 1, 1)
+//        }
+
+        print(screenWidth)
+//        screenWidth -= 30
         setup()
     }
     
@@ -59,6 +63,7 @@ final class FilterTableViewCell: UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        screenWidth = sortedController!.view.frame.width
         
         containerView.pin
             .horizontally(15)
@@ -79,39 +84,47 @@ final class FilterTableViewCell: UITableViewCell {
         
         imageViewCalendarClock.pin
             .top(17)
-            .left(117)
+            .left(screenWidth/4)
+//            .after(of: timeLabel)
+//            .marginHorizontal(20)
             .height(23)
             .width(23)
         
         pairLabel.pin
             .top(8)
-            .left(150)
+//            .left(screenWidth/3 + 23 + 5)
+            .after(of: imageViewCalendarClock)
+            .marginHorizontal(5)
             .height(40)
             .width(40)
             .sizeToFit(.height)
         
         imageViewUniver.pin
             .top(14)
-            .left(205)
+//            .horizontallyBetween(pairLabel, and: imageViewDoor)
+//            .marginHorizontal(screenWidth/10 - screenWidth < 380 ? 10 : 0)
+            .left(screenWidth/2 - (400 - screenWidth))// - CGFloat(screenWidth < 380 ? 38 : 0))
             .height(25)
             .width(25)
         
         buildingLabel.pin
             .top(18)
-            .left(235)
+            .after(of: imageViewUniver)
+//            .marginHorizontal(5)
+//            .left(screenWidth*2/3 + 25 + 5)
             .height(30)
             .width(35)
             .sizeToFit(.width)
 
         imageViewDoor.pin
             .top(14)
-            .right(65)
+            .right(65 - CGFloat(screenWidth < 380 ? 5 : 0))
             .height(25)
             .width(25)
         
         cabinetLabel.pin
             .top(14)
-            .right(5)
+            .right(5 - CGFloat(screenWidth < 380 ? 3 : 0))
             .height(25)
             .width(55)
     }

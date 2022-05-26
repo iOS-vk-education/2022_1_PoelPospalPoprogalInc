@@ -23,6 +23,9 @@ class PairsViewController: UIViewController {
     private var labelsOfWeakButton: [UILabel] = []
     private let margins = CGFloat(22)
     private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
+    var buttomMargin = CGFloat()
+    var topMargin = CGFloat()
 
     
     override func viewDidLoad() {
@@ -82,50 +85,57 @@ class PairsViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        print(screenHeight)
         
         let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
+        
+        buttomMargin = (UIApplication.shared.windows.first?.safeAreaInsets.bottom)!
+        topMargin = (UIApplication.shared.windows.first?.safeAreaInsets.top)!
 
         weekButton.pin
-            .top(65)
+            .top(topMargin + margins)
             .height(40)
             .left(margins)
-            .width(ButtonsWidth * 3 / 2)
+            .width(250)
         
         tableView.pin
-            .top(200)
+            .top(topMargin + 140)
             .bottom(0)
             .left(0)
             .right(0)
         
         lowerView.pin
-            .top(view.frame.height - 115)
+            .top(view.frame.height - (buttomMargin + 2*margins + 45))
+//            .width(buttomMargin! + 2*margins + 45)
             .bottom(0)
             .left(0)
             .right(0)
 
         firstScreenButton.pin
-            .top(CGFloat(view.frame.height - 95))
+            .bottom(buttomMargin + margins)
             .height(45)
             .left(margins)
             .width(ButtonsWidth)
         
         secondScreenButton.pin
-            .top(CGFloat(view.frame.height - 95))
+            .bottom(buttomMargin + margins)
             .height(45)
             .right(margins)
             .width(ButtonsWidth)
         
         houseImg.pin
-            .top(CGFloat(view.frame.height - 90))
+            .bottom(buttomMargin + margins + 5)
             .left(ButtonsWidth/2 + margins - 35/2)
             .height(35)
             .width(35)
         
         magnifierImg.pin
-            .top(CGFloat(view.frame.height - 90))
+            .bottom(buttomMargin + margins + 5)
             .right(ButtonsWidth/2 + margins - 35/2)
             .height(35)
             .width(35)
+        
+        traitCollectionDidChange(nil)
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -133,8 +143,10 @@ class PairsViewController: UIViewController {
         
         if self.traitCollection.userInterfaceStyle == .dark {
             weekPicker.setValue(UIColor.white, forKey: "textColor")
+            weekButton.setTitleColor(UIColor.white, for: .normal)
         } else {
             weekPicker.setValue(UIColor.black, forKey: "textColor")
+            weekButton.setTitleColor(UIColor.black, for: .normal)
         }
     }
     
@@ -151,11 +163,12 @@ class PairsViewController: UIViewController {
     }
     
     private func setupWeekButton() {
-        weekButton.backgroundColor = UIColor(rgb: 0xC4C4C4)
-        weekButton.layer.cornerRadius = 12
-        weekButton.setTitle(weeks[0], for: .normal)
-        weekButton.setTitleColor(UIColor.black, for: .normal)
-        weekButton.titleLabel?.font = .systemFont(ofSize: 19)
+        weekButton.backgroundColor = UIColor.systemGroupedBackground
+        weekButton.layer.cornerRadius = 15
+        weekButton.layer.masksToBounds = true
+        weekButton.layer.borderWidth = 2
+        weekButton.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
+        weekButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
         weekButton.addTarget(self, action: #selector(didTapOnWeekButton), for: .touchUpInside)
     }
     
@@ -183,13 +196,13 @@ class PairsViewController: UIViewController {
     }
     
     private func createDayButtons() {
-        let sizeOfButton = 55
+        let sizeOfButton = screenWidth < 380 ? 50 : 55
         var x = Int(margins)
         let sizeOfSeparator = (Int(UIScreen.main.bounds.width) - sizeOfButton*6 - x*2)/5
         
         
-        var configuration = UIButton.Configuration.filled()
-        configuration.baseBackgroundColor = UIColor(rgb: 0x785A43)
+//        var configuration = UIButton.Configuration.filled()
+//        configuration.baseBackgroundColor = UIColor(rgb: 0x785A43)
         
         for indexOfDay in 0...5 {
             let dayOfWeakButton = UIButton(type: .system)
@@ -199,7 +212,7 @@ class PairsViewController: UIViewController {
             dayOfWeakButton.addTarget(self, action: #selector(didChooseDay(_ :)), for: .touchUpInside)
             
             dayOfWeakButton.pin
-                .top(130)
+                .top(screenHeight > 750 && screenHeight < 1000 ? topMargin + 77 + 2 * margins : topMargin + 97)
                 .left(CGFloat(x))
                 .width(CGFloat(sizeOfButton))
                 .height(CGFloat(sizeOfButton))

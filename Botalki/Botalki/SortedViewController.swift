@@ -34,6 +34,7 @@ final class SortedViewController: UIViewController {
         createDefaultDatas()
         
         tableView.frame = view.bounds
+        tableView.layer.cornerRadius = 35
         tableView.separatorStyle = .none
 
         tableView.delegate = self
@@ -41,6 +42,7 @@ final class SortedViewController: UIViewController {
         tableView.register(FilterTableViewCell.self, forCellReuseIdentifier: "FilterTableViewCell")
         
         initCellsArray()
+        sortCellsArrayByAudience()
         sortCellsArrayByTime()
     }
     

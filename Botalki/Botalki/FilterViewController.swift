@@ -49,13 +49,16 @@ class FilterViewController: UIViewController {
     let gradePickerValues = ["1", "2", "3", "4", "5", "6", "7"]
     private var pickersDict: [UIPickerView: Int] = [:]
     private let margins = CGFloat(22)
-    private let screenWidth = UIScreen.main.bounds.width
+    private var screenWidth = UIScreen.main.bounds.width
+    private var screenHeight = UIScreen.main.bounds.height
+    private var noNotchIPhoneMargin = CGFloat()
     private let lowerView = UIView()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.systemBackground
+        noNotchIPhoneMargin = screenHeight < 750 ? 30 : 0
         
         navigationController?.setNavigationBarHidden(true, animated: true)
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -63,6 +66,11 @@ class FilterViewController: UIViewController {
         pickersDict = [firstPairPicker: 0, secondPairPicker: 1]
         firstPairPicker.dataSource = self
         firstPairPicker.delegate = self
+        
+//        let tapOnFirstPairPickerGesture = UITapGestureRecognizer(target: self, action: #selector(didTapOnFirstPairPicker))
+//        tapOnFirstPairPickerGesture.delegate = self
+//        firstPairPicker.addGestureRecognizer(tapOnFirstPairPickerGesture)
+        
         secondPairPicker.dataSource = self
         secondPairPicker.delegate = self
 
@@ -112,70 +120,72 @@ class FilterViewController: UIViewController {
         view.addSubview(imageCalendar)
         view.bringSubviewToFront(imageCalendar)
         let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
-        let pickerWidth = CGFloat(Float(Int(screenWidth - 80) / 2) - 1.5*Float(margins))
+        let pickerWidth = CGFloat(Float(Int((screenWidth < 500 ? screenWidth : 400) - 80) / 2) - 1.5*Float(margins))
+        
+        let buttomMargin = UIApplication.shared.windows.first?.safeAreaInsets.bottom
         
         firstScreenButton.pin
-            .top(CGFloat(view.frame.height - 95))
+            .bottom(buttomMargin! + margins)
             .height(45)
             .left(margins)
             .width(ButtonsWidth)
         
         secondScreenButton.pin
-            .top(CGFloat(view.frame.height - 95))
+            .bottom(buttomMargin! + margins)
             .height(45)
             .right(margins)
             .width(ButtonsWidth)
         
         lowerView.pin
-            .top(view.frame.height - 115)
+            .top(view.frame.height - (buttomMargin! + 2*margins + 45))
             .bottom(0)
             .left(0)
             .right(0)
         
         imageCalendar.pin
-            .top(82)
-            .left(54)
+            .vCenter(-screenHeight * 3 / 7 + 20)
+            .hCenter(screenWidth < 500 ? -(screenWidth - 160)/2 : -170)
             .height(45)
             .width(45)
         
         datePicker.pin
-            .top(82)
-            .left(self.view.frame.width / 2 + 30)
+            .vCenter(-screenHeight * 3 / 7 + 20)
+            .hCenter(screenWidth < 500 ? (screenWidth - 160)/2-45 : 120)
             .height(42)
-            .width(self.view.frame.width / 3 - 5)
+            .width(130)
         
         selectRoomButton.pin
-            .top((self.view.frame.height / 3) * 2)
-            .left(40)
-            .right(40)
+            .vCenter(1.5 * screenHeight / 7 + noNotchIPhoneMargin * 1.5)
+            .hCenter()
+            .width(screenWidth < 500 ? screenWidth - 80 : 400)
             .height(50)
         
         pairSelectView.pin
-            .top(160)
-            .left(40)
-            .right(40)
+            .vCenter(-screenHeight * 2 / 7 + noNotchIPhoneMargin)
+            .hCenter()
+            .width(screenWidth < 500 ? screenWidth - 80 : 400)
             .height(120)
         
         buildingSelectView.pin
-            .top(self.view.frame.height / 3)
-            .left(40)
-            .right(40)
+            .vCenter(-screenHeight / 7 + noNotchIPhoneMargin * 1.5)
+            .hCenter()
+            .width(screenWidth < 500 ? screenWidth - 80 : 400)
             .height(70)
         
         audienceSelectView.pin
-            .top(self.view.frame.height / 2 - 50)
-            .left(40)
-            .right(40)
+            .vCenter(noNotchIPhoneMargin * 2)
+            .hCenter()
+            .width(screenWidth < 500 ? screenWidth - 80 : 400)
             .height(120)
         
         houseImg.pin
-            .top(CGFloat(view.frame.height - 90))
+            .bottom(buttomMargin! + margins + 5)
             .left(ButtonsWidth/2 + margins - 35/2)
             .height(35)
             .width(35)
         
         magnifierImg.pin
-            .top(CGFloat(view.frame.height - 90))
+            .bottom(buttomMargin! + margins + 5)
             .right(ButtonsWidth/2 + margins - 35/2)
             .height(35)
             .width(35)
@@ -195,6 +205,8 @@ class FilterViewController: UIViewController {
         dash.pin
             .after(of: firstPairPicker, aligned: .bottom)
             .before(of: secondPairPicker, aligned: .top)
+        
+        traitCollectionDidChange(nil)
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -285,10 +297,15 @@ class FilterViewController: UIViewController {
         
         pairSelectView.addSubview(pairSwitcher)
         pairSwitcher.pin
+//            .all(20)
+//            .topRight()
             .top(20)
-            .left(pairSelectView.frame.width + 270)
-            .height(100)
-            .width(100)
+            .left(screenWidth < 500 ? (screenWidth - 80) - 80 : 400 - 80)
+//            .hCenter()
+////            .hCenter(150)
+//            .left(pairSelectView.frame.width + 230)
+//            .height(100)
+//            .width(100)
         
         pairSelectView.addSubview(firstPairPicker)
         pairSelectView.addSubview(secondPairPicker)
@@ -324,18 +341,20 @@ class FilterViewController: UIViewController {
         buildingSegController.layer.cornerRadius = 5.0
 
         buildingSegController.pin
-            .top(18)
-            .left(buildingSelectView.frame.width + 145)
-            .height(34)
-            .width(90)
+            .top(20)
+            .left(screenWidth < 500 ? (screenWidth - 80)/2-30 : 400/2-30)
+//            .left(buildingSelectView.frame.width + 145)
+//            .height(34)
+//            .width(90)
         
         buildingSelectView.addSubview(buildingSegController)
         buildingSelectView.addSubview(buildingSwitcher)
         buildingSwitcher.pin
-            .top(18)
-            .left(buildingSelectView.frame.width + 270)
-            .height(34)
-            .width(90)
+            .top(20)
+            .left(screenWidth < 500 ? (screenWidth - 80) - 80 : 400 - 80)
+//            .left(buildingSelectView.frame.width + 230)
+//            .height(34)
+//            .width(90)
         buildingSelectView.bringSubviewToFront(buildingSegController)
     
     }
@@ -369,9 +388,10 @@ class FilterViewController: UIViewController {
         audienceSelectView.addSubview(audienceSwitcher)
         audienceSwitcher.pin
             .top(20)
-            .left(pairSelectView.frame.width + 270)
-            .height(100)
-            .width(100)
+            .left(screenWidth < 500 ? (screenWidth - 80) - 80 : 400 - 80)
+//            .left(pairSelectView.frame.width + 230)
+//            .height(100)
+//            .width(100)
         
         audienceTextField.attributedPlaceholder = NSAttributedString(
             string: "501",
@@ -381,9 +401,9 @@ class FilterViewController: UIViewController {
         
         audienceTextField.pin
             .top(68)
-            .left(audienceSelectView.frame.width + 25)
+            .left(25)
             .height(30)
-            .width(295)
+            .width(screenWidth < 500 ? (screenWidth - 80) - 50 : 400 - 50)
         
         audienceTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
         audienceTextField.textColor = .black
@@ -484,8 +504,46 @@ class FilterViewController: UIViewController {
     }
     
     @objc
+    private func didTapOnFirstPairPicker(tapRecognizer: UITapGestureRecognizer) {
+        if tapRecognizer.state == .ended {
+            let selectedRow = firstPairPicker.selectedRow(inComponent: 0)
+            var start = 0
+            var stop = 0
+            
+            if selectedRow < 2 {
+                start = 0
+            } else {
+                start = selectedRow - 2
+            }
+            
+            if selectedRow > 5 {
+                stop = 6
+            } else {
+                stop = selectedRow + 2
+            }
+            
+            
+            firstPairPicker.selectRow(start, inComponent: 0, animated: true)
+            didTapOnFirstPairPicker(tapRecognizer: tapRecognizer)
+//            DispatchQueue.global().async {
+//                usleep(2000000)
+//                DispatchQueue.main.async {
+//                    self.firstPairPicker.selectRow(stop, inComponent: 0, animated: true)
+//                }
+//            }
+//            firstPairPicker.selectRow(start, inComponent: 0, animated: true)
+//            firstPairPicker.selectRow(stop, inComponent: 0, animated: true)
+//            firstPairPicker.selectRow(selectedRow, inComponent: 0, animated: true)
+        }
+    }
+    
+    @objc
     private func sortAudiences() {
-        if audienceSwitcher.isOn && audienceTextField.text == "" || !checkDate() {
+        if !checkDate() {
+            return
+        }
+        
+        if audienceSwitcher.isOn && audienceTextField.text == "" {
             audienceTextField.layer.borderWidth = 2
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             return
@@ -544,6 +602,12 @@ extension FilterViewController: UIPickerViewDelegate, UIPickerViewDataSource {
                 firstPairPicker.selectRow(secondPairPicker.selectedRow(inComponent: 0), inComponent: 0, animated: true)
             }
         }
+    }
+}
+
+extension FilterViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        true
     }
 }
 
