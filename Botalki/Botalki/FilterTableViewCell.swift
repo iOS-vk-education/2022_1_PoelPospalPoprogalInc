@@ -84,7 +84,7 @@ final class FilterTableViewCell: UITableViewCell {
         
         imageViewCalendarClock.pin
             .top(17)
-            .left(screenWidth/4)
+            .left(screenWidth/4 + 10)
 //            .after(of: timeLabel)
 //            .marginHorizontal(20)
             .height(23)
@@ -103,7 +103,7 @@ final class FilterTableViewCell: UITableViewCell {
             .top(14)
 //            .horizontallyBetween(pairLabel, and: imageViewDoor)
 //            .marginHorizontal(screenWidth/10 - screenWidth < 380 ? 10 : 0)
-            .left(screenWidth/2 - (400 - screenWidth))// - CGFloat(screenWidth < 380 ? 38 : 0))
+            .left(screenWidth/2 - (screenWidth > 400 && screenWidth < 500 ? (428 - screenWidth) : 15))// - CGFloat(screenWidth < 380 ? 38 : 0))
             .height(25)
             .width(25)
         
