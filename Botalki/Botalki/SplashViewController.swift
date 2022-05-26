@@ -65,15 +65,15 @@ final class SplashViewController: UIViewController {
     }
     
     private func animate() {
-        UIView.animate(withDuration: 0.5) {
+        UIView.animate(withDuration: 0.4) {
             self.logoDoorView.alpha = 1
         }
         
-        UIView.animate(withDuration: 0.5, delay: 0.2) {
+        UIView.animate(withDuration: 0.4, delay: 0.1) {
             self.logoDoorFloorView.transform = CGAffineTransform(translationX: self.view.frame.width * -1, y: 0)
         }
         
-        UIView.animate(withDuration: 0.8, delay: 0.8) {
+        UIView.animate(withDuration: 0.8, delay: 0.6) {
             self.textImageView.transform = CGAffineTransform(translationX: 0, y: 40)
         }
     }
@@ -82,7 +82,7 @@ final class SplashViewController: UIViewController {
     func dismiss() {
             
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [self] in
-            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
             navigationController?.pushViewController(self.firstViewController, animated: false)
         }
     }

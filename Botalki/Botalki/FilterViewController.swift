@@ -143,13 +143,13 @@ class FilterViewController: UIViewController {
             .right(0)
         
         imageCalendar.pin
-            .vCenter(-screenHeight * 3 / 7 + 20)
+            .vCenter(-screenHeight * 3 / 7 + 20 - (noNotchIPhoneMargin - 30))
             .hCenter(screenWidth < 500 ? -(screenWidth - 160)/2 : -170)
             .height(45)
             .width(45)
         
         datePicker.pin
-            .vCenter(-screenHeight * 3 / 7 + 20)
+            .vCenter(-screenHeight * 3 / 7 + 20 - (noNotchIPhoneMargin - 30))
             .hCenter(screenWidth < 500 ? (screenWidth - 160)/2-45 : 120)
             .height(42)
             .width(130)
@@ -161,19 +161,19 @@ class FilterViewController: UIViewController {
             .height(50)
         
         pairSelectView.pin
-            .vCenter(-screenHeight * 2 / 7 + noNotchIPhoneMargin)
+            .vCenter(-screenHeight * 2 / 7 + noNotchIPhoneMargin - (noNotchIPhoneMargin - 30))
             .hCenter()
             .width(screenWidth < 500 ? screenWidth - 80 : 400)
             .height(120)
         
         buildingSelectView.pin
-            .vCenter(-screenHeight / 7 + noNotchIPhoneMargin * 1.5)
+            .vCenter(-screenHeight / 7 + noNotchIPhoneMargin * 1.5 - (noNotchIPhoneMargin - 30))
             .hCenter()
             .width(screenWidth < 500 ? screenWidth - 80 : 400)
             .height(70)
         
         audienceSelectView.pin
-            .vCenter(noNotchIPhoneMargin * 2)
+            .vCenter(noNotchIPhoneMargin * 2 - (noNotchIPhoneMargin - 30))
             .hCenter()
             .width(screenWidth < 500 ? screenWidth - 80 : 400)
             .height(120)
