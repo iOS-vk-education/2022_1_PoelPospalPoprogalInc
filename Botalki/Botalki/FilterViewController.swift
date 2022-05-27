@@ -501,7 +501,7 @@ class FilterViewController: UIViewController {
         viewDidLayoutSubviews()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [self] in
             picker.selectRow(start, inComponent: 0, animated: true)
-            DispatchQueue.main.asyncAfter(deadline: .now() + (start != 0 ? 0.3 : 0)) { [self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + (selectedRow != 0 ? 0.3 : 0)) { [self] in
                 picker.selectRow(stop, inComponent: 0, animated: true)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
                     picker.selectRow(selectedRow, inComponent: 0, animated: true)
