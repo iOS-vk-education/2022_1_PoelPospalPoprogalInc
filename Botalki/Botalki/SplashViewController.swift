@@ -8,6 +8,7 @@ final class SplashViewController: UIViewController {
     let logoDoorFloorView = UIImageView(image: UIImage(named: "doorWhiteFloor"))
     let textImageView = UIImageView(image: UIImage(named: "botalkiText"))
     let maskView = UIImageView(image: UIImage(named: "mask"))
+    var pushedFlag = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,10 +75,12 @@ final class SplashViewController: UIViewController {
     
     
     func dismiss() {
-            
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [self] in
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
-            navigationController?.pushViewController(self.firstViewController, animated: false)
+            if pushedFlag == 0 {
+                navigationController?.pushViewController(self.firstViewController, animated: false)
+                pushedFlag = 1
+            }
         }
     }
 }

@@ -479,7 +479,8 @@ class FilterViewController: UIViewController {
             .width(35)
     }
     
-    private func helpPickerAnimation(picker: UIPickerView) {
+    private func helpPickerAnimation(picker: UIPickerView, recognizer: UIGestureRecognizer) {
+        picker.removeGestureRecognizer(recognizer)
         let selectedRow = picker.selectedRow(inComponent: 0)
         var start = 0
         var stop = 0
@@ -509,6 +510,7 @@ class FilterViewController: UIViewController {
                         pickerHeight /= 2
                         viewDidLayoutSubviews()
                         relayoutFlag = 1
+                        picker.addGestureRecognizer(recognizer)
                     }
                 }
             }
@@ -576,14 +578,14 @@ class FilterViewController: UIViewController {
     @objc
     private func didTapOnFirstPairPicker(tapRecognizer: UITapGestureRecognizer) {
         if tapRecognizer.state == .ended {
-            helpPickerAnimation(picker: firstPairPicker)
+            helpPickerAnimation(picker: firstPairPicker, recognizer: tapRecognizer)
         }
     }
     
     @objc
     private func didTapOnSecondPairPicker(tapRecognizer: UITapGestureRecognizer) {
         if tapRecognizer.state == .ended {
-            helpPickerAnimation(picker: secondPairPicker)
+            helpPickerAnimation(picker: secondPairPicker, recognizer: tapRecognizer)
         }
     }
     

@@ -45,6 +45,7 @@ final class SortedViewController: UIViewController {
         initCellsArray()
         sortCellsArrayByAudience()
         sortCellsArrayByTime()
+        sortCellsArrayAvailability()
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -107,6 +108,12 @@ final class SortedViewController: UIViewController {
     func sortCellsArrayByAudience() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         myCells.sort { Double($0!.cabinet.strip(by: "лаю")) ?? 0 < Double($1!.cabinet.strip(by: "лаю")) ?? 0 }
+        tableView.reloadData()
+    }
+    
+    func sortCellsArrayAvailability() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        myCells.sort { $0!.isAvailable > $1!.isAvailable }
         tableView.reloadData()
     }
     

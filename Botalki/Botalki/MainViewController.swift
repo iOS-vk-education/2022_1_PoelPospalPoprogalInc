@@ -344,6 +344,7 @@ class PairsViewController: UIViewController {
             switch result {
                 case .success(_):
                     self.presenter.didSuccessfullyLoadData()
+                    self.weekPicker.selectRow(self.presenter.curWeekInMain, inComponent: 0, animated: true)
                     break
                     
                 case .failure(let error):
@@ -386,6 +387,7 @@ class PairsViewController: UIViewController {
         if tapRecognizer == nil || tapRecognizer?.state == .ended {
             if presenter.curWeekInMain < 16 {
                 pickerView(weekPicker, didSelectRow: presenter.curWeekInMain + 1, inComponent: 0)
+                weekPicker.selectRow(presenter.curWeekInMain, inComponent: 0, animated: true)
             } else {
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
             }
@@ -397,6 +399,7 @@ class PairsViewController: UIViewController {
         if tapRecognizer == nil || tapRecognizer?.state == .ended {
             if presenter.curWeekInMain > 0 {
                 pickerView(weekPicker, didSelectRow: presenter.curWeekInMain - 1, inComponent: 0)
+                weekPicker.selectRow(presenter.curWeekInMain, inComponent: 0, animated: true)
             } else {
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
             }

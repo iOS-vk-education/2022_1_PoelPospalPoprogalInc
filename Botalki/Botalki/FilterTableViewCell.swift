@@ -24,6 +24,7 @@ final class FilterTableViewCell: UITableViewCell {
     var pairEndInd: Int = 0
     var buildingInd: Int = 0
     var cabinet: String = ""
+    var isAvailable = 0
     
     private var screenWidth = UIScreen.main.bounds.width
     
@@ -201,6 +202,7 @@ final class FilterTableViewCell: UITableViewCell {
         let userDate = Date()
         
         if cellDate > userDate {
+            isAvailable = 1
             return true
         } else {
             return false
