@@ -12,6 +12,9 @@ final class SortedViewController: UIViewController {
     
     private var cellData: [FilterCellData] = []
     private var numOfSections = 0
+    private var byTimeSortsCount = 0
+    private var byBuildingSortsCount = 0
+    private var byAudienceSortsCount = 0
     
     init(cellData: [FilterCellData], date: Date) {
         super.init(nibName: nil, bundle: nil)
@@ -95,20 +98,29 @@ final class SortedViewController: UIViewController {
     
     func sortCellsArrayByTime() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        myCells.sort { $0!.pairStartInd < $1!.pairStartInd }
+        myCells.sort { byTimeSortsCount % 2 == 0 ? $0!.pairStartInd < $1!.pairStartInd : $0!.pairStartInd > $1!.pairStartInd }
         tableView.reloadData()
+        byTimeSortsCount += 1
+        byAudienceSortsCount = 0
+        byBuildingSortsCount = 0
     }
     
     func sortCellsArrayByBuilding() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        myCells.sort { $0!.buildingInd < $1!.buildingInd }
+        myCells.sort { byBuildingSortsCount % 2 == 0 ? $0!.buildingInd < $1!.buildingInd : $0!.buildingInd > $1!.buildingInd }
         tableView.reloadData()
+        byBuildingSortsCount += 1
+        byTimeSortsCount = 0
+        byAudienceSortsCount = 0
     }
     
     func sortCellsArrayByAudience() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        myCells.sort { Double($0!.cabinet.strip(by: "лаю")) ?? 0 < Double($1!.cabinet.strip(by: "лаю")) ?? 0 }
+        myCells.sort { byAudienceSortsCount % 2 == 0 ? Double($0!.cabinet.strip(by: "лаю")) ?? 0 < Double($1!.cabinet.strip(by: "лаю")) ?? 0 : Double($0!.cabinet.strip(by: "лаю")) ?? 0 > Double($1!.cabinet.strip(by: "лаю")) ?? 0}
         tableView.reloadData()
+        byAudienceSortsCount += 1
+        byBuildingSortsCount = 0
+        byTimeSortsCount = 0
     }
     
     func sortCellsArrayAvailability() {
