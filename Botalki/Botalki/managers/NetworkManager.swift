@@ -1,10 +1,3 @@
-//
-//  NetworkManager.swift
-//  Botalki
-//
-//  Created by Сергей Николаев on 15.05.2022.
-//
-
 import Foundation
 import FirebaseStorage
 
@@ -33,7 +26,6 @@ final class NetworkManager: NetworkManagerDescription {
         let filePath = documentsUrl.appendingPathComponent(fName)
         
         DispatchQueue.global(qos: .userInitiated).async {
-//            let downloadTask =
             self.storage.child(fName).write(toFile: filePath) { url, error in
                 if let error = error {
                     DispatchQueue.main.async {

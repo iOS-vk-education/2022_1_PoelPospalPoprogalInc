@@ -45,10 +45,16 @@ class FilterViewController: UIViewController {
     private let audienceTextField = UITextField()
     private let dateField = UITextField()
     
+    private var firstPairTimeLabel   = UILabel()
+    private var secondPairTimeLabel   = UILabel()
+    
     
     let gradePickerValues = ["1", "2", "3", "4", "5", "6", "7"]
-    private var pickersDict: [UIPickerView: Int] = [:]
+    private let studyTimesStart = ["8 : 30", "10 : 15", "12 : 00", "13 : 50", "15 : 40", "17 : 25", "19 : 10"]
+    private let studyTimesEnd = ["10 : 05", "11 : 50", "13 : 35", "15 : 25", "17 : 15", "19 : 00", "20 : 45"]
     private let margins = CGFloat(22)
+    private var pickerWidth = CGFloat()
+    private var pickerHeight = CGFloat(45)
     private var screenWidth = UIScreen.main.bounds.width
     private var screenHeight = UIScreen.main.bounds.height
     private var noNotchIPhoneMargin = CGFloat()
@@ -58,18 +64,24 @@ class FilterViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.systemBackground
+        pickerWidth = CGFloat(Float(Int((screenWidth < 500 ? screenWidth : 400) - 80) / 2) - 1.5*Float(margins))
         noNotchIPhoneMargin = screenHeight < 750 ? 30 : 0
         
         navigationController?.setNavigationBarHidden(true, animated: true)
         navigationController?.navigationBar.prefersLargeTitles = true
 
-        pickersDict = [firstPairPicker: 0, secondPairPicker: 1]
         firstPairPicker.dataSource = self
         firstPairPicker.delegate = self
         
-//        let tapOnFirstPairPickerGesture = UITapGestureRecognizer(target: self, action: #selector(didTapOnFirstPairPicker))
-//        tapOnFirstPairPickerGesture.delegate = self
-//        firstPairPicker.addGestureRecognizer(tapOnFirstPairPickerGesture)
+        let tapOnFirstPairPickerGesture = UITapGestureRecognizer(target: self, action: #selector(didTapOnFirstPairPicker))
+        tapOnFirstPairPickerGesture.delegate = self
+        tapOnFirstPairPickerGesture.numberOfTapsRequired = 2
+        firstPairPicker.addGestureRecognizer(tapOnFirstPairPickerGesture)
+        
+        let tapOnSecondPairPickerGesture = UITapGestureRecognizer(target: self, action: #selector(didTapOnSecondPairPicker))
+        tapOnSecondPairPickerGesture.delegate = self
+        tapOnSecondPairPickerGesture.numberOfTapsRequired = 2
+        secondPairPicker.addGestureRecognizer(tapOnSecondPairPickerGesture)
         
         secondPairPicker.dataSource = self
         secondPairPicker.delegate = self
@@ -94,6 +106,7 @@ class FilterViewController: UIViewController {
         view.addSubview(audienceSelectView)
         view.addSubview(dash)
         
+        
         let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(closeKeyboard))
         view.addGestureRecognizer(tapGestureReconizer)
         
@@ -114,13 +127,13 @@ class FilterViewController: UIViewController {
         view.addSubview(datePicker)
     }
     
+    var relayoutFlag = 1
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         view.addSubview(imageCalendar)
         view.bringSubviewToFront(imageCalendar)
         let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
-        let pickerWidth = CGFloat(Float(Int((screenWidth < 500 ? screenWidth : 400) - 80) / 2) - 1.5*Float(margins))
         
         let buttomMargin = UIApplication.shared.windows.first?.safeAreaInsets.bottom
         
@@ -191,16 +204,28 @@ class FilterViewController: UIViewController {
             .width(35)
         
         firstPairPicker.pin
-            .top(65)
-            .height(45)
+            .top(73 - (pickerHeight/2 - 22))
+            .height(pickerHeight)
             .left(margins)
             .width(pickerWidth)
         
         secondPairPicker.pin
-            .top(65)
-            .height(45)
+            .top(73 - (pickerHeight/2 - 22))
+            .height(pickerHeight)
             .right(margins)
             .width(pickerWidth)
+        
+        if relayoutFlag != 0 {
+            firstPairTimeLabel.pin
+                .height(14)
+                .width(44)
+                .above(of: firstPairPicker, aligned: .center)
+            
+            secondPairTimeLabel.pin
+                .height(14)
+                .width(44)
+                .above(of: secondPairPicker, aligned: .center)
+        }
         
         dash.pin
             .after(of: firstPairPicker, aligned: .bottom)
@@ -288,7 +313,7 @@ class FilterViewController: UIViewController {
         pairSelectView.bringSubviewToFront(pairLabel)
         
         pairLabel.pin
-            .top(20)
+            .top(15)
             .left(15)
             .height(30)
             .width(70)
@@ -297,18 +322,28 @@ class FilterViewController: UIViewController {
         
         pairSelectView.addSubview(pairSwitcher)
         pairSwitcher.pin
-//            .all(20)
-//            .topRight()
-            .top(20)
+            .top(15)
             .left(screenWidth < 500 ? (screenWidth - 80) - 80 : 400 - 80)
-//            .hCenter()
-////            .hCenter(150)
-//            .left(pairSelectView.frame.width + 230)
-//            .height(100)
-//            .width(100)
         
         pairSelectView.addSubview(firstPairPicker)
         pairSelectView.addSubview(secondPairPicker)
+        
+        pairSelectView.addSubview(firstPairTimeLabel)
+        pairSelectView.addSubview(secondPairTimeLabel)
+        
+        firstPairTimeLabel.text = studyTimesStart[0]
+        firstPairTimeLabel.layer.borderWidth = 1
+        firstPairTimeLabel.layer.cornerRadius = 6
+        firstPairTimeLabel.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
+        firstPairTimeLabel.font = .systemFont(ofSize: 10, weight: .medium)
+        firstPairTimeLabel.textAlignment = .center
+        
+        secondPairTimeLabel.text = studyTimesEnd[0]
+        secondPairTimeLabel.layer.borderWidth = 1
+        secondPairTimeLabel.layer.cornerRadius = 6
+        secondPairTimeLabel.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
+        secondPairTimeLabel.font = .systemFont(ofSize: 10, weight: .medium)
+        secondPairTimeLabel.textAlignment = .center
     }
     
     private func createBuildingArea() {
@@ -343,18 +378,13 @@ class FilterViewController: UIViewController {
         buildingSegController.pin
             .top(20)
             .left(screenWidth < 500 ? (screenWidth - 80)/2-30 : 400/2-30)
-//            .left(buildingSelectView.frame.width + 145)
-//            .height(34)
-//            .width(90)
         
         buildingSelectView.addSubview(buildingSegController)
         buildingSelectView.addSubview(buildingSwitcher)
         buildingSwitcher.pin
             .top(20)
             .left(screenWidth < 500 ? (screenWidth - 80) - 80 : 400 - 80)
-//            .left(buildingSelectView.frame.width + 230)
-//            .height(34)
-//            .width(90)
+        
         buildingSelectView.bringSubviewToFront(buildingSegController)
     
     }
@@ -389,9 +419,6 @@ class FilterViewController: UIViewController {
         audienceSwitcher.pin
             .top(20)
             .left(screenWidth < 500 ? (screenWidth - 80) - 80 : 400 - 80)
-//            .left(pairSelectView.frame.width + 230)
-//            .height(100)
-//            .width(100)
         
         audienceTextField.attributedPlaceholder = NSAttributedString(
             string: "501",
@@ -452,6 +479,42 @@ class FilterViewController: UIViewController {
             .width(35)
     }
     
+    private func helpPickerAnimation(picker: UIPickerView) {
+        let selectedRow = picker.selectedRow(inComponent: 0)
+        var start = 0
+        var stop = 0
+
+        if selectedRow < 2 {
+            start = 0
+        } else {
+            start = selectedRow - 2
+        }
+
+        if selectedRow > 4 {
+            stop = 6
+        } else {
+            stop = selectedRow + 2
+        }
+
+        pickerHeight *= 2
+        relayoutFlag = 0
+        viewDidLayoutSubviews()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [self] in
+            picker.selectRow(start, inComponent: 0, animated: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + (start != 0 ? 0.3 : 0)) { [self] in
+                picker.selectRow(stop, inComponent: 0, animated: true)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
+                    picker.selectRow(selectedRow, inComponent: 0, animated: true)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
+                        pickerHeight /= 2
+                        viewDidLayoutSubviews()
+                        relayoutFlag = 1
+                    }
+                }
+            }
+        }
+    }
+    
     @objc
     private func didChooseDate() {
         DispatchQueue.global().async {
@@ -471,7 +534,7 @@ class FilterViewController: UIViewController {
     @objc
     private func didSwitchAudienceTrigger() {
         if !audienceSwitcher.isOn {
-            audienceTextField.layer.borderWidth = 0
+            audienceTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
         }
     }
     
@@ -479,6 +542,10 @@ class FilterViewController: UIViewController {
     private func closeKeyboard() {
         if editingFlag == 0 {
             return
+        }
+        
+        if audienceTextField.text != "" {
+            audienceTextField.text! += "*"
         }
         
         view.endEditing(true)
@@ -493,7 +560,10 @@ class FilterViewController: UIViewController {
     var editingFlag = 0
     @objc
     func didStartEnterAudience() {
-        audienceTextField.layer.borderWidth = 0
+        audienceTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
+        if audienceTextField.text!.contains("*") {
+            audienceTextField.text = audienceTextField.text!.strip(by: "*")
+        }
         editingFlag = 1
     }
     
@@ -506,35 +576,19 @@ class FilterViewController: UIViewController {
     @objc
     private func didTapOnFirstPairPicker(tapRecognizer: UITapGestureRecognizer) {
         if tapRecognizer.state == .ended {
-            let selectedRow = firstPairPicker.selectedRow(inComponent: 0)
-            var start = 0
-            var stop = 0
-            
-            if selectedRow < 2 {
-                start = 0
-            } else {
-                start = selectedRow - 2
-            }
-            
-            if selectedRow > 5 {
-                stop = 6
-            } else {
-                stop = selectedRow + 2
-            }
-            
-            
-            firstPairPicker.selectRow(start, inComponent: 0, animated: true)
-            didTapOnFirstPairPicker(tapRecognizer: tapRecognizer)
-//            DispatchQueue.global().async {
-//                usleep(2000000)
-//                DispatchQueue.main.async {
-//                    self.firstPairPicker.selectRow(stop, inComponent: 0, animated: true)
-//                }
-//            }
-//            firstPairPicker.selectRow(start, inComponent: 0, animated: true)
-//            firstPairPicker.selectRow(stop, inComponent: 0, animated: true)
-//            firstPairPicker.selectRow(selectedRow, inComponent: 0, animated: true)
+            helpPickerAnimation(picker: firstPairPicker)
         }
+    }
+    
+    @objc
+    private func didTapOnSecondPairPicker(tapRecognizer: UITapGestureRecognizer) {
+        if tapRecognizer.state == .ended {
+            helpPickerAnimation(picker: secondPairPicker)
+        }
+    }
+    
+    func secondAnim(stop: Int) {
+        firstPairPicker.selectRow(stop, inComponent: 0, animated: true)
     }
     
     @objc
@@ -544,7 +598,7 @@ class FilterViewController: UIViewController {
         }
         
         if audienceSwitcher.isOn && audienceTextField.text == "" {
-            audienceTextField.layer.borderWidth = 2
+            audienceTextField.backgroundColor = UIColor(rgb: 0xC51D34)
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             return
         }
@@ -563,7 +617,7 @@ class FilterViewController: UIViewController {
         }
         
         if audienceSwitcher.isOn {
-            cellDataArr = cellDataArr.filter{ $0.cabinet.contains(audienceTextField.text!) }
+            cellDataArr = cellDataArr.filter { $0.cabinet.contains(audienceTextField.text!.strip(by: "*")) && $0.cabinet[0] == audienceTextField.text![0]}
         }
         
         if cellDataArr.count != 0 {
@@ -593,13 +647,17 @@ extension FilterViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         pairSwitcher.setOn(true, animated: true)
-        if pickersDict[pickerView] == 0 {
+        if pickerView == firstPairPicker {
+            firstPairTimeLabel.text = studyTimesStart[row]
             if firstPairPicker.selectedRow(inComponent: 0) > secondPairPicker.selectedRow(inComponent: 0) {
                 secondPairPicker.selectRow(firstPairPicker.selectedRow(inComponent: 0), inComponent: 0, animated: true)
+                secondPairTimeLabel.text = studyTimesEnd[row]
             }
         } else {
+            secondPairTimeLabel.text = studyTimesEnd[row]
             if firstPairPicker.selectedRow(inComponent: 0) > secondPairPicker.selectedRow(inComponent: 0) {
                 firstPairPicker.selectRow(secondPairPicker.selectedRow(inComponent: 0), inComponent: 0, animated: true)
+                firstPairTimeLabel.text = studyTimesStart[row]
             }
         }
     }

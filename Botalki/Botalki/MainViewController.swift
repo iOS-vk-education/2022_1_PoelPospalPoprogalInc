@@ -19,7 +19,8 @@ class PairsViewController: UIViewController {
     
     private let weeks = (1...17).map {"\($0) неделя - \(["знаменатель", " числитель"][$0%2])" }
     private var tapGestureReconizer = UITapGestureRecognizer()
-    private var daysOfWeakButton: [UIButton:Int] = [:]
+    private var dayButton_dayIndexDict: [UIButton:Int] = [:]
+    private var dayIndex_dayButtonDict: [Int:UIButton] = [:]
     private var labelsOfWeakButton: [UILabel] = []
     private let margins = CGFloat(22)
     private let screenWidth = UIScreen.main.bounds.width
@@ -58,6 +59,14 @@ class PairsViewController: UIViewController {
         view.addSubview(houseImg)
         view.addSubview(magnifierImg)
         view.addSubview(weekButton)
+        
+        let nextDayGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(nextDaySwipe))
+        nextDayGestureRecognizer.direction = .left
+        tableView.addGestureRecognizer(nextDayGestureRecognizer)
+        
+        let prevDayGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(prevDaySwipe))
+        prevDayGestureRecognizer.direction = .right
+        tableView.addGestureRecognizer(prevDayGestureRecognizer)
 
         presenter.mainViewController = self
         presenter.secondViewController = secondViewController
@@ -106,7 +115,6 @@ class PairsViewController: UIViewController {
         
         lowerView.pin
             .top(view.frame.height - (buttomMargin + 2*margins + 45))
-//            .width(buttomMargin! + 2*margins + 45)
             .bottom(0)
             .left(0)
             .right(0)
@@ -200,16 +208,20 @@ class PairsViewController: UIViewController {
         var x = Int(margins)
         let sizeOfSeparator = (Int(UIScreen.main.bounds.width) - sizeOfButton*6 - x*2)/5
         
-        
-//        var configuration = UIButton.Configuration.filled()
-//        configuration.baseBackgroundColor = UIColor(rgb: 0x785A43)
-        
         for indexOfDay in 0...5 {
-            let dayOfWeakButton = UIButton(type: .system)
+            let nextWeekGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(nextWeekSwipe))
+            nextWeekGestureRecognizer.direction = .left
+            
+            let prevWeekGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(prevWeekSwipe))
+            prevWeekGestureRecognizer.direction = .right
+            
+            let dayOfWeakButton = DayOfWeakButton(type: .system)
             dayOfWeakButton.backgroundColor = UIColor.systemGroupedBackground
             dayOfWeakButton.layer.cornerRadius = 18
             dayOfWeakButton.layer.masksToBounds = true
             dayOfWeakButton.addTarget(self, action: #selector(didChooseDay(_ :)), for: .touchUpInside)
+            dayOfWeakButton.addGestureRecognizer(nextWeekGestureRecognizer)
+            dayOfWeakButton.addGestureRecognizer(prevWeekGestureRecognizer)
             
             dayOfWeakButton.pin
                 .top(screenHeight > 750 && screenHeight < 1000 ? topMargin + 77 + 2 * margins : topMargin + 97)
@@ -247,7 +259,8 @@ class PairsViewController: UIViewController {
             
             
             view.addSubview(dayOfWeakButton)
-            daysOfWeakButton[dayOfWeakButton] = indexOfDay
+            dayButton_dayIndexDict[dayOfWeakButton] = indexOfDay
+            dayIndex_dayButtonDict[indexOfDay] = dayOfWeakButton
             labelsOfWeakButton.append(dayLabel)
             
             x += Int(sizeOfButton) + sizeOfSeparator
@@ -261,15 +274,9 @@ class PairsViewController: UIViewController {
             label.text = presenter.daysOfWeak[i]
         }
         
-        var dayToSelect = UIButton()
+        let dayToSelect = dayIndex_dayButtonDict[presenter.curDay]
         
-        for button in daysOfWeakButton.keys {
-            if daysOfWeakButton[button] == presenter.curDay {
-                dayToSelect = button
-            }
-        }
-        
-        didChooseDay(dayToSelect)
+        didChooseDay(dayToSelect!)
     }
     
     func reloadTableData(compl: (() -> Void)? = nil) {
@@ -316,12 +323,12 @@ class PairsViewController: UIViewController {
     
     @objc
     func didChooseDay(_ buttonSubView: UIButton) {
-        presenter.didChooseDay(dayChoosed: daysOfWeakButton[buttonSubView])
+        presenter.didChooseDay(dayChoosed: dayButton_dayIndexDict[buttonSubView])
         
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         
         if buttonSubView.backgroundColor == .systemGroupedBackground {
-            for button in daysOfWeakButton.keys {
+            for button in dayButton_dayIndexDict.keys {
                 button.backgroundColor = .systemGroupedBackground
                 button.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
             }
@@ -348,12 +355,68 @@ class PairsViewController: UIViewController {
     }
     
     @objc
+    private func nextDaySwipe(tapRecognizer: UITapGestureRecognizer) {
+        if tapRecognizer.state == .ended {
+            if presenter.curDay < 5 {
+                didChooseDay(dayIndex_dayButtonDict[presenter.curDay + 1]!)
+            } else {
+                nextWeekSwipe()
+            }
+        }
+    }
+    
+    @objc
+    private func prevDaySwipe(tapRecognizer: UITapGestureRecognizer) {
+        if tapRecognizer.state == .ended {
+            if presenter.curDay > 0 {
+                didChooseDay(dayIndex_dayButtonDict[presenter.curDay - 1]!)
+            } else {
+                if presenter.curWeekInMain != 0 {
+                    prevWeekSwipe()
+                    didChooseDay(dayIndex_dayButtonDict[5]!)
+                } else {
+                    prevWeekSwipe()
+                }
+            }
+        }
+    }
+    
+    @objc
+    private func nextWeekSwipe(tapRecognizer: UITapGestureRecognizer? = nil) {
+        if tapRecognizer == nil || tapRecognizer?.state == .ended {
+            if presenter.curWeekInMain < 16 {
+                pickerView(weekPicker, didSelectRow: presenter.curWeekInMain + 1, inComponent: 0)
+            } else {
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+            }
+        }
+    }
+    
+    @objc
+    private func prevWeekSwipe(tapRecognizer: UITapGestureRecognizer? = nil) {
+        if tapRecognizer == nil || tapRecognizer?.state == .ended {
+            if presenter.curWeekInMain > 0 {
+                pickerView(weekPicker, didSelectRow: presenter.curWeekInMain - 1, inComponent: 0)
+            } else {
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+            }
+        }
+    }
+    
+    @objc
     func goToFilterScreen() {
         presenter.loadSecondController()
         UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         self.navigationController?.pushViewController(secondViewController, animated: false)
     }
 }
+
+class DayOfWeakButton: UIButton {
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        return bounds.insetBy(dx: -4, dy: -4).contains(point)
+    }
+}
+
 
 extension PairsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

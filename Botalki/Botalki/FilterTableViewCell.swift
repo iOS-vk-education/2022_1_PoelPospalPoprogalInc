@@ -30,15 +30,8 @@ final class FilterTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-//        self.alpha = 0
-//        self.layer.transform = CATransform3DMakeScale(0.5, 0.5, 0.5)
-//        UIView.animate(withDuration: 0.5) {
-//            self.alpha = 1
-//            self.layer.transform = CATransform3DScale(CATransform3DIdentity, 1, 1, 1)
-//        }
 
         print(screenWidth)
-//        screenWidth -= 30
         setup()
     }
     
@@ -85,14 +78,11 @@ final class FilterTableViewCell: UITableViewCell {
         imageViewCalendarClock.pin
             .top(17)
             .left(screenWidth/4 + 10)
-//            .after(of: timeLabel)
-//            .marginHorizontal(20)
             .height(23)
             .width(23)
         
         pairLabel.pin
             .top(8)
-//            .left(screenWidth/3 + 23 + 5)
             .after(of: imageViewCalendarClock)
             .marginHorizontal(5)
             .height(40)
@@ -101,17 +91,13 @@ final class FilterTableViewCell: UITableViewCell {
         
         imageViewUniver.pin
             .top(14)
-//            .horizontallyBetween(pairLabel, and: imageViewDoor)
-//            .marginHorizontal(screenWidth/10 - screenWidth < 380 ? 10 : 0)
-            .left(screenWidth/2 - (screenWidth > 400 && screenWidth < 500 ? (428 - screenWidth) : 15))// - CGFloat(screenWidth < 380 ? 38 : 0))
+            .left(screenWidth/2 - (screenWidth > 400 && screenWidth < 500 ? (428 - screenWidth) : 15))
             .height(25)
             .width(25)
         
         buildingLabel.pin
             .top(18)
             .after(of: imageViewUniver)
-//            .marginHorizontal(5)
-//            .left(screenWidth*2/3 + 25 + 5)
             .height(30)
             .width(35)
             .sizeToFit(.width)
@@ -240,4 +226,3 @@ final class FilterTableViewCell: UITableViewCell {
         buildingLabel.text = ["ГЗ", "УЛК"][buildingInd]
     }
 }
-

@@ -1,10 +1,3 @@
-//
-//  PairsModel.swift
-//  Botalki
-//
-//  Created by Сергей Николаев on 15.05.2022.
-//
-
 import Foundation
 
 
@@ -116,8 +109,13 @@ final class PairsModel {
     }
     
     func setCurDay() {
-        selectedDate = Date()
         let calendar = Calendar.current
+        semEndDate = calendar.date(byAdding: .day, value: 7*17, to: semStartDate)!
+        if Date() > calendar.date(byAdding: .day, value: -1, to: semEndDate)! {
+            selectedDate = calendar.date(byAdding: .day, value: -1, to: semEndDate)!
+        } else {
+            selectedDate = Date()
+        }
         curDay = calendar.component(.weekday, from: selectedDate) - 2
         
         //Обработка воскресенья

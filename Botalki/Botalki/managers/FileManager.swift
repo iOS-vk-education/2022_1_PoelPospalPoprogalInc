@@ -1,10 +1,3 @@
-//
-//  FileManager.swift
-//  Botalki
-//
-//  Created by Сергей Николаев on 15.05.2022.
-//
-
 import Foundation
 
 protocol FileManagerDescription {

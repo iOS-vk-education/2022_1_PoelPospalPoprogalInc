@@ -1,10 +1,3 @@
-//
-//  MyAlerts.swift
-//  Botalki
-//
-//  Created by Сергей Николаев on 15.05.2022.
-//
-
 import Foundation
 import UIKit
 

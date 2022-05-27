@@ -1,11 +1,5 @@
-//
-//  SplashViewController.swift
-//  Botalki
-//
-//  Created by poliorang on 23.05.2022.
-//
-
 import UIKit
+
 
 final class SplashViewController: UIViewController {
     private var firstViewController: PairsViewController = PairsViewController()
@@ -69,7 +63,7 @@ final class SplashViewController: UIViewController {
             self.logoDoorView.alpha = 1
         }
         
-        UIView.animate(withDuration: 0.4, delay: 0.1) {
+        UIView.animate(withDuration: 0.5, delay: 0.1) {
             self.logoDoorFloorView.transform = CGAffineTransform(translationX: self.view.frame.width * -1, y: 0)
         }
         
@@ -82,7 +76,7 @@ final class SplashViewController: UIViewController {
     func dismiss() {
             
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [self] in
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
             navigationController?.pushViewController(self.firstViewController, animated: false)
         }
     }

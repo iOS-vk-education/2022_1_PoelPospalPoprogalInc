@@ -1,10 +1,3 @@
-//
-//  PairsPresenter.swift
-//  Botalki
-//
-//  Created by Сергей Николаев on 15.05.2022.
-//
-
 import Foundation
 
 final class PairsPresenter {
@@ -142,7 +135,7 @@ final class PairsPresenter {
     func configCellForRow(with indexPath: IndexPath) {
         let cell = myCells[indexPath.row]
         
-        if cell?.wasConfiguredFlag == 0 { //когда день поменяется, надо будет сюда войти!
+        if cell?.wasConfiguredFlag == 0 {
             cell?.loadCabinets(Cabinets: FreeCabinets[model.curNumOrDenom][curDay][indexPath.row])
             cell?.config(with: indexPath.row)
         }
@@ -164,7 +157,7 @@ final class PairsPresenter {
     
     func didSelectWeekByPicker(at row: Int) {
         model.curNumOrDenom = row % 2
-        model.curWeekInMain = mainViewController!.weekPicker.selectedRow(inComponent: 0)
+        model.curWeekInMain = row
         mainViewController!.didChooseAnotherWeek(with: row)
     }
     
