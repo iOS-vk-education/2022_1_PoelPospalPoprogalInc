@@ -321,6 +321,7 @@ class FilterViewController: UIViewController {
         pairSelectView.layoutSubviews()
         
         pairSelectView.addSubview(pairSwitcher)
+        pairSwitcher.onTintColor = UIColor(rgb: 0xEA7500)
         pairSwitcher.pin
             .top(15)
             .left(screenWidth < 500 ? (screenWidth - 80) - 80 : 400 - 80)
@@ -381,6 +382,7 @@ class FilterViewController: UIViewController {
         
         buildingSelectView.addSubview(buildingSegController)
         buildingSelectView.addSubview(buildingSwitcher)
+        buildingSwitcher.onTintColor = UIColor(rgb: 0xEA7500)
         buildingSwitcher.pin
             .top(20)
             .left(screenWidth < 500 ? (screenWidth - 80) - 80 : 400 - 80)
@@ -415,7 +417,7 @@ class FilterViewController: UIViewController {
             .width(140)
         
         audienceSelectView.addSubview(audienceSwitcher)
-        audienceSelectView.addSubview(audienceSwitcher)
+        audienceSwitcher.onTintColor = UIColor(rgb: 0xEA7500)
         audienceSwitcher.pin
             .top(20)
             .left(screenWidth < 500 ? (screenWidth - 80) - 80 : 400 - 80)
