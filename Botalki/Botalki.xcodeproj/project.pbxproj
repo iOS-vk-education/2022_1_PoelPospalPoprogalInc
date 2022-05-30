@@ -12,23 +12,23 @@
 		4A0612D12809D0BB001AE9CB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A0612CF2809D0BB001AE9CB /* Main.storyboard */; };
 		4A0612D32809D0BF001AE9CB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A0612D22809D0BF001AE9CB /* Assets.xcassets */; };
 		4A0612D62809D0BF001AE9CB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A0612D42809D0BF001AE9CB /* LaunchScreen.storyboard */; };
-		4A0612E22809D2BD001AE9CB /* PairFullCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0612DD2809D2BD001AE9CB /* PairFullCell.swift */; };
 		4A0612E52809D2BD001AE9CB /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0612E02809D2BD001AE9CB /* MainViewController.swift */; };
-		4A0612E62809D2BD001AE9CB /* clock.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0612E12809D2BD001AE9CB /* clock.png */; };
 		4A0612EA2809D67A001AE9CB /* PinLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 4A0612E92809D67A001AE9CB /* PinLayout */; };
-		4A0612EC2809D7F8001AE9CB /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0612EB2809D7F8001AE9CB /* City.swift */; };
-		4A9D0093280CA91700A7A778 /* magnifier.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D0092280CA91700A7A778 /* magnifier.png */; };
-		4A9D0095280CAECD00A7A778 /* house.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D0094280CAECD00A7A778 /* house.png */; };
 		4A9D0097280D6F7200A7A778 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9D0096280D6F7200A7A778 /* FilterViewController.swift */; };
-		4A9D009C280EDBF300A7A778 /* calendarBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D009A280EDBF200A7A778 /* calendarBlack.png */; };
-		4A9D009D280EDBF300A7A778 /* calendarWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D009B280EDBF200A7A778 /* calendarWhite.png */; };
 		4A9D00A1280F10D300A7A778 /* SortedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9D00A0280F10D300A7A778 /* SortedViewController.swift */; };
-		4A9D00A3280F1C5B00A7A778 /* door.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D00A2280F1C5B00A7A778 /* door.png */; };
-		4A9D00A5280F1DA400A7A778 /* doorWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D00A4280F1DA300A7A778 /* doorWhite.png */; };
 		4A9D00A7280F255000A7A778 /* FilterTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9D00A6280F255000A7A778 /* FilterTableViewCell.swift */; };
-		4A9D00A9280F598C00A7A778 /* calendarClock.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D00A8280F598B00A7A778 /* calendarClock.png */; };
-		4A9D00AB280F5B4C00A7A778 /* univer.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D00AA280F5B4C00A7A778 /* univer.png */; };
+		4AE22BC8283FB6C100FAD204 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AE22BC7283FB6C100FAD204 /* SplashViewController.swift */; };
+		B3055FAD28255FD800B185E0 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B3055FAC28255FD800B185E0 /* FirebaseAuth */; };
+		B3055FAF28255FD800B185E0 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = B3055FAE28255FD800B185E0 /* FirebaseDatabase */; };
+		B3055FB128255FD800B185E0 /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B3055FB028255FD800B185E0 /* FirebaseDatabaseSwift */; };
+		B3055FB328255FD800B185E0 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = B3055FB228255FD800B185E0 /* FirebaseStorage */; };
+		B3055FF728306B8100B185E0 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3055FF628306B8000B185E0 /* NetworkManager.swift */; };
+		B3055FF928306D6500B185E0 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3055FF828306D6500B185E0 /* FileManager.swift */; };
+		B3055FFB2830775B00B185E0 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3055FFA2830775B00B185E0 /* AlertManager.swift */; };
 		B305A23C280EF0A700289466 /* PairTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B305A23B280EF0A700289466 /* PairTableViewCell.swift */; };
+		B328748F28316FDB00DBBC2C /* PairsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B328748E28316FDB00DBBC2C /* PairsModel.swift */; };
+		B3287491283175A500DBBC2C /* PairsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3287490283175A500DBBC2C /* PairsPresenter.swift */; };
+		B3EF4302284502D1006F789E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B3EF4301284502D1006F789E /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,22 +39,18 @@
 		4A0612D22809D0BF001AE9CB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4A0612D52809D0BF001AE9CB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4A0612D72809D0BF001AE9CB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4A0612DD2809D2BD001AE9CB /* PairFullCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PairFullCell.swift; sourceTree = "<group>"; };
 		4A0612E02809D2BD001AE9CB /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
-		4A0612E12809D2BD001AE9CB /* clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clock.png; sourceTree = "<group>"; };
-		4A0612EB2809D7F8001AE9CB /* City.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
-		4A9D0092280CA91700A7A778 /* magnifier.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = magnifier.png; sourceTree = "<group>"; };
-		4A9D0094280CAECD00A7A778 /* house.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = house.png; sourceTree = "<group>"; };
 		4A9D0096280D6F7200A7A778 /* FilterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
-		4A9D009A280EDBF200A7A778 /* calendarBlack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calendarBlack.png; sourceTree = "<group>"; };
-		4A9D009B280EDBF200A7A778 /* calendarWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calendarWhite.png; sourceTree = "<group>"; };
 		4A9D00A0280F10D300A7A778 /* SortedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SortedViewController.swift; sourceTree = "<group>"; };
-		4A9D00A2280F1C5B00A7A778 /* door.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = door.png; sourceTree = "<group>"; };
-		4A9D00A4280F1DA300A7A778 /* doorWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = doorWhite.png; sourceTree = "<group>"; };
 		4A9D00A6280F255000A7A778 /* FilterTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterTableViewCell.swift; sourceTree = "<group>"; };
-		4A9D00A8280F598B00A7A778 /* calendarClock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calendarClock.png; sourceTree = "<group>"; };
-		4A9D00AA280F5B4C00A7A778 /* univer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = univer.png; sourceTree = "<group>"; };
+		4AE22BC7283FB6C100FAD204 /* SplashViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
+		B3055FF628306B8000B185E0 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		B3055FF828306D6500B185E0 /* FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
+		B3055FFA2830775B00B185E0 /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 		B305A23B280EF0A700289466 /* PairTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PairTableViewCell.swift; sourceTree = "<group>"; };
+		B328748E28316FDB00DBBC2C /* PairsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairsModel.swift; sourceTree = "<group>"; };
+		B3287490283175A500DBBC2C /* PairsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairsPresenter.swift; sourceTree = "<group>"; };
+		B3EF4301284502D1006F789E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,7 +58,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3055FB128255FD800B185E0 /* FirebaseDatabaseSwift in Frameworks */,
+				B3055FAF28255FD800B185E0 /* FirebaseDatabase in Frameworks */,
 				4A0612EA2809D67A001AE9CB /* PinLayout in Frameworks */,
+				B3055FB328255FD800B185E0 /* FirebaseStorage in Frameworks */,
+				B3055FAD28255FD800B185E0 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,38 +88,34 @@
 		4A0612C82809D0BB001AE9CB /* Botalki */ = {
 			isa = PBXGroup;
 			children = (
+				B3EF4301284502D1006F789E /* GoogleService-Info.plist */,
+				4AE22BC7283FB6C100FAD204 /* SplashViewController.swift */,
+				B3987C752836BB310079E871 /* managers */,
 				4A9D00A6280F255000A7A778 /* FilterTableViewCell.swift */,
 				4A9D00A0280F10D300A7A778 /* SortedViewController.swift */,
 				B305A23B280EF0A700289466 /* PairTableViewCell.swift */,
 				4A9D0096280D6F7200A7A778 /* FilterViewController.swift */,
-				4A0612EB2809D7F8001AE9CB /* City.swift */,
-				4A0612E72809D2C5001AE9CB /* images */,
 				4A0612E02809D2BD001AE9CB /* MainViewController.swift */,
-				4A0612DD2809D2BD001AE9CB /* PairFullCell.swift */,
 				4A0612C92809D0BB001AE9CB /* AppDelegate.swift */,
 				4A0612CB2809D0BB001AE9CB /* SceneDelegate.swift */,
 				4A0612CF2809D0BB001AE9CB /* Main.storyboard */,
 				4A0612D22809D0BF001AE9CB /* Assets.xcassets */,
 				4A0612D42809D0BF001AE9CB /* LaunchScreen.storyboard */,
 				4A0612D72809D0BF001AE9CB /* Info.plist */,
+				B328748E28316FDB00DBBC2C /* PairsModel.swift */,
+				B3287490283175A500DBBC2C /* PairsPresenter.swift */,
 			);
 			path = Botalki;
 			sourceTree = "<group>";
 		};
-		4A0612E72809D2C5001AE9CB /* images */ = {
+		B3987C752836BB310079E871 /* managers */ = {
 			isa = PBXGroup;
 			children = (
-				4A9D00AA280F5B4C00A7A778 /* univer.png */,
-				4A9D00A8280F598B00A7A778 /* calendarClock.png */,
-				4A9D00A4280F1DA300A7A778 /* doorWhite.png */,
-				4A9D00A2280F1C5B00A7A778 /* door.png */,
-				4A9D009A280EDBF200A7A778 /* calendarBlack.png */,
-				4A9D009B280EDBF200A7A778 /* calendarWhite.png */,
-				4A9D0094280CAECD00A7A778 /* house.png */,
-				4A9D0092280CA91700A7A778 /* magnifier.png */,
-				4A0612E12809D2BD001AE9CB /* clock.png */,
+				B3055FF628306B8000B185E0 /* NetworkManager.swift */,
+				B3055FF828306D6500B185E0 /* FileManager.swift */,
+				B3055FFA2830775B00B185E0 /* AlertManager.swift */,
 			);
-			path = images;
+			path = managers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,6 +136,10 @@
 			name = Botalki;
 			packageProductDependencies = (
 				4A0612E92809D67A001AE9CB /* PinLayout */,
+				B3055FAC28255FD800B185E0 /* FirebaseAuth */,
+				B3055FAE28255FD800B185E0 /* FirebaseDatabase */,
+				B3055FB028255FD800B185E0 /* FirebaseDatabaseSwift */,
+				B3055FB228255FD800B185E0 /* FirebaseStorage */,
 			);
 			productName = Botalki;
 			productReference = 4A0612C62809D0BB001AE9CB /* Botalki.app */;
@@ -171,6 +171,7 @@
 			mainGroup = 4A0612BD2809D0BB001AE9CB;
 			packageReferences = (
 				4A0612E82809D67A001AE9CB /* XCRemoteSwiftPackageReference "PinLayout" */,
+				B3055FAB28255FD800B185E0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = 4A0612C72809D0BB001AE9CB /* Products */;
 			projectDirPath = "";
@@ -187,17 +188,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A0612D62809D0BF001AE9CB /* LaunchScreen.storyboard in Resources */,
-				4A9D0095280CAECD00A7A778 /* house.png in Resources */,
-				4A9D00AB280F5B4C00A7A778 /* univer.png in Resources */,
-				4A9D00A3280F1C5B00A7A778 /* door.png in Resources */,
-				4A9D00A5280F1DA400A7A778 /* doorWhite.png in Resources */,
-				4A0612E62809D2BD001AE9CB /* clock.png in Resources */,
-				4A9D009C280EDBF300A7A778 /* calendarBlack.png in Resources */,
+				B3EF4302284502D1006F789E /* GoogleService-Info.plist in Resources */,
 				4A0612D32809D0BF001AE9CB /* Assets.xcassets in Resources */,
 				4A0612D12809D0BB001AE9CB /* Main.storyboard in Resources */,
-				4A9D00A9280F598C00A7A778 /* calendarClock.png in Resources */,
-				4A9D0093280CA91700A7A778 /* magnifier.png in Resources */,
-				4A9D009D280EDBF300A7A778 /* calendarWhite.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,13 +203,17 @@
 			files = (
 				4A9D00A7280F255000A7A778 /* FilterTableViewCell.swift in Sources */,
 				4A9D0097280D6F7200A7A778 /* FilterViewController.swift in Sources */,
-				4A0612E22809D2BD001AE9CB /* PairFullCell.swift in Sources */,
+				B3287491283175A500DBBC2C /* PairsPresenter.swift in Sources */,
+				B328748F28316FDB00DBBC2C /* PairsModel.swift in Sources */,
+				B3055FF728306B8100B185E0 /* NetworkManager.swift in Sources */,
 				4A0612E52809D2BD001AE9CB /* MainViewController.swift in Sources */,
+				4AE22BC8283FB6C100FAD204 /* SplashViewController.swift in Sources */,
 				4A0612CA2809D0BB001AE9CB /* AppDelegate.swift in Sources */,
 				4A0612CC2809D0BB001AE9CB /* SceneDelegate.swift in Sources */,
+				B3055FF928306D6500B185E0 /* FileManager.swift in Sources */,
 				4A9D00A1280F10D300A7A778 /* SortedViewController.swift in Sources */,
 				B305A23C280EF0A700289466 /* PairTableViewCell.swift in Sources */,
-				4A0612EC2809D7F8001AE9CB /* City.swift in Sources */,
+				B3055FFB2830775B00B185E0 /* AlertManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -293,7 +290,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -348,7 +345,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -361,12 +358,13 @@
 		4A0612DB2809D0BF001AE9CB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QK9Y4P3VFS;
+				DEVELOPMENT_TEAM = Q9ZS8V8CB6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Botalki/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -374,12 +372,13 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = poliorang.Botalki;
+				PRODUCT_BUNDLE_IDENTIFIER = sergeyNik.Botalki;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -391,12 +390,13 @@
 		4A0612DC2809D0BF001AE9CB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QK9Y4P3VFS;
+				DEVELOPMENT_TEAM = Q9ZS8V8CB6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Botalki/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -404,12 +404,13 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = poliorang.Botalki;
+				PRODUCT_BUNDLE_IDENTIFIER = sergeyNik.Botalki;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -450,6 +451,14 @@
 				kind = branch;
 			};
 		};
+		B3055FAB28255FD800B185E0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -457,6 +466,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4A0612E82809D67A001AE9CB /* XCRemoteSwiftPackageReference "PinLayout" */;
 			productName = PinLayout;
+		};
+		B3055FAC28255FD800B185E0 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3055FAB28255FD800B185E0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		B3055FAE28255FD800B185E0 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3055FAB28255FD800B185E0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		B3055FB028255FD800B185E0 /* FirebaseDatabaseSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3055FAB28255FD800B185E0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabaseSwift;
+		};
+		B3055FB228255FD800B185E0 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3055FAB28255FD800B185E0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

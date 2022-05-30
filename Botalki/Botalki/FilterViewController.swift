@@ -1,217 +1,289 @@
 import UIKit
 import PinLayout
-//import SwiftUI
+import SwiftUI
+
+
+struct FilterCellData {
+    let pairStartInd: Int
+    let pairEndInd: Int
+    let buildingInd: Int
+    let cabinet: String
+}
+
 
 class FilterViewController: UIViewController {
-
+    var presenter: PairsPresenter?
+    private let alertManager = AlertManager.shared
+    
     private let borderColor = UIColor(rgb: 0xC2A894)
     
     private var firstScreenButton = UIButton()
     private var secondScreenButton = UIButton()
-    private let imageCalendarBlack = UIImageView(image: UIImage(named: "calendarBlack.png"))
-    private let imageCalendarWhite = UIImageView(image: UIImage(named: "calendarWhite.png"))
+    private let selectRoomButton = UIButton()
+    
+    private let imageCalendar = UIImageView(image: UIImage(named: "calendarWhite.png"))
     private let houseImg = UIImageView(image: UIImage(named: "house"))
     private let magnifierImg = UIImageView(image: UIImage(named: "magnifier"))
     
-    private let dateButton = UIButton()
-    private let selectRoomButton = UIButton()
-    
     private let pairSelectView = UIView()
-    private let pairSwitcher = UISwitch()
-    private let firstPairTextField = UITextField()
-    private let secondPairTextField = UITextField()
-    
-    private let firstPairPickerView = UIPickerView()
-    private let secondPairPickerView = UIPickerView()
-    
     private let buildingSelectView = UIView()
+    private let audienceSelectView = UIView()
+    
+    private let pairSwitcher = UISwitch()
+    private let audienceSwitcher = UISwitch()
+    private let buildingSwitcher = UISwitch()
+    
+    private let datePicker = UIDatePicker()
+    
+    private let firstPairPicker = UIPickerView()
+    private let secondPairPicker = UIPickerView()
+    
     private let buildingSegController = UISegmentedControl(items: ["ГЗ", "УЛК"])
     
-    private let audienceSelectView = UIView()
-    private let audienceSwitcher = UISwitch()
+    private let dash = UILabel()
+    
     private let audienceTextField = UITextField()
+    private let dateField = UITextField()
+    
+    private var firstPairTimeLabel   = UILabel()
+    private var secondPairTimeLabel   = UILabel()
     
     
+    let gradePickerValues = ["1", "2", "3", "4", "5", "6", "7"]
+    private let studyTimesStart = ["8 : 30", "10 : 15", "12 : 00", "13 : 50", "15 : 40", "17 : 25", "19 : 10"]
+    private let studyTimesEnd = ["10 : 05", "11 : 50", "13 : 35", "15 : 25", "17 : 15", "19 : 00", "20 : 45"]
     private let margins = CGFloat(22)
-    private let screenWidth = UIScreen.main.bounds.width
+    private var pickerWidth = CGFloat()
+    private var pickerHeight = CGFloat(45)
+    private var screenWidth = UIScreen.main.bounds.width
+    private var screenHeight = UIScreen.main.bounds.height
+    private var noNotchIPhoneMargin = CGFloat()
+    private let lowerView = UIView()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.systemBackground
+        pickerWidth = CGFloat(Float(Int((screenWidth < 500 ? screenWidth : 400) - 80) / 2) - 1.5*Float(margins))
+        noNotchIPhoneMargin = screenHeight < 750 ? 30 : 0
         
         navigationController?.setNavigationBarHidden(true, animated: true)
         navigationController?.navigationBar.prefersLargeTitles = true
 
+        firstPairPicker.dataSource = self
+        firstPairPicker.delegate = self
+        
+        let tapOnFirstPairPickerGesture = UITapGestureRecognizer(target: self, action: #selector(didTapOnFirstPairPicker))
+        tapOnFirstPairPickerGesture.delegate = self
+        tapOnFirstPairPickerGesture.numberOfTapsRequired = 2
+        firstPairPicker.addGestureRecognizer(tapOnFirstPairPickerGesture)
+        
+        let tapOnSecondPairPickerGesture = UITapGestureRecognizer(target: self, action: #selector(didTapOnSecondPairPicker))
+        tapOnSecondPairPickerGesture.delegate = self
+        tapOnSecondPairPickerGesture.numberOfTapsRequired = 2
+        secondPairPicker.addGestureRecognizer(tapOnSecondPairPickerGesture)
+        
+        secondPairPicker.dataSource = self
+        secondPairPicker.delegate = self
+
+        buildingSegController.addTarget(self, action: #selector(didChangeBuilding(_ :)), for: .valueChanged)
+        audienceSwitcher.addTarget(self, action: #selector(didSwitchAudienceTrigger), for: .valueChanged)
+        
+        
+        view.addSubview(lowerView)
         view.addSubview(firstScreenButton)
         view.addSubview(secondScreenButton)
+        
         view.addSubview(houseImg)
         view.addSubview(magnifierImg)
         
-        view.addSubview(dateButton)
+        view.addSubview(dateField)
         view.addSubview(selectRoomButton)
-        
+    
         
         view.addSubview(pairSelectView)
         view.addSubview(buildingSelectView)
         view.addSubview(audienceSelectView)
+        view.addSubview(dash)
         
-        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(FilterViewController.tap(_:)))
+        
+        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(closeKeyboard))
         view.addGestureRecognizer(tapGestureReconizer)
         
-//        let tapScreen = UITapGestureRecognizer(target: self, action: "dismissKeyboard:")
-//        func dismissKeyboard(sender: UITapGestureRecognizer) {
-//            view.endEditing(true)
-//        }
+        // календарь
+        dateField.inputView = datePicker
+        datePicker.datePickerMode = .date
+        datePicker.addTarget(self, action: #selector(didChooseDate), for: .editingDidEnd)
         
-        createDateButton()
         createSelectRoomButton()
         createPairArea()
         createBuildingArea()
         createAudienceArea()
         
         screenSelection()
+        
+        setupLowerSubview()
+        setupDatePicker()
+        view.addSubview(datePicker)
     }
     
+    var relayoutFlag = 1
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-//        print(self.view.backgroundColor)
-//        let bgColor = self.view.backgroundColor
-//        let aColor = UIColor(named: "systemBackgroundColor")
-//        print(aColor)
-//
-//        let color = UIColor(dynamicProvider:
-//            case .dark:
-//                return UIColor.yellow
-//            case .light:
-//                return UIColor.blue
-//            case .unspecified:
-//                return UIColor.clear
-//        var myControlBackground: UIColor {
-//            return UIColor { (traits) -> UIColor in
-//                return traits.userInterfaceStyle == .dark ?
-//                    UIColor(red: 0.5, green: 0.4, blue: 0.3, alpha: 1) :
-//                    UIColor(red: 0.3, green: 0.4, blue: 0.5, alpha: 1)
-//            }
-//        }
-        
-        
-//        if bgColor == "<UIDynamicSystemColor: 0x600001f05ec0; name = systemBackgroundColor>" {
-        imageCalendarWhite.pin
-            .top(82)
-            .left(54)
-            .height(45)
-            .width(45)
-        view.addSubview(imageCalendarWhite)
-        view.bringSubviewToFront(imageCalendarWhite)
-//        } else {
-//            imageCalendarBlack.pin
-//                .top(82)
-//                .left(54)
-//                .height(45)
-//                .width(45)
-//            view.addSubview(imageCalendarBlack)
-//            view.bringSubviewToFront(imageCalendarBlack)
-//        }
-        
-        dateButton.pin
-            .top(82)
-            .left(self.view.frame.width / 2 + 10)
-            .height(42)
-            .width(self.view.frame.width / 3 + 20)
-        
-        selectRoomButton.pin
-            .top((self.view.frame.height / 3) * 2)
-            .left(45)
-            .right(40)
-            .height(50)
-        
-        pairSelectView.pin
-            .top(160)
-            .left(45)
-            .right(40)
-            .height(120)
-        
-        buildingSelectView.pin
-            .top(self.view.frame.height / 3)
-            .left(45)
-            .right(40)
-            .height(70)
-        
-        audienceSelectView.pin
-            .top(self.view.frame.height / 2 - 50)
-            .left(45)
-            .right(40)
-            .height(120)
-        
+        view.addSubview(imageCalendar)
+        view.bringSubviewToFront(imageCalendar)
         let ButtonsWidth = CGFloat(Float(Int(screenWidth) / 2) - 1.5*Float(margins))
+        
+        let buttomMargin = UIApplication.shared.windows.first?.safeAreaInsets.bottom
+        
         firstScreenButton.pin
-            .top(CGFloat(view.frame.height - 95))
+            .bottom(buttomMargin! + margins)
             .height(45)
             .left(margins)
             .width(ButtonsWidth)
         
         secondScreenButton.pin
-            .top(CGFloat(view.frame.height - 95))
+            .bottom(buttomMargin! + margins)
             .height(45)
             .right(margins)
             .width(ButtonsWidth)
         
+        lowerView.pin
+            .top(view.frame.height - (buttomMargin! + 2*margins + 45))
+            .bottom(0)
+            .left(0)
+            .right(0)
+        
+        imageCalendar.pin
+            .vCenter(-screenHeight * 3 / 7 + 20 - (noNotchIPhoneMargin - 30))
+            .hCenter(screenWidth < 500 ? -(screenWidth - 160)/2 : -170)
+            .height(45)
+            .width(45)
+        
+        datePicker.pin
+            .vCenter(-screenHeight * 3 / 7 + 20 - (noNotchIPhoneMargin - 30))
+            .hCenter(screenWidth < 500 ? (screenWidth - 160)/2-45 : 120)
+            .height(42)
+            .width(130)
+        
+        selectRoomButton.pin
+            .vCenter(1.5 * screenHeight / 7 + noNotchIPhoneMargin * 1.5)
+            .hCenter()
+            .width(screenWidth < 500 ? screenWidth - 80 : 400)
+            .height(50)
+        
+        pairSelectView.pin
+            .vCenter(-screenHeight * 2 / 7 + noNotchIPhoneMargin - (noNotchIPhoneMargin - 30))
+            .hCenter()
+            .width(screenWidth < 500 ? screenWidth - 80 : 400)
+            .height(120)
+        
+        buildingSelectView.pin
+            .vCenter(-screenHeight / 7 + noNotchIPhoneMargin * 1.5 - (noNotchIPhoneMargin - 30))
+            .hCenter()
+            .width(screenWidth < 500 ? screenWidth - 80 : 400)
+            .height(70)
+        
+        audienceSelectView.pin
+            .vCenter(noNotchIPhoneMargin * 2 - (noNotchIPhoneMargin - 30))
+            .hCenter()
+            .width(screenWidth < 500 ? screenWidth - 80 : 400)
+            .height(120)
+        
         houseImg.pin
-            .top(CGFloat(view.frame.height - 90))
+            .bottom(buttomMargin! + margins + 5)
             .left(ButtonsWidth/2 + margins - 35/2)
             .height(35)
             .width(35)
         
         magnifierImg.pin
-            .top(CGFloat(view.frame.height - 90))
+            .bottom(buttomMargin! + margins + 5)
             .right(ButtonsWidth/2 + margins - 35/2)
             .height(35)
             .width(35)
+        
+        firstPairPicker.pin
+            .top(73 - (pickerHeight/2 - 22))
+            .height(pickerHeight)
+            .left(margins)
+            .width(pickerWidth)
+        
+        secondPairPicker.pin
+            .top(73 - (pickerHeight/2 - 22))
+            .height(pickerHeight)
+            .right(margins)
+            .width(pickerWidth)
+        
+        if relayoutFlag != 0 {
+            firstPairTimeLabel.pin
+                .height(14)
+                .width(pickerWidth-20)
+                .above(of: firstPairPicker, aligned: .center)
+            
+            secondPairTimeLabel.pin
+                .height(14)
+                .width(pickerWidth-20)
+                .above(of: secondPairPicker, aligned: .center)
+        }
+        
+        dash.pin
+            .after(of: firstPairPicker, aligned: .bottom)
+            .before(of: secondPairPicker, aligned: .top)
+        
+        traitCollectionDidChange(nil)
     }
     
-    @objc
-    func tap(_ sender: UITapGestureRecognizer) {
-        view.endEditing(true)
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if self.traitCollection.userInterfaceStyle == .dark {
+            imageCalendar.setImageColor(color: UIColor.white)
+        } else {
+            imageCalendar.setImageColor(color: UIColor.black)
+        }
     }
     
-    private func createDateButton() {
-        dateButton.backgroundColor = UIColor.systemGroupedBackground
-        dateButton.layer.borderWidth = 2
-        dateButton.layer.borderColor = borderColor.cgColor
+    private func checkDate() -> Bool {
+        presenter?.didCheckDate(dateToCheck: datePicker.date)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd.MM.yyyy"
         
-        dateButton.layer.cornerRadius = 16
-        dateButton.layer.masksToBounds = true
-        dateButton.titleLabel?.font = .systemFont(ofSize: 22, weight: .semibold)
+        if presenter?.curWeekDayInFilter == -1 {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            datePicker.date = presenter!.setCorrectCurrentDate()
+            alertManager.showAlert(presentTo: self, title: "Выбран неверный день", message: "В воскресенье ВУЗ закрыт.\nВыбери другой день")
+            return false
+        }
         
-        let dateLabel = UILabel()
-        
-        dateLabel.font = .systemFont(ofSize: 22, weight: .bold)
-        dateLabel.numberOfLines = 1
-        dateLabel.textAlignment = .right
-        dateLabel.text = "20.04.2022"
-        
-        dateButton.addSubview(dateLabel)
-        dateButton.bringSubviewToFront(dateLabel)
-        dateButton.layoutSubviews()
-        
-        dateLabel.pin
-            .top(7)
-            .left(12)
-            .height(30)
-            .width(130)
+        if presenter!.curWeekInFilter < 1 || presenter!.curWeekInFilter > 17 {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            datePicker.date = presenter!.setCorrectCurrentDate()
+            alertManager.showAlert(presentTo: self, title: "Выбрана неверная дата", message: "Семестр начался \(formatter.string(from: presenter!.semStartDate)) и закончится \(formatter.string(from: presenter!.semEndDate)).\nВыбери дату из этих рамок")
+            return false
+        }
+        return true
+    }
+    
+    private func setupDatePicker() {
+        datePicker.date = presenter!.setCorrectCurrentDate()
+        datePicker.locale = .current
+        datePicker.preferredDatePickerStyle = .compact
+    }
+    
+    
+    private func setupLowerSubview() {
+        lowerView.layer.cornerRadius = 20
+        lowerView.backgroundColor = UIColor.systemGroupedBackground
+        lowerView.alpha = 0.8
     }
     
     private func createSelectRoomButton() {
         selectRoomButton.backgroundColor = UIColor(rgb: 0xC2A894)
-        
         selectRoomButton.layer.cornerRadius = 12
         selectRoomButton.layer.masksToBounds = true
         selectRoomButton.titleLabel?.font = .systemFont(ofSize: 22, weight: .semibold)
         selectRoomButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
-
-        
         selectRoomButton.setTitle("Подобрать", for: .normal)
         selectRoomButton.addTarget(self, action: #selector(sortAudiences), for: .touchUpInside)
     }
@@ -225,7 +297,6 @@ class FilterViewController: UIViewController {
         pairSelectView.layer.masksToBounds = true
         pairSelectView.layoutSubviews()
         
-        
         let pairLabel = UILabel()
         
         pairLabel.font = .systemFont(ofSize: 24, weight: .bold)
@@ -233,11 +304,16 @@ class FilterViewController: UIViewController {
         pairLabel.textAlignment = .right
         pairLabel.text = "Пара"
         
+        dash.font = .systemFont(ofSize: 24, weight: .bold)
+        dash.numberOfLines = 1
+        dash.textAlignment = .center
+        dash.text = "-"
+        
         pairSelectView.addSubview(pairLabel)
         pairSelectView.bringSubviewToFront(pairLabel)
         
         pairLabel.pin
-            .top(20)
+            .top(15)
             .left(15)
             .height(30)
             .width(70)
@@ -245,59 +321,29 @@ class FilterViewController: UIViewController {
         pairSelectView.layoutSubviews()
         
         pairSelectView.addSubview(pairSwitcher)
-        pairSelectView.addSubview(pairSwitcher)
         pairSwitcher.pin
-            .top(20)
-            .left(pairSelectView.frame.width + 270)
-            .height(100)
-            .width(100)
+            .top(15)
+            .left(screenWidth < 500 ? (screenWidth - 80) - 80 : 400 - 80)
         
-        firstPairTextField.placeholder = "1"
-        firstPairTextField.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        pairSelectView.addSubview(firstPairPicker)
+        pairSelectView.addSubview(secondPairPicker)
         
-        firstPairTextField.pin
-            .top(68)
-            .left(audienceSelectView.frame.width + 25)
-            .height(30)
-            .width(140)
+        pairSelectView.addSubview(firstPairTimeLabel)
+        pairSelectView.addSubview(secondPairTimeLabel)
         
-        firstPairTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
-//        firstPairTextField.backgroundColor = UIColor.systemBackground
-        firstPairTextField.textColor = .black
-        firstPairTextField.borderStyle = UITextField.BorderStyle.roundedRect
-//        audienceTextField.layer.borderColor = borderColor.cgColor
-        firstPairTextField.autocorrectionType = UITextAutocorrectionType.no
-        firstPairTextField.keyboardType = UIKeyboardType.numberPad
-        firstPairTextField.returnKeyType = UIReturnKeyType.done
-        firstPairTextField.clearButtonMode = UITextField.ViewMode.never
-        firstPairTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-//
-        firstPairTextField.textAlignment = .center
-        pairSelectView.addSubview(firstPairTextField)
-        pairSelectView.addSubview(firstPairTextField)
+        firstPairTimeLabel.text = studyTimesStart[0]
+        firstPairTimeLabel.layer.borderWidth = 1
+        firstPairTimeLabel.layer.cornerRadius = 6
+        firstPairTimeLabel.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
+        firstPairTimeLabel.font = .systemFont(ofSize: 10, weight: .medium)
+        firstPairTimeLabel.textAlignment = .center
         
-        secondPairTextField.placeholder = "7"
-        secondPairTextField.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        
-        secondPairTextField.pin
-            .top(68)
-            .left(pairSelectView.frame.width + 180)
-            .height(30)
-            .width(140)
-        
-        secondPairTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
-        secondPairTextField.textColor = .black
-        secondPairTextField.borderStyle = UITextField.BorderStyle.roundedRect
-//        audienceTextField.layer.borderColor = borderColor.cgColor
-        secondPairTextField.autocorrectionType = UITextAutocorrectionType.no
-        secondPairTextField.keyboardType = UIKeyboardType.numberPad
-        secondPairTextField.returnKeyType = UIReturnKeyType.done
-        secondPairTextField.clearButtonMode = UITextField.ViewMode.never
-        secondPairTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-        
-        secondPairTextField.textAlignment = .center
-        pairSelectView.addSubview(secondPairTextField)
-        pairSelectView.addSubview(secondPairTextField)
+        secondPairTimeLabel.text = studyTimesEnd[0]
+        secondPairTimeLabel.layer.borderWidth = 1
+        secondPairTimeLabel.layer.cornerRadius = 6
+        secondPairTimeLabel.layer.borderColor = UIColor(rgb: 0xC2A894).cgColor
+        secondPairTimeLabel.font = .systemFont(ofSize: 10, weight: .medium)
+        secondPairTimeLabel.textAlignment = .center
     }
     
     private func createBuildingArea() {
@@ -311,7 +357,6 @@ class FilterViewController: UIViewController {
         let buildingLabel = UILabel()
         
         buildingLabel.font = .systemFont(ofSize: 24, weight: .bold)
-//        buildingLabel.textColor = .black
         buildingLabel.numberOfLines = 1
         buildingLabel.textAlignment = .right
         buildingLabel.text = "Корпус"
@@ -331,15 +376,15 @@ class FilterViewController: UIViewController {
         buildingSegController.layer.cornerRadius = 5.0
 
         buildingSegController.pin
-            .top(18)
-            .left(buildingSelectView.frame.width + 230)
-            .height(34)
-            .width(90)
-        // Add target action method
-//        buildingSegController.addTarget(self, action: "changeColor:", forControlEvents: .ValueChanged)
-
-        // Add this custom Segmented Control to our view
+            .top(20)
+            .left(screenWidth < 500 ? (screenWidth - 80)/2-30 : 400/2-30)
+        
         buildingSelectView.addSubview(buildingSegController)
+        buildingSelectView.addSubview(buildingSwitcher)
+        buildingSwitcher.pin
+            .top(20)
+            .left(screenWidth < 500 ? (screenWidth - 80) - 80 : 400 - 80)
+        
         buildingSelectView.bringSubviewToFront(buildingSegController)
     
     }
@@ -355,7 +400,6 @@ class FilterViewController: UIViewController {
         let audienceLabel = UILabel()
         
         audienceLabel.font = .systemFont(ofSize: 24, weight: .bold)
-//        audienceLabel.textColor = .black
         audienceLabel.numberOfLines = 1
         audienceLabel.textAlignment = .right
         audienceLabel.text = "Аудитория"
@@ -374,31 +418,33 @@ class FilterViewController: UIViewController {
         audienceSelectView.addSubview(audienceSwitcher)
         audienceSwitcher.pin
             .top(20)
-            .left(pairSelectView.frame.width + 270)
-            .height(100)
-            .width(100)
+            .left(screenWidth < 500 ? (screenWidth - 80) - 80 : 400 - 80)
         
-        audienceTextField.placeholder = "501"
+        audienceTextField.attributedPlaceholder = NSAttributedString(
+            string: "501",
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor(rgb: 0x808080)]
+        )
         audienceTextField.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         
         audienceTextField.pin
             .top(68)
-            .left(audienceSelectView.frame.width + 25)
+            .left(25)
             .height(30)
-            .width(295)
+            .width(screenWidth < 500 ? (screenWidth - 80) - 50 : 400 - 50)
         
         audienceTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
         audienceTextField.textColor = .black
         audienceTextField.borderStyle = UITextField.BorderStyle.roundedRect
-//        audienceTextField.layer.borderColor = borderColor.cgColor
         audienceTextField.autocorrectionType = UITextAutocorrectionType.no
         audienceTextField.keyboardType = UIKeyboardType.numberPad
         audienceTextField.returnKeyType = UIReturnKeyType.done
         audienceTextField.clearButtonMode = UITextField.ViewMode.never
         audienceTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        audienceTextField.layer.cornerRadius = 5
+        audienceTextField.layer.borderColor = UIColor.red.cgColor
+        audienceTextField.addTarget(self, action: #selector(didStartEnterAudience), for: .editingDidBegin)
         
         audienceTextField.textAlignment = .center
-        audienceSelectView.addSubview(audienceTextField)
         audienceSelectView.addSubview(audienceTextField)
     }
     
@@ -417,13 +463,6 @@ class FilterViewController: UIViewController {
         secondScreenButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
         secondScreenButton.setTitleColor(UIColor(rgb: 0x000000), for: .normal)
     }
-    
-    @objc
-    func goToFirstScreen() {
-//        let firstViewController: PairsViewController = PairsViewController()
-//        self.navigationController?.pushViewController(firstViewController, animated: false)
-        self.navigationController?.popViewController(animated: false)
-    }
   
     private func layoutScreenButtonsSubviews(buttonSubView: UIButton, iconNameOfButton: String) {
         let imageViewButton = UIImageView(image: UIImage(named: iconNameOfButton))
@@ -440,10 +479,202 @@ class FilterViewController: UIViewController {
             .width(35)
     }
     
+    private func helpPickerAnimation(picker: UIPickerView, recognizer: UIGestureRecognizer) {
+        picker.removeGestureRecognizer(recognizer)
+        let selectedRow = picker.selectedRow(inComponent: 0)
+        var start = 0
+        var stop = 0
+
+        if selectedRow < 2 {
+            start = 0
+        } else {
+            start = selectedRow - 2
+        }
+
+        if selectedRow > 4 {
+            stop = 6
+        } else {
+            stop = selectedRow + 2
+        }
+
+        pickerHeight *= 2
+        relayoutFlag = 0
+        viewDidLayoutSubviews()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [self] in
+            picker.selectRow(start, inComponent: 0, animated: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + (selectedRow != 0 ? 0.3 : 0)) { [self] in
+                picker.selectRow(stop, inComponent: 0, animated: true)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
+                    picker.selectRow(selectedRow, inComponent: 0, animated: true)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
+                        pickerHeight /= 2
+                        viewDidLayoutSubviews()
+                        relayoutFlag = 1
+                        picker.addGestureRecognizer(recognizer)
+                    }
+                }
+            }
+        }
+    }
+    
+    @objc
+    private func didChooseDate() {
+        DispatchQueue.global().async {
+            usleep(1)
+            DispatchQueue.main.async {
+                _ = self.checkDate()
+            }
+        }
+    }
+    
+    @objc
+    private func didChangeBuilding(_ sender: UISegmentedControl) {
+        buildingSwitcher.setOn(true, animated: true)
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    }
+    
+    @objc
+    private func didSwitchAudienceTrigger() {
+        if !audienceSwitcher.isOn {
+            audienceTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
+        }
+    }
+    
+    @objc
+    private func closeKeyboard() {
+        if editingFlag == 0 {
+            return
+        }
+        
+        if audienceTextField.text != "" {
+            audienceTextField.text! += "*"
+        }
+        
+        view.endEditing(true)
+        if audienceTextField.text != "" {
+            audienceSwitcher.setOn(true, animated: true)
+        } else {
+            audienceSwitcher.setOn(false, animated: true)
+        }
+        editingFlag = 0
+    }
+    
+    var editingFlag = 0
+    @objc
+    func didStartEnterAudience() {
+        audienceTextField.backgroundColor = UIColor(rgb: 0xC4C4C4)
+        if audienceTextField.text!.contains("*") {
+            audienceTextField.text = audienceTextField.text!.strip(by: "*")
+        }
+        editingFlag = 1
+    }
+    
+    @objc
+    func goToFirstScreen() {
+        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+        self.navigationController?.popViewController(animated: false)
+    }
+    
+    @objc
+    private func didTapOnFirstPairPicker(tapRecognizer: UITapGestureRecognizer) {
+        if tapRecognizer.state == .ended {
+            helpPickerAnimation(picker: firstPairPicker, recognizer: tapRecognizer)
+        }
+    }
+    
+    @objc
+    private func didTapOnSecondPairPicker(tapRecognizer: UITapGestureRecognizer) {
+        if tapRecognizer.state == .ended {
+            helpPickerAnimation(picker: secondPairPicker, recognizer: tapRecognizer)
+        }
+    }
+    
+    func secondAnim(stop: Int) {
+        firstPairPicker.selectRow(stop, inComponent: 0, animated: true)
+    }
+    
     @objc
     private func sortAudiences() {
-        let viewController = SortedViewController()
-        let navigationController = UINavigationController(rootViewController: viewController)
-        present(navigationController, animated: true, completion: nil)
+        if !checkDate() {
+            return
+        }
+        
+        if audienceSwitcher.isOn && audienceTextField.text == "" {
+            audienceTextField.backgroundColor = UIColor(rgb: 0xC51D34)
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            return
+        }
+        
+        var cellDataArr = presenter!.didSortAudiences(with: datePicker.date)
+        
+        if pairSwitcher.isOn {
+            let beg = firstPairPicker.selectedRow(inComponent: 0)
+            let end = secondPairPicker.selectedRow(inComponent: 0)
+            
+            cellDataArr = cellDataArr.filter{$0.pairStartInd <= beg && $0.pairEndInd >= end}
+        }
+        
+        if buildingSwitcher.isOn {
+            cellDataArr = cellDataArr.filter{$0.buildingInd == buildingSegController.selectedSegmentIndex}
+        }
+        
+        if audienceSwitcher.isOn {
+            cellDataArr = cellDataArr.filter { $0.cabinet.contains(audienceTextField.text!.strip(by: "*")) && $0.cabinet[0] == audienceTextField.text![0]}
+        }
+        
+        if cellDataArr.count != 0 {
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            let sortedViewController = SortedViewController(cellData: cellDataArr, date: datePicker.date)
+            let navigationController = UINavigationController(rootViewController: sortedViewController)
+            present(navigationController, animated: true, completion: nil)
+        } else {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            alertManager.showAlert(presentTo: self, title: "Не найдено ни одной подходящей аудитории...", message: "")
+        }
     }
+}
+
+extension FilterViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
+        return gradePickerValues.count
+    }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return gradePickerValues[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        pairSwitcher.setOn(true, animated: true)
+        if pickerView == firstPairPicker {
+            firstPairTimeLabel.text = studyTimesStart[row]
+            if firstPairPicker.selectedRow(inComponent: 0) > secondPairPicker.selectedRow(inComponent: 0) {
+                secondPairPicker.selectRow(firstPairPicker.selectedRow(inComponent: 0), inComponent: 0, animated: true)
+                secondPairTimeLabel.text = studyTimesEnd[row]
+            }
+        } else {
+            secondPairTimeLabel.text = studyTimesEnd[row]
+            if firstPairPicker.selectedRow(inComponent: 0) > secondPairPicker.selectedRow(inComponent: 0) {
+                firstPairPicker.selectRow(secondPairPicker.selectedRow(inComponent: 0), inComponent: 0, animated: true)
+                firstPairTimeLabel.text = studyTimesStart[row]
+            }
+        }
+    }
+}
+
+extension FilterViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        true
+    }
+}
+
+extension UIImageView {
+  func setImageColor(color: UIColor) {
+    let templateImage = self.image?.withRenderingMode(.alwaysTemplate)
+    self.image = templateImage
+    self.tintColor = color
+  }
 }
