@@ -218,12 +218,12 @@ class FilterViewController: UIViewController {
         if relayoutFlag != 0 {
             firstPairTimeLabel.pin
                 .height(14)
-                .width(44)
+                .width(pickerWidth-20)
                 .above(of: firstPairPicker, aligned: .center)
             
             secondPairTimeLabel.pin
                 .height(14)
-                .width(44)
+                .width(pickerWidth-20)
                 .above(of: secondPairPicker, aligned: .center)
         }
         
