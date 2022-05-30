@@ -92,6 +92,9 @@ final class PairsModel {
         semStartDate = Calendar.current.date(byAdding: .day, value: -1, to: semStartDate)!
         let deltaSecs = Date() - semStartDate
         curWeek = Int(deltaSecs/604800 + 1)
+        if curWeek > 17 {
+            curWeek = 17
+        }
     }
     
     private func allocateCellsArr() {
