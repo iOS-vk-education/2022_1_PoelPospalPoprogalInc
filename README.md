@@ -6,7 +6,7 @@
 [Ссылка](https://apps.apple.com/app/id1626825995) на релиз приложения
   
 ## Команда  
-:boy: **ТимЛид:** [Serzh](https://github.com/Serzh3142001)  
+:boy: **ТимЛид:** [Sergey](https://github.com/swiftizer)  
 :girl: **Разработчик:** [Polina](https://github.com/poliorang)  
 :princess: **Ментор:** [Mehrafruz](https://github.com/Mehrafruz)  
   
