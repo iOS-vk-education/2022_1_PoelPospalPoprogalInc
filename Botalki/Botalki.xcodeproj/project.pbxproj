@@ -13,7 +13,6 @@
 		4A0612D32809D0BF001AE9CB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A0612D22809D0BF001AE9CB /* Assets.xcassets */; };
 		4A0612D62809D0BF001AE9CB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A0612D42809D0BF001AE9CB /* LaunchScreen.storyboard */; };
 		4A0612E52809D2BD001AE9CB /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0612E02809D2BD001AE9CB /* MainViewController.swift */; };
-		4A0612EA2809D67A001AE9CB /* PinLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 4A0612E92809D67A001AE9CB /* PinLayout */; };
 		4A9D0097280D6F7200A7A778 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9D0096280D6F7200A7A778 /* FilterViewController.swift */; };
 		4A9D00A1280F10D300A7A778 /* SortedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9D00A0280F10D300A7A778 /* SortedViewController.swift */; };
 		4A9D00A7280F255000A7A778 /* FilterTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9D00A6280F255000A7A778 /* FilterTableViewCell.swift */; };
@@ -22,11 +21,11 @@
 		B3055FF928306D6500B185E0 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3055FF828306D6500B185E0 /* FileManager.swift */; };
 		B3055FFB2830775B00B185E0 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3055FFA2830775B00B185E0 /* AlertManager.swift */; };
 		B305A23C280EF0A700289466 /* PairTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B305A23B280EF0A700289466 /* PairTableViewCell.swift */; };
+		B30655532904AF94005DFB4C /* loadIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30655522904AF94005DFB4C /* loadIndicator.swift */; };
 		B328748F28316FDB00DBBC2C /* PairsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B328748E28316FDB00DBBC2C /* PairsModel.swift */; };
 		B3287491283175A500DBBC2C /* PairsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3287490283175A500DBBC2C /* PairsPresenter.swift */; };
-		B3A4C5CE2845775900675E8C /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = B3A4C5CD2845775900675E8C /* FirebaseStorage */; };
-		B3A4C5D02845775900675E8C /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = B3A4C5CF2845775900675E8C /* FirebaseStorageCombine-Community */; };
 		B3EF4302284502D1006F789E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B3EF4301284502D1006F789E /* GoogleService-Info.plist */; };
+		C2E56F646F524F8EF3AADE51 /* Pods_Botalki.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96071A77C08ACAA2452C1FF3 /* Pods_Botalki.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,12 +41,17 @@
 		4A9D00A0280F10D300A7A778 /* SortedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SortedViewController.swift; sourceTree = "<group>"; };
 		4A9D00A6280F255000A7A778 /* FilterTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterTableViewCell.swift; sourceTree = "<group>"; };
 		4AE22BC7283FB6C100FAD204 /* SplashViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
+		7E087B526912455571B03B26 /* Pods-Botalki.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Botalki.release.xcconfig"; path = "Target Support Files/Pods-Botalki/Pods-Botalki.release.xcconfig"; sourceTree = "<group>"; };
+		96071A77C08ACAA2452C1FF3 /* Pods_Botalki.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Botalki.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9DE250B71E378140F27B322F /* Pods-Botalki.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Botalki.debug.xcconfig"; path = "Target Support Files/Pods-Botalki/Pods-Botalki.debug.xcconfig"; sourceTree = "<group>"; };
 		B3055FF628306B8000B185E0 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		B3055FF828306D6500B185E0 /* FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
 		B3055FFA2830775B00B185E0 /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 		B305A23B280EF0A700289466 /* PairTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PairTableViewCell.swift; sourceTree = "<group>"; };
+		B30655522904AF94005DFB4C /* loadIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = loadIndicator.swift; sourceTree = "<group>"; };
 		B328748E28316FDB00DBBC2C /* PairsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairsModel.swift; sourceTree = "<group>"; };
 		B3287490283175A500DBBC2C /* PairsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairsPresenter.swift; sourceTree = "<group>"; };
+		B3CD3BBE2890765500A076D3 /* Botalki.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Botalki.entitlements; sourceTree = "<group>"; };
 		B3EF4301284502D1006F789E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -56,20 +60,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4A0612EA2809D67A001AE9CB /* PinLayout in Frameworks */,
-				B3A4C5D02845775900675E8C /* FirebaseStorageCombine-Community in Frameworks */,
-				B3A4C5CE2845775900675E8C /* FirebaseStorage in Frameworks */,
+				C2E56F646F524F8EF3AADE51 /* Pods_Botalki.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		285B571F48C3C14F4C534F75 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9DE250B71E378140F27B322F /* Pods-Botalki.debug.xcconfig */,
+				7E087B526912455571B03B26 /* Pods-Botalki.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		4A0612BD2809D0BB001AE9CB = {
 			isa = PBXGroup;
 			children = (
 				4A0612C82809D0BB001AE9CB /* Botalki */,
 				4A0612C72809D0BB001AE9CB /* Products */,
+				285B571F48C3C14F4C534F75 /* Pods */,
+				B422EE3150F22BDF38121AB0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -84,6 +97,7 @@
 		4A0612C82809D0BB001AE9CB /* Botalki */ = {
 			isa = PBXGroup;
 			children = (
+				B3CD3BBE2890765500A076D3 /* Botalki.entitlements */,
 				B3EF4301284502D1006F789E /* GoogleService-Info.plist */,
 				4AE22BC7283FB6C100FAD204 /* SplashViewController.swift */,
 				B3987C752836BB310079E871 /* managers */,
@@ -100,6 +114,7 @@
 				4A0612D72809D0BF001AE9CB /* Info.plist */,
 				B328748E28316FDB00DBBC2C /* PairsModel.swift */,
 				B3287490283175A500DBBC2C /* PairsPresenter.swift */,
+				B30655522904AF94005DFB4C /* loadIndicator.swift */,
 			);
 			path = Botalki;
 			sourceTree = "<group>";
@@ -114,6 +129,14 @@
 			path = managers;
 			sourceTree = "<group>";
 		};
+		B422EE3150F22BDF38121AB0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				96071A77C08ACAA2452C1FF3 /* Pods_Botalki.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -121,20 +144,17 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4A0612DA2809D0BF001AE9CB /* Build configuration list for PBXNativeTarget "Botalki" */;
 			buildPhases = (
+				4B8939D1E6D3A3E6FFCF8877 /* [CP] Check Pods Manifest.lock */,
 				4A0612C22809D0BB001AE9CB /* Sources */,
 				4A0612C32809D0BB001AE9CB /* Frameworks */,
 				4A0612C42809D0BB001AE9CB /* Resources */,
+				042B5C8CF75C971AEDBBC35F /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = Botalki;
-			packageProductDependencies = (
-				4A0612E92809D67A001AE9CB /* PinLayout */,
-				B3A4C5CD2845775900675E8C /* FirebaseStorage */,
-				B3A4C5CF2845775900675E8C /* FirebaseStorageCombine-Community */,
-			);
 			productName = Botalki;
 			productReference = 4A0612C62809D0BB001AE9CB /* Botalki.app */;
 			productType = "com.apple.product-type.application";
@@ -163,11 +183,6 @@
 				Base,
 			);
 			mainGroup = 4A0612BD2809D0BB001AE9CB;
-			packageReferences = (
-				4A0612E82809D67A001AE9CB /* XCRemoteSwiftPackageReference "PinLayout" */,
-				B3A4C5C92845755400675E8C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				B3A4C5CC2845775900675E8C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-			);
 			productRefGroup = 4A0612C72809D0BB001AE9CB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -191,6 +206,48 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		042B5C8CF75C971AEDBBC35F /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Botalki/Pods-Botalki-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Botalki/Pods-Botalki-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Botalki/Pods-Botalki-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4B8939D1E6D3A3E6FFCF8877 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Botalki-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		4A0612C22809D0BB001AE9CB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -201,6 +258,7 @@
 				B3287491283175A500DBBC2C /* PairsPresenter.swift in Sources */,
 				B328748F28316FDB00DBBC2C /* PairsModel.swift in Sources */,
 				B3055FF728306B8100B185E0 /* NetworkManager.swift in Sources */,
+				B30655532904AF94005DFB4C /* loadIndicator.swift in Sources */,
 				4A0612E52809D2BD001AE9CB /* MainViewController.swift in Sources */,
 				4AE22BC8283FB6C100FAD204 /* SplashViewController.swift in Sources */,
 				4A0612CA2809D0BB001AE9CB /* AppDelegate.swift in Sources */,
@@ -285,7 +343,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -340,7 +398,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -352,10 +410,12 @@
 		};
 		4A0612DB2809D0BF001AE9CB /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9DE250B71E378140F27B322F /* Pods-Botalki.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Botalki/Botalki.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -367,15 +427,17 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = sergeyNik.Botalki;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -384,10 +446,12 @@
 		};
 		4A0612DC2809D0BF001AE9CB /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7E087B526912455571B03B26 /* Pods-Botalki.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Botalki/Botalki.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -399,15 +463,17 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = sergeyNik.Botalki;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -436,51 +502,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		4A0612E82809D67A001AE9CB /* XCRemoteSwiftPackageReference "PinLayout" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/layoutBox/PinLayout";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-		B3A4C5C92845755400675E8C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 9.0.0;
-			};
-		};
-		B3A4C5CC2845775900675E8C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		4A0612E92809D67A001AE9CB /* PinLayout */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4A0612E82809D67A001AE9CB /* XCRemoteSwiftPackageReference "PinLayout" */;
-			productName = PinLayout;
-		};
-		B3A4C5CD2845775900675E8C /* FirebaseStorage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B3A4C5CC2845775900675E8C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseStorage;
-		};
-		B3A4C5CF2845775900675E8C /* FirebaseStorageCombine-Community */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B3A4C5CC2845775900675E8C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = "FirebaseStorageCombine-Community";
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4A0612BE2809D0BB001AE9CB /* Project object */;
 }

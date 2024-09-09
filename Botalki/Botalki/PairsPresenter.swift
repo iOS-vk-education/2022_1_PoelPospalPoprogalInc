@@ -73,12 +73,13 @@ final class PairsPresenter {
     }
     
 
-    private func initCells() {
+    func initCells() {
         var indexPath: IndexPath = IndexPath(row: 0, section: 0)
         for i in 0...6 {
             indexPath.row = i
             indexPath.section = 0
             model.myCells[i] = mainViewController!.tableView.dequeueReusableCell(withIdentifier: "PairTableViewCell", for: indexPath) as? PairTableViewCell
+            model.myCells[i]?.wasConfiguredFlag = 0
         }
     }
     

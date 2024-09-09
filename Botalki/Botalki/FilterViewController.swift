@@ -34,7 +34,7 @@ class FilterViewController: UIViewController {
     private let buildingSwitcher = UISwitch()
     
     private let datePicker = UIDatePicker()
-    
+
     private let firstPairPicker = UIPickerView()
     private let secondPairPicker = UIPickerView()
     
@@ -43,11 +43,11 @@ class FilterViewController: UIViewController {
     private let dash = UILabel()
     
     private let audienceTextField = UITextField()
-    private let dateField = UITextField()
-    
-    private var firstPairTimeLabel   = UILabel()
-    private var secondPairTimeLabel   = UILabel()
-    
+
+    private var firstPairTimeLabel = UILabel()
+    private var secondPairTimeLabel = UILabel()
+    private let indicator = LoadindIndicatorView()
+
     
     let gradePickerValues = ["1", "2", "3", "4", "5", "6", "7"]
     private let studyTimesStart = ["8 : 30", "10 : 15", "12 : 00", "13 : 50", "15 : 40", "17 : 25", "19 : 10"]
@@ -96,8 +96,7 @@ class FilterViewController: UIViewController {
         
         view.addSubview(houseImg)
         view.addSubview(magnifierImg)
-        
-        view.addSubview(dateField)
+
         view.addSubview(selectRoomButton)
     
         
@@ -111,7 +110,6 @@ class FilterViewController: UIViewController {
         view.addGestureRecognizer(tapGestureReconizer)
         
         // календарь
-        dateField.inputView = datePicker
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(didChooseDate), for: .editingDidEnd)
         
@@ -226,6 +224,8 @@ class FilterViewController: UIViewController {
                 .width(pickerWidth-20)
                 .above(of: secondPairPicker, aligned: .center)
         }
+
+        indicator.pinToRootButton(rootButton: selectRoomButton, frame: selectRoomButton.frame)
         
         dash.pin
             .after(of: firstPairPicker, aligned: .bottom)
@@ -268,7 +268,11 @@ class FilterViewController: UIViewController {
     private func setupDatePicker() {
         datePicker.date = presenter!.setCorrectCurrentDate()
         datePicker.locale = .current
-        datePicker.preferredDatePickerStyle = .compact
+        if #available(iOS 13.4, *) {
+            datePicker.preferredDatePickerStyle = .compact
+        } else {
+
+        }
     }
     
     
@@ -602,36 +606,48 @@ class FilterViewController: UIViewController {
         }
         
         if audienceSwitcher.isOn && audienceTextField.text == "" {
+            audienceTextField.invalidAnimation()
             audienceTextField.backgroundColor = UIColor(rgb: 0xC51D34)
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             return
         }
-        
+
+        indicator.start()
+
         var cellDataArr = presenter!.didSortAudiences(with: datePicker.date)
-        
+
         if pairSwitcher.isOn {
             let beg = firstPairPicker.selectedRow(inComponent: 0)
             let end = secondPairPicker.selectedRow(inComponent: 0)
-            
+
             cellDataArr = cellDataArr.filter{$0.pairStartInd <= beg && $0.pairEndInd >= end}
         }
-        
+
         if buildingSwitcher.isOn {
             cellDataArr = cellDataArr.filter{$0.buildingInd == buildingSegController.selectedSegmentIndex}
         }
-        
+
         if audienceSwitcher.isOn {
             cellDataArr = cellDataArr.filter { $0.cabinet.contains(audienceTextField.text!.strip(by: "*")) && $0.cabinet[0] == audienceTextField.text![0]}
         }
-        
+
         if cellDataArr.count != 0 {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
             let sortedViewController = SortedViewController(cellData: cellDataArr, date: datePicker.date)
             let navigationController = UINavigationController(rootViewController: sortedViewController)
             present(navigationController, animated: true, completion: nil)
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.indicator.stopInstantly()
+            }
         } else {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             alertManager.showAlert(presentTo: self, title: "Не найдено ни одной подходящей аудитории...", message: "")
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.selectRoomButton.invalidAnimation()
+                self.indicator.stopFailure()
+            }
         }
     }
 }
@@ -679,4 +695,20 @@ extension UIImageView {
     self.image = templateImage
     self.tintColor = color
   }
+}
+
+extension UIView {
+    func invalidAnimation() {
+        let animation = CABasicAnimation(keyPath: "position")
+        animation.duration = 0.06
+        animation.repeatCount = 2
+        animation.fromValue = NSValue(cgPoint: CGPoint(x: center.x - 10, y: center.y))
+        animation.toValue = NSValue(cgPoint: CGPoint(x: center.x + 10, y: center.y))
+        layer.add(animation, forKey: "position")
+    }
+
+    func repaintBorder(borderWidth: CGFloat = 1, color: UIColor = .red.withAlphaComponent(0.6)) {
+        layer.borderWidth = borderWidth
+        layer.borderColor = color.cgColor
+    }
 }

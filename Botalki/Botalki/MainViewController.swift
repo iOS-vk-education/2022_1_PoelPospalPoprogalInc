@@ -341,15 +341,15 @@ class PairsViewController: UIViewController {
     private func didPullToRefresh() {
         presenter.loadAllData { result in
             switch result {
-                case .success(_):
-                    self.presenter.didSuccessfullyLoadData()
-                    self.weekPicker.selectRow(self.presenter.curWeekInMain, inComponent: 0, animated: true)
-                    break
-                    
-                case .failure(let error):
-                    self.alertManager.showAlert(presentTo: self, title: "Error", message: error.localizedDescription)
-                    self.tableView.refreshControl?.endRefreshing()
-                    break
+            case .success(_):
+                self.presenter.didSuccessfullyLoadData()
+                self.weekPicker.selectRow(self.presenter.curWeekInMain, inComponent: 0, animated: true)
+                break
+
+            case .failure(let error):
+                self.alertManager.showAlert(presentTo: self, title: "Error", message: error.localizedDescription)
+                self.tableView.refreshControl?.endRefreshing()
+                break
             }
         }
     }

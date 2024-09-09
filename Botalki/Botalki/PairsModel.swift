@@ -63,7 +63,8 @@ final class PairsModel {
     }
     
     func parseCabinetsFile() {
-        self.cabinetsStringFromFile.split(separator: "\n").forEach { line in
+        FreeCabinets = []
+        cabinetsStringFromFile.split(separator: "\n").forEach { line in
             var pairsForNumenatorOrDen = [[[String]]]()
             line.components(separatedBy: "###").forEach { day in
                 var pairsForDay = [[String]]()
@@ -76,7 +77,7 @@ final class PairsModel {
                 }
                 pairsForNumenatorOrDen.append(pairsForDay)
             }
-            self.FreeCabinets.append(pairsForNumenatorOrDen)
+            FreeCabinets.append(pairsForNumenatorOrDen)
         }
     }
     
